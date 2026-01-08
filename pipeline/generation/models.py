@@ -11,6 +11,7 @@ class Flashcard(BaseModel):
     id: str
     front: str = Field(max_length=500)
     back: str = Field(max_length=8000)  # Allow very detailed answers from Pro model
+    summary: str | None = Field(default=None, max_length=500)  # Concise 1-2 sentence summary
     code_example: str | None = None
     difficulty: str = "senior"
     topic: str

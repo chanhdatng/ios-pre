@@ -16,7 +16,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Use LLDB commands like `po`, `breakpoint set`, `continue`, `next`, and `expression` to inspect variables, set breakpoints, and control execution."
     },
     {
       "id": "debugging_aa5b0c0bdfb3",
@@ -37,7 +38,8 @@
         "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
         "https://www.objc.io/issues/15-testing/dependency-injection/",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Instruments (Leaks, Allocations, Zombies), Xcode Memory Graph, Static Analyzer find leaks, excessive use, & zombies. `weak self` breaks cycles."
     },
     {
       "id": "debugging_6a4d1a449a68",
@@ -54,7 +56,8 @@
       "sources": [
         "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Analyze crash type & thread. Symbolicate the backtrace to pinpoint the failing function and file using dSYMs for root cause."
     },
     {
       "id": "debugging_0c5380e23e69",
@@ -70,7 +73,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Translates crash log addresses to readable code, crucial for debugging. Requires dSYM files matching the app build."
     },
     {
       "id": "debugging_75b31908b8e1",
@@ -100,7 +104,8 @@
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "Inspect UI hierarchy at runtime to find layout & rendering problems. Reveals constraints, overlapping views, & performance issues."
     },
     {
       "id": "debugging_3561e6d6eeee",
@@ -115,7 +120,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Use Instruments (Time Profiler, Allocations) to record app behavior on a device, then analyze the data to find CPU/memory bottlenecks."
     }
   ]
 }

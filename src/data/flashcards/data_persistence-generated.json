@@ -16,7 +16,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
+      ],
+      "summary": "MOC manages object lifecycle & tracks changes. Context types (.mainQueue, .privateQueue) dictate thread safety & require merging changes across contexts."
     },
     {
       "id": "data_persistence_4ef0b438bba1",
@@ -34,7 +35,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
+      ],
+      "summary": "Core Data stack: MOC (scratchpad), PSC (coordinator), Store (persistence). MOC changes go to PSC, then Store. Retrieval uses fetch requests."
     },
     {
       "id": "data_persistence_8b4d32ff8bcc",
@@ -51,7 +53,8 @@
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/",
         "https://www.avanderlee.com/swift/core-data/"
-      ]
+      ],
+      "summary": "Core Data: mature, complex. SwiftData: modern, simpler Swift syntax, iOS 17+. Choose based on complexity & iOS version."
     },
     {
       "id": "data_persistence_59337dbc4bff",
@@ -66,7 +69,8 @@
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/",
         "https://www.avanderlee.com/swift/core-data/"
-      ]
+      ],
+      "summary": "Lightweight migrates simple changes; manual uses mapping models for complex ones; custom offers full control. Choose based on complexity."
     },
     {
       "id": "data_persistence_2eb6ab885fc3",
@@ -82,7 +86,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
+      ],
+      "summary": "Use private queue contexts for background threads and merge changes to the main context to avoid data corruption."
     },
     {
       "id": "data_persistence_df6a8453f934",
@@ -100,7 +105,8 @@
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/",
         "https://www.avanderlee.com/swift/core-data/"
-      ]
+      ],
+      "summary": "Memory cache(NSCache) for quick access, disk (files, DB) for persistence. Memory is fast but volatile; disk slower, but persistent."
     },
     {
       "id": "data_persistence_bb47d01824a0",
@@ -116,7 +122,8 @@
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/",
         "https://www.avanderlee.com/swift/core-data/"
-      ]
+      ],
+      "summary": "Use Keychain Services to securely store data by encrypting key-value pairs. Control access with attributes like `kSecAttrAccessible`."
     }
   ]
 }

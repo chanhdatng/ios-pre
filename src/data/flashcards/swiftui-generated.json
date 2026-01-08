@@ -19,7 +19,8 @@
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
-      ]
+      ],
+      "summary": "SwiftUI uses unique IDs to track views. Understanding identity is crucial because incorrect IDs cause unnecessary view recreations, harming performance."
     },
     {
       "id": "swiftui_cddc3f3f2aa5",
@@ -59,7 +60,8 @@
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
-      ]
+      ],
+      "summary": "`ViewModifier` encapsulates reusable view modifications, reducing code duplication. Use it for consistent styling across your app."
     },
     {
       "id": "swiftui_0c71a581d980",
@@ -74,7 +76,8 @@
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
-      ]
+      ],
+      "summary": "Child views communicate data up to parent views to influence layout/state without direct coupling. Useful when a child's property affects the parent."
     },
     {
       "id": "swiftui_fce609cc67b5",
@@ -89,7 +92,8 @@
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
-      ]
+      ],
+      "summary": "`Layout` enables custom view arrangement beyond stacks/frames by defining algorithms for sizing & positioning subviews."
     },
     {
       "id": "swiftui_4bd31d70cc62",
@@ -104,7 +108,8 @@
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
-      ]
+      ],
+      "summary": "SwiftUI animates state changes by calculating intermediate values for animated properties when an animation modifier is present."
     }
   ]
 }

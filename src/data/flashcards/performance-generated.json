@@ -19,7 +19,8 @@
       "sources": [
         "https://www.objc.io/issues/15-testing/dependency-injection/",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Instruments profiles app performance (CPU, memory, etc.) using templates like Time Profiler (CPU), Allocations (memory), and Core Animation (FPS)."
     },
     {
       "id": "performance_8e4addee9ecb",
@@ -37,7 +38,8 @@
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/2-concurrency/common-background-practices/"
-      ]
+      ],
+      "summary": "Use ARC, optimize images/data, autoreleasepools. Profile with Instruments to find/fix leaks and excessive usage."
     },
     {
       "id": "performance_3727e7d481bd",
@@ -56,7 +58,8 @@
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/4-core-data/core-data-fetch-requests/",
         "https://www.objc.io/issues/2-concurrency/common-background-practices/"
-      ]
+      ],
+      "summary": "Profile with Instruments, lazy load, optimize assets, avoid main thread work, & reduce initial view complexity."
     },
     {
       "id": "performance_213cf6d733df",
@@ -77,7 +80,8 @@
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/2-concurrency/common-background-practices/"
-      ]
+      ],
+      "summary": "Optimize battery by reducing location updates, networking, background tasks, & UI updates. Use appropriate APIs & minimize frequency."
     },
     {
       "id": "performance_ffa2502f7bb2",
@@ -97,7 +101,8 @@
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/4-core-data/core-data-fetch-requests/",
         "https://www.objc.io/issues/2-concurrency/common-background-practices/"
-      ]
+      ],
+      "summary": "Use async networking, caching, prioritize requests, and optimize data serialization (e.g., background JSON parsing)."
     }
   ]
 }

@@ -15,9 +15,12 @@ const navItems = [
 
 interface MobileNavProps {
   currentPath: string;
+  basePath?: string;
 }
 
-export default function MobileNav({ currentPath }: MobileNavProps) {
+export default function MobileNav({ currentPath, basePath = '' }: MobileNavProps) {
+  // Normalize path for comparison (remove basePath and trailing slash)
+  const normalizedPath = currentPath.replace(basePath, '').replace(/\/$/, '') || '/';
   const [isOpen, setIsOpen] = useState(false);
 
   // Close menu on Escape key
@@ -31,6 +34,18 @@ export default function MobileNav({ currentPath }: MobileNavProps) {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -74,12 +89,12 @@ export default function MobileNav({ currentPath }: MobileNavProps) {
         <div className="py-2 max-h-[calc(100vh-57px)] overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.Icon;
-            const isActive = currentPath === item.href || currentPath === item.href + '/';
+            const isActive = normalizedPath === item.href;
 
             return (
               <a
                 key={item.href}
-                href={item.href}
+                href={`${basePath}${item.href}`}
                 className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                   isActive
                     ? 'bg-[var(--color-accent-orange)]/10 text-[var(--color-accent-orange)]'

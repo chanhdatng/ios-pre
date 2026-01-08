@@ -18,7 +18,8 @@
       "sources": [
         "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ]
+      ],
+      "summary": "Variadic generics allow functions with variable type parameters. Type erasure hides concrete types behind a protocol, enabling type-safe collections."
     },
     {
       "id": "swift_69325e446d81",
@@ -36,7 +37,8 @@
         "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
         "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ]
+      ],
+      "summary": "Property Wrappers encapsulate and reuse property behavior like validation. They offer clarity and maintainability but add indirection."
     },
     {
       "id": "swift_5efaf49e1e55",
@@ -56,7 +58,8 @@
         "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
         "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
         "https://www.swift.org/documentation/"
-      ]
+      ],
+      "summary": "DSL for building complex data. Compiler uses `buildBlock` to transform code into operations that construct the final value."
     },
     {
       "id": "swift_76ae4455ed48",
@@ -88,7 +91,7 @@
     {
       "id": "swift_112850a42615",
       "front": "Explain Swift's Copy-on-Write (CoW) optimization, how it affects value types, and when it might *not* be effective. Give a practical code example.",
-      "back": "CoW is a performance optimization where value types (structs, enums, tuples) are copied only when mutated.  Until then, multiple variables can share the same underlying data. This avoids unnecessary copying, improving performance, especially for large data structures. When a mutating method is called on a value type, Swift checks if the instance is uniquely referenced. If not, a copy is made *before* the mutation occurs. This ensures value semantics (each variable has its own independent copy). \n\nExample:\n```swift\nstruct MyData {\n    var items: [Int]\n}\n\nvar data1 = MyData(items: [1, 2, 3])\nvar data2 = data1 // data2 points to the same underlying array as data1\n\n// At this point, no copy has occurred.\n\ndata2.items.append(4) // Mutation triggers a copy for data2\n\nprint(data1.items) // Output: [1, 2, 3]\nprint(data2.items) // Output: [1, 2, 3, 4]\n```\n\n**Ineffective Scenarios:**\n\n1.  **Bridged Types (NSString, NSArray, etc.):**  Swift's CoW relies on its own internal data structures. When bridging to Objective-C types, CoW may not be fully optimized, as modifications might trigger copies more frequently due to the nature of those types.  However, Swift *does* attempt CoW on bridged types where possible.\n2.  **Frequent Modifications:** If a value type is mutated very frequently shortly after being copied, the overhead of checking for uniqueness and potentially copying can outweigh the benefits.  Consider using reference types (classes) if you need to share mutable state and performance is critical.\n3.  **Unsafe Pointers:** Using unsafe pointers to directly manipulate the underlying data of a value type can bypass CoW, leading to unexpected behavior and data corruption.  Avoid this unless absolutely necessary and with extreme caution.\n4.  **Inout parameters:** Passing a value type as an `inout` parameter *always* triggers a copy-in, copy-out behavior. This can negate CoW benefits if the parameter is modified within the function.\n\n**Alternatives:**\n\n*   **Classes:**  Use classes when you need shared mutable state. Be mindful of thread safety when using classes in concurrent environments.\n*   **`ManagedBuffer`:**  For advanced scenarios, `ManagedBuffer` provides a way to implement custom CoW behavior for your own data structures.\n\n**Common Pitfalls:**\n*   Assuming CoW always prevents copies. Be aware of the situations where it might not be effective.\n*   Incorrectly using `inout` parameters when you don't need to modify the original value.\n*   Forgetting that CoW is an *optimization*, not a guarantee.  Value types still maintain value semantics.\n*   Not considering thread safety when using reference types instead of value types.\n* Be very careful adding or removing `Copyable` from existing types, because it dramatically changes how they are used. If you\u2019re shipping code in a library, this will break your ABI.\n\nCoW is a crucial optimization that makes Swift's value types performant. Understanding when it works and when it doesn't is essential for writing efficient Swift code.",
+      "back": "CoW is a performance optimization where value types (structs, enums, tuples) are copied only when mutated.  Until then, multiple variables can share the same underlying data. This avoids unnecessary copying, improving performance, especially for large data structures. When a mutating method is called on a value type, Swift checks if the instance is uniquely referenced. If not, a copy is made *before* the mutation occurs. This ensures value semantics (each variable has its own independent copy). \n\nExample:\n```swift\nstruct MyData {\n    var items: [Int]\n}\n\nvar data1 = MyData(items: [1, 2, 3])\nvar data2 = data1 // data2 points to the same underlying array as data1\n\n// At this point, no copy has occurred.\n\ndata2.items.append(4) // Mutation triggers a copy for data2\n\nprint(data1.items) // Output: [1, 2, 3]\nprint(data2.items) // Output: [1, 2, 3, 4]\n```\n\n**Ineffective Scenarios:**\n\n1.  **Bridged Types (NSString, NSArray, etc.):**  Swift's CoW relies on its own internal data structures. When bridging to Objective-C types, CoW may not be fully optimized, as modifications might trigger copies more frequently due to the nature of those types.  However, Swift *does* attempt CoW on bridged types where possible.\n2.  **Frequent Modifications:** If a value type is mutated very frequently shortly after being copied, the overhead of checking for uniqueness and potentially copying can outweigh the benefits.  Consider using reference types (classes) if you need to share mutable state and performance is critical.\n3.  **Unsafe Pointers:** Using unsafe pointers to directly manipulate the underlying data of a value type can bypass CoW, leading to unexpected behavior and data corruption.  Avoid this unless absolutely necessary and with extreme caution.\n4.  **Inout parameters:** Passing a value type as an `inout` parameter *always* triggers a copy-in, copy-out behavior. This can negate CoW benefits if the parameter is modified within the function.\n\n**Alternatives:**\n\n*   **Classes:**  Use classes when you need shared mutable state. Be mindful of thread safety when using classes in concurrent environments.\n*   **`ManagedBuffer`:**  For advanced scenarios, `ManagedBuffer` provides a way to implement custom CoW behavior for your own data structures.\n\n**Common Pitfalls:**\n*   Assuming CoW always prevents copies. Be aware of the situations where it might not be effective.\n*   Incorrectly using `inout` parameters when you don't need to modify the original value.\n*   Forgetting that CoW is an *optimization*, not a guarantee.  Value types still maintain value semantics.\n*   Not considering thread safety when using reference types instead of value types.\n* Be very careful adding or removing `Copyable` from existing types, because it dramatically changes how they are used. If you’re shipping code in a library, this will break your ABI.\n\nCoW is a crucial optimization that makes Swift's value types performant. Understanding when it works and when it doesn't is essential for writing efficient Swift code.",
       "code_example": null,
       "tags": [
         "swift",
@@ -102,7 +105,8 @@
         "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
         "https://www.objc.io/issues/16-swift/power-of-swift/",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ]
+      ],
+      "summary": "CoW delays copying value types until modification. Multiple variables share data until one mutates, improving performance."
     },
     {
       "id": "swift_3264a6b95015",
@@ -121,7 +125,8 @@
         "https://www.objc.io/issues/16-swift/swift-functions/",
         "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
         "https://www.objc.io/issues/16-swift/power-of-swift/"
-      ]
+      ],
+      "summary": "`some` preserves the concrete type for static dispatch & better performance; `any` allows different types, but uses slower dynamic dispatch."
     }
   ]
 }

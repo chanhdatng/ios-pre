@@ -3,6 +3,25 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 import Sidebar from '../components/layout/Sidebar.astro';
 import Header from '../components/layout/Header.astro';
 import ProgressDashboard from '../components/tracking/ProgressDashboard';
+import StatisticsCharts from '../components/tracking/StatisticsCharts';
+
+// Load flashcard counts
+import swiftFundamentals from '../data/flashcards/swift-fundamentals.json';
+import iosCore from '../data/flashcards/ios-core.json';
+import concurrency from '../data/flashcards/concurrency.json';
+import swiftui from '../data/flashcards/swiftui.json';
+import systemDesign from '../data/flashcards/system-design.json';
+import behavioral from '../data/flashcards/behavioral.json';
+
+const topics = ['Swift Fundamentals', 'iOS Core', 'Concurrency', 'SwiftUI', 'System Design', 'Behavioral'];
+const cardsByTopic: Record<string, number> = {
+  'Swift Fundamentals': swiftFundamentals.cards.length,
+  'iOS Core': iosCore.cards.length,
+  'Concurrency': concurrency.cards.length,
+  'SwiftUI': swiftui.cards.length,
+  'System Design': systemDesign.cards.length,
+  'Behavioral': behavioral.cards.length,
+};
 
 // Define 12-week curriculum
 const weeks = [
@@ -145,5 +164,57 @@ const weeks = [
   <Sidebar slot="sidebar" />
   <Header title="Progress Tracker" subtitle="Track your 12-week journey" />
 
-  <ProgressDashboard weeks={weeks} client:load />
+  <div class="space-y-6">
+    <!-- Tab Navigation -->
+    <div class="flex gap-2 border-b border-[var(--color-surface-secondary)]" id="progress-tabs">
+      <button
+        class="tab-btn active px-4 py-2 text-body-small font-medium border-b-2 border-[var(--color-accent-orange)] text-[var(--color-accent-orange)]"
+        data-tab="curriculum"
+      >
+        Curriculum
+      </button>
+      <button
+        class="tab-btn px-4 py-2 text-body-small font-medium border-b-2 border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+        data-tab="statistics"
+      >
+        Statistics
+      </button>
+    </div>
+
+    <!-- Curriculum Tab -->
+    <div id="curriculum-content" class="tab-content">
+      <ProgressDashboard weeks={weeks} client:load />
+    </div>
+
+    <!-- Statistics Tab -->
+    <div id="statistics-content" class="tab-content hidden">
+      <StatisticsCharts topics={topics} cardsByTopic={cardsByTopic} client:load />
+    </div>
+  </div>
 </BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll('#progress-tabs .tab-btn');
+  const curriculumContent = document.getElementById('curriculum-content');
+  const statisticsContent = document.getElementById('statistics-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('active', 'border-[var(--color-accent-orange)]', 'text-[var(--color-accent-orange)]');
+        t.classList.add('border-transparent', 'text-[var(--color-text-secondary)]');
+      });
+      tab.classList.add('active', 'border-[var(--color-accent-orange)]', 'text-[var(--color-accent-orange)]');
+      tab.classList.remove('border-transparent', 'text-[var(--color-text-secondary)]');
+
+      const tabName = tab.getAttribute('data-tab');
+      if (tabName === 'curriculum') {
+        curriculumContent?.classList.remove('hidden');
+        statisticsContent?.classList.add('hidden');
+      } else {
+        curriculumContent?.classList.add('hidden');
+        statisticsContent?.classList.remove('hidden');
+      }
+    });
+  });
+</script>

@@ -16,7 +16,7 @@ const swiftuiCards = swiftui.cards.map(c => ({ ...c, topic: 'SwiftUI' }));
 const concurrencyCards = concurrency.cards.map(c => ({ ...c, topic: 'Concurrency' }));
 const systemDesignCards = systemDesign.cards.map(c => ({ ...c, topic: 'System Design' }));
 const allQuestions = [...concurrencyQuiz.questions, ...swiftuiQuiz.questions];
-const basePath = import.meta.env.BASE_URL || '';
+const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
 ---
 
 <BaseLayout title="Month 2">

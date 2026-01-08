@@ -31,7 +31,8 @@
         "https://www.avanderlee.com/swift/core-data/",
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "ATS enforces secure HTTPS connections. Configured via Info.plist; disabling it exposes data and is discouraged by Apple."
     },
     {
       "id": "security_199ddce13d96",
@@ -68,7 +69,8 @@
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "iOS encrypts data at rest (Keychain/SQLCipher) and in transit (HTTPS). Key considerations are algorithm strength and secure key storage."
     },
     {
       "id": "security_a325baeb20c1",
@@ -84,7 +86,8 @@
       ],
       "sources": [
         "https://developer.apple.com/news/"
-      ]
+      ],
+      "summary": "Code signing verifies app authenticity. Provisioning profiles authorize apps on devices. They work together for secure app distribution."
     },
     {
       "id": "security_c64c3d914723",
@@ -103,7 +106,8 @@
         "https://www.objc.io/issues/16-swift/swift-functions/",
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Secure iOS coding requires using Keychain for sensitive data & HTTPS for network requests. Validate data to prevent attacks."
     },
     {
       "id": "security_a98037d94e1a",
@@ -120,7 +124,8 @@
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "OWASP MSP raises mobile security awareness with guides for secure development. Risks include insecure data storage and communication."
     }
   ]
 }

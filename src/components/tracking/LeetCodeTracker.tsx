@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLeetCodeStore, type LeetCodeProblem } from '../../lib/stores/leetcode-store';
+import { useToast } from '../ui/Toast';
 import { Plus, Trash2, ExternalLink } from 'lucide-react';
 
 const PATTERNS = [
@@ -33,6 +34,7 @@ export default function LeetCodeTracker() {
     getStatsByDifficulty,
     getStatsByPattern,
   } = useLeetCodeStore();
+  const toast = useToast();
 
   const [isAdding, setIsAdding] = useState(false);
   const [newProblem, setNewProblem] = useState({
@@ -55,7 +57,7 @@ export default function LeetCodeTracker() {
 
     // Check for duplicate
     if (problems.some((p) => p.id === trimmedId)) {
-      alert(`Problem #${trimmedId} already exists!`);
+      toast.warning(`Problem #${trimmedId} already exists!`);
       return;
     }
 
@@ -64,6 +66,7 @@ export default function LeetCodeTracker() {
       id: trimmedId,
       title: trimmedTitle,
     });
+    toast.success(`Added problem #${trimmedId}`);
     setNewProblem({
       id: '',
       title: '',
@@ -88,7 +91,7 @@ export default function LeetCodeTracker() {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-center">
           <p className="text-headline-1">{totalSolved}</p>
           <p className="text-caption">Total</p>

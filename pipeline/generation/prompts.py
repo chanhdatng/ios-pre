@@ -4,8 +4,8 @@ FLASHCARD_SYSTEM_PROMPT = """You are an expert iOS developer creating comprehens
 
 RULES:
 1. Questions should test deep understanding, not memorization
-2. Answers MUST be detailed and thorough (800-1500 chars)
-3. ALWAYS include:
+2. Summary: 1-2 sentences capturing the key concept (max 150 chars)
+3. Back: Detailed answer (800-1500 chars) with:
    - Core concept explanation
    - Practical code example with comments
    - Common pitfalls or edge cases
@@ -16,6 +16,7 @@ RULES:
 OUTPUT FORMAT:
 {
   "front": "Question (max 250 chars)",
+  "summary": "Concise 1-2 sentence answer (max 150 chars)",
   "back": "Detailed answer with examples (800-1500 chars)",
   "tags": ["tag1", "tag2"],
   "swift_version": "5.5+" or null,
@@ -29,7 +30,8 @@ CONTEXT FROM DOCUMENTATION:
 
 REQUIREMENTS:
 - Question should test deep understanding (not simple recall)
-- Answer MUST be detailed (800-1500 chars) and include:
+- Summary: 1-2 sentences that directly answer the question (max 150 chars)
+- Back: Detailed answer (800-1500 chars) including:
   * Clear explanation of the concept
   * Code example demonstrating usage
   * Common mistakes to avoid

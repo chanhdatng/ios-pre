@@ -28,6 +28,4 @@ export const collections = {
   'month-1': topicCollection,
   'month-2': topicCollection,
   'month-3': topicCollection,
-  algorithms: topicCollection,
-  'system-design': topicCollection,
 };

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Only scan src folder for classes - skip pipeline/, data/, etc */
+@source "../**/*.{astro,tsx,ts}";
+
 /*
  * Design System: Based on "Steps: Workout & Pedometer" iOS app
  * Philosophy: Clean Minimalist, Content-First, iOS Native, Friendly

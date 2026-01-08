@@ -15,7 +15,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "Lifecycle methods manage a VC's view from initialization to removal. Override to manage resources/UI, calling `super` where required."
     },
     {
       "id": "uikit_3907f47b5463",
@@ -34,7 +35,8 @@
         "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ]
+      ],
+      "summary": "Use `NSLayoutConstraint` to define relationships, disable `translatesAutoresizingMaskIntoConstraints`, and activate constraints for precise UI."
     },
     {
       "id": "uikit_52abee5c8d09",
@@ -51,7 +53,8 @@
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "Compositional layouts offer flexible, nested arrangements via sections/groups, unlike flow layouts' linear grid."
     },
     {
       "id": "uikit_4f13a4d89b98",
@@ -71,7 +74,8 @@
         "https://www.objc.io/issues/4-core-data/core-data-overview/",
         "https://www.avanderlee.com/swift/core-data/",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "They use snapshots to declaratively update the UI, handling changes automatically. This is safer and simpler than manual index path management."
     },
     {
       "id": "uikit_022fbd7dc4a5",
@@ -88,7 +92,8 @@
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "`*Representable` wraps UIKit for SwiftUI; `UIHostingController` hosts SwiftUI in UIKit. Lifecycle/layout differences require careful management."
     },
     {
       "id": "uikit_5dc293584478",
@@ -106,7 +111,8 @@
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "Custom transitions animate presentation/dismissal using delegates & animators (`UIViewControllerAnimatedTransitioning`). Interactive transitions use `UIViewControllerInteractiveTransitioning`."
     },
     {
       "id": "uikit_f81b8d0bd6a2",
@@ -122,7 +128,8 @@
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "The responder chain passes events up a hierarchy of UIResponders until handled. Override `next` or event methods to customize handling."
     }
   ]
 }

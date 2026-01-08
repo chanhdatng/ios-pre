@@ -19,7 +19,8 @@
         "https://www.objc.io/issues/15-testing/xctest/",
         "https://www.avanderlee.com/swift/core-data/",
         "https://www.objc.io/issues/13-architecture/viper/"
-      ]
+      ],
+      "summary": "Publishers emit values that Subscribers receive. They connect via `subscribe(_:)`. Key protocols: `Publisher`, `Subscriber`, `Subscription`."
     },
     {
       "id": "combine_d81a9c91347b",
@@ -50,7 +51,8 @@
       "sources": [
         "https://www.objc.io/issues/16-swift/swift-functions/",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Combine uses `Fail`, `catch` (recover), and `retry` operators for error handling. `try` variants allow throwing within transformations."
     },
     {
       "id": "combine_83feeebb4e47",
@@ -67,7 +69,8 @@
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Combine is reactive, for complex data flows. Async/await is imperative, simpler for basic async tasks."
     },
     {
       "id": "combine_4d7c72d6d8db",
@@ -85,7 +88,8 @@
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Custom publishers bridge non-Combine code. They offer control over data emission by conforming to the Publisher protocol."
     },
     {
       "id": "combine_32f69cce08dc",

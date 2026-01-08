@@ -1,6 +1,7 @@
 ---
 import '../../styles/global.css';
 import MobileNav from './MobileNav';
+import ToastContainer from '../ui/Toast';
 
 interface Props {
   title: string;
@@ -9,6 +10,7 @@ interface Props {
 
 const { title, description = 'iOS Interview Prep Hub' } = Astro.props;
 const currentPath = Astro.url.pathname;
+const basePath = import.meta.env.BASE_URL?.replace(/\/$/, '') || '';
 ---
 
 <!doctype html>
@@ -28,15 +30,15 @@ const currentPath = Astro.url.pathname;
     />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={`${basePath}/favicon.svg`} />
 
     <!-- PWA -->
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href={`${basePath}/manifest.json`} />
     <meta name="theme-color" content="#F58C3B" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="iOS Prep" />
-    <link rel="apple-touch-icon" href="/icons/icon.svg" />
+    <link rel="apple-touch-icon" href={`${basePath}/icons/icon.svg`} />
 
     <!-- Theme initialization - prevent flash -->
     <script is:inline>
@@ -52,7 +54,7 @@ const currentPath = Astro.url.pathname;
 
   <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
     <!-- Mobile Navigation -->
-    <MobileNav currentPath={currentPath} client:load />
+    <MobileNav currentPath={currentPath} basePath={basePath} client:load />
 
     <div class="flex">
       <!-- Desktop sidebar slot -->
@@ -66,11 +68,14 @@ const currentPath = Astro.url.pathname;
       </main>
     </div>
 
+    <!-- Toast notifications -->
+    <ToastContainer client:load />
+
     <!-- Service Worker Registration -->
-    <script is:inline>
+    <script is:inline define:vars={{ basePath }}>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js').then(
+          navigator.serviceWorker.register(basePath + '/sw.js').then(
             function(registration) {
               console.log('SW registered:', registration.scope);
             },

@@ -6,6 +6,9 @@ interface FlashcardState {
   // Card states (FSRS data)
   cardStates: Record<string, Card>;
 
+  // Bookmarks
+  bookmarks: string[];
+
   // Review session
   currentSession: string[];
   sessionIndex: number;
@@ -21,12 +24,18 @@ interface FlashcardState {
   startSession: (cardIds: string[]) => void;
   nextCard: () => void;
   resetDailyStats: () => void;
+
+  // Bookmark actions
+  toggleBookmark: (cardId: string) => void;
+  isBookmarked: (cardId: string) => boolean;
+  getBookmarkedCards: () => string[];
 }
 
 export const useFlashcardStore = create<FlashcardState>()(
   persist(
     (set, get) => ({
       cardStates: {},
+      bookmarks: [],
       currentSession: [],
       sessionIndex: 0,
       reviewsToday: 0,
@@ -70,6 +79,17 @@ export const useFlashcardStore = create<FlashcardState>()(
         reviewsToday: 0,
         lastReviewDate: new Date().toDateString(),
       }),
+
+      // Bookmark functions
+      toggleBookmark: (cardId) => set((state) => ({
+        bookmarks: state.bookmarks.includes(cardId)
+          ? state.bookmarks.filter(id => id !== cardId)
+          : [...state.bookmarks, cardId],
+      })),
+
+      isBookmarked: (cardId) => get().bookmarks.includes(cardId),
+
+      getBookmarkedCards: () => get().bookmarks,
     }),
     { name: 'ios-prep-flashcards' }
   )

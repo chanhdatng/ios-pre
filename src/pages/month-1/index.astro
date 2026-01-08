@@ -14,7 +14,7 @@ import iosQuiz from '../../data/quizzes/ios-core-quiz.json';
 const swiftCards = swiftFundamentals.cards.map(c => ({ ...c, topic: 'Swift Fundamentals' }));
 const iosCards = iosCore.cards.map(c => ({ ...c, topic: 'iOS Core' }));
 const allQuestions = [...swiftQuiz.questions, ...iosQuiz.questions];
-const basePath = import.meta.env.BASE_URL || '';
+const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
 ---
 
 <BaseLayout title="Month 1">

@@ -16,7 +16,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "I use FIRST principles & AAA pattern, employing mocks/stubs & dependency injection for isolated, maintainable unit tests."
     },
     {
       "id": "testing_99d655367931",
@@ -32,7 +33,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Strategies include Record/Replay (quick, brittle), programmatic interaction (flexible), & Page Object Model (maintainable)."
     },
     {
       "id": "testing_76bda1e74f8b",
@@ -46,7 +48,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Snapshot testing compares UI renderings to saved snapshots, flagging UI regressions. Benefits: quick detection. Drawbacks: bloat, maintenance."
     },
     {
       "id": "testing_cb7a1cf32d96",
@@ -64,7 +67,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Test doubles (stubs, mocks, fakes, spies) replace dependencies for isolated testing. Stubs control input, mocks verify calls, fakes simplify, spies record."
     },
     {
       "id": "testing_01f7c12dabda",
@@ -80,7 +84,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
-      ]
+      ],
+      "summary": "Use `XCTestExpectation` and `DispatchGroup` to synchronize test execution with async operations and avoid race conditions."
     }
   ]
 }

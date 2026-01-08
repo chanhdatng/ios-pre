@@ -17,7 +17,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
-      ]
+      ],
+      "summary": "Swift's structured concurrency uses async/await, Tasks, and Actors for safer, predictable concurrency, improving upon GCD's manual management."
     },
     {
       "id": "concurrency_0a59c109c99a",
@@ -33,7 +34,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
-      ]
+      ],
+      "summary": "Actors prevent data races by serializing access to their state, ensuring only one thread can access it at a time (actor isolation)."
     },
     {
       "id": "concurrency_c4f511d6cdf5",
@@ -61,7 +63,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
-      ]
+      ],
+      "summary": "Task Groups enable structured concurrency to manage child tasks, propagate results, and offer superior error handling compared to dispatch groups."
     },
     {
       "id": "concurrency_b2a458c2caac",
@@ -77,7 +80,8 @@
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/2-concurrency/common-background-practices/"
-      ]
+      ],
+      "summary": "`AsyncSequence` is a protocol for async data streams. `AsyncStream` creates one by yielding values, bridging sync/async code."
     },
     {
       "id": "concurrency_63f51f17b095",
@@ -94,7 +98,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
-      ]
+      ],
+      "summary": "MainActor ensures UI updates happen on the main thread. Global actors serialize access to shared data, preventing race conditions."
     },
     {
       "id": "concurrency_dbfc3f91d97e",
@@ -112,7 +117,8 @@
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
-      ]
+      ],
+      "summary": "Data races: unsynchronized concurrent access to shared memory. Prevent with locks, serial queues, barriers, or atomics."
     }
   ]
 }

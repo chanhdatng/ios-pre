@@ -2,7 +2,7 @@
 import BaseLayout from '../components/layout/BaseLayout.astro';
 import Sidebar from '../components/layout/Sidebar.astro';
 import Header from '../components/layout/Header.astro';
-import SpacedReview from '../components/interactive/SpacedReview';
+import ReviewWithSearch from '../components/interactive/ReviewWithSearch';
 import QuizRunner from '../components/interactive/QuizRunner';
 
 // Load all flashcards
@@ -18,6 +18,9 @@ import swiftQuiz from '../data/quizzes/swift-fundamentals-quiz.json';
 import iosQuiz from '../data/quizzes/ios-core-quiz.json';
 import concurrencyQuiz from '../data/quizzes/concurrency-quiz.json';
 import swiftuiQuiz from '../data/quizzes/swiftui-quiz.json';
+
+// Define topics
+const topics = ['Swift Fundamentals', 'iOS Core', 'Concurrency', 'SwiftUI', 'System Design', 'Behavioral'];
 
 // Combine all cards
 const allCards = [
@@ -61,7 +64,7 @@ const allQuestions = [
 
     <!-- Flashcards Tab -->
     <div id="flashcards-content" class="tab-content">
-      <SpacedReview allCards={allCards} client:load />
+      <ReviewWithSearch allCards={allCards} topics={topics} client:load />
     </div>
 
     <!-- Quiz Tab -->
