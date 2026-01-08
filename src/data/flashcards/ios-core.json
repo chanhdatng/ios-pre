@@ -4,611 +4,13 @@
   "description": "App lifecycle, ARC, delegation, and iOS fundamentals",
   "cards": [
     {
-      "id": "ios-001",
-      "front": "What are the UIApplication lifecycle states?",
-      "back": "Not Running \u2192 Inactive \u2192 Active \u2192 Background \u2192 Suspended. Inactive is transitional state between active and background.",
-      "tags": [
-        "lifecycle"
-      ]
-    },
-    {
-      "id": "ios-002",
-      "front": "What's the difference between viewDidLoad and viewWillAppear?",
-      "back": "viewDidLoad: Called once when view loaded into memory. viewWillAppear: Called every time view is about to become visible. Use viewDidLoad for one-time setup, viewWillAppear for refresh logic.",
-      "tags": [
-        "lifecycle",
-        "uikit"
-      ]
-    },
-    {
-      "id": "ios-003",
-      "front": "Explain the delegation pattern in iOS",
-      "back": "One object delegates responsibility to another via a protocol. Delegate is usually weak to avoid retain cycles. Example: UITableViewDelegate handles cell selection while UITableView handles display.",
-      "tags": [
-        "patterns",
-        "delegation"
-      ]
-    },
-    {
-      "id": "ios-004",
-      "front": "What causes a retain cycle and how do you fix it?",
-      "back": "Two objects holding strong references to each other. Fix: Make one reference weak or unowned. Common case: closure capturing self strongly in a class property.",
-      "tags": [
-        "memory",
-        "arc"
-      ]
-    },
-    {
-      "id": "ios-005",
-      "front": "When does deinit get called?",
-      "back": "When ARC count reaches 0 and object is about to be deallocated. Only classes have deinit (not structs). Use for cleanup: invalidate timers, remove observers, close connections.",
-      "tags": [
-        "memory",
-        "arc"
-      ]
-    },
-    {
-      "id": "ios-006",
-      "front": "What's the difference between frame and bounds?",
-      "back": "Frame: Position and size in superview's coordinate system. Bounds: Position and size in own coordinate system. bounds.origin is usually (0,0) unless scrolled.",
-      "tags": [
-        "uikit",
-        "layout"
-      ]
-    },
-    {
-      "id": "ios-007",
-      "front": "Explain Auto Layout priority and compression resistance",
-      "back": "Content Hugging: Resistance to growing larger than intrinsic size. Compression Resistance: Resistance to shrinking smaller. Higher priority wins when constraints conflict.",
-      "tags": [
-        "uikit",
-        "layout"
-      ]
-    },
-    {
-      "id": "ios-008",
-      "front": "What is the responder chain?",
-      "back": "Chain of UIResponder objects that handle events. Order: First Responder \u2192 View \u2192 Superview \u2192 ... \u2192 ViewController \u2192 Window \u2192 Application. Unhandled events travel up the chain.",
-      "tags": [
-        "uikit",
-        "events"
-      ]
-    },
-    {
-      "id": "ios-009",
-      "front": "How does UITableView cell reuse work?",
-      "back": "Cells are dequeued and reused via dequeueReusableCell(withIdentifier:). Only visible cells + buffer exist in memory. Must reset cell state in prepareForReuse() or cellForRowAt.",
-      "tags": [
-        "uikit",
-        "performance"
-      ]
-    },
-    {
-      "id": "ios-010",
-      "front": "What's the difference between NotificationCenter and delegation?",
-      "back": "Delegation: 1-to-1, type-safe, explicit contract. NotificationCenter: Many-to-many broadcast, loosely coupled, any object can observe. Use delegation for direct relationships, notifications for app-wide events.",
-      "tags": [
-        "patterns"
-      ]
-    },
-    {
-      "id": "ios-011",
-      "front": "What is KVO and when would you use it?",
-      "back": "Key-Value Observing: Observe changes to object properties. Use observe(_:options:changeHandler:) in Swift. Good for observing framework objects. Prefer Combine/reactive for own code.",
-      "tags": [
-        "patterns",
-        "observation"
-      ]
-    },
-    {
-      "id": "ios-012",
-      "front": "Explain UserDefaults limitations and best practices",
-      "back": "Limitations: Not encrypted, synced to disk periodically, not for large data. Best for: Small settings, preferences. Don't store: Sensitive data, large objects, frequently changing data.",
-      "tags": [
-        "persistence"
-      ]
-    },
-    {
-      "id": "ios-013",
-      "front": "What's the difference between Codable, Encodable, and Decodable?",
-      "back": "Codable = Encodable & Decodable. Encodable: Can serialize to external format (JSON). Decodable: Can deserialize from external format. Use Codable when you need both.",
-      "tags": [
-        "serialization"
-      ]
-    },
-    {
-      "id": "ios-014",
-      "front": "How do you handle background app refresh?",
-      "back": "Enable Background Modes capability, implement application(_:performFetchWithCompletionHandler:). System wakes app periodically. Call completion handler with fetch result. Limited execution time (~30s).",
-      "tags": [
-        "lifecycle",
-        "background"
-      ]
-    },
-    {
-      "id": "ios-015",
-      "front": "What is Core Data and when should you use it?",
-      "back": "Apple's object graph and persistence framework. Use for: Complex object relationships, large datasets, offline sync, undo support. Overkill for: Simple key-value storage, small data.",
-      "tags": [
-        "persistence",
-        "core-data"
-      ]
-    },
-    {
-      "id": "ios-016",
-      "front": "Explain NSManagedObjectContext and its concurrency types",
-      "back": "Context where Core Data operations happen. Types: mainQueueConcurrencyType (UI), privateQueueConcurrencyType (background). Use perform/performAndWait for thread safety.",
-      "tags": [
-        "core-data",
-        "concurrency"
-      ]
-    },
-    {
-      "id": "ios-017",
-      "front": "What's the difference between synchronous and asynchronous URLSession tasks?",
-      "back": "URLSession is always async. dataTask returns immediately, calls completion on background queue. Use async/await with data(for:) in modern code. Never block main thread waiting for network.",
-      "tags": [
-        "networking"
-      ]
-    },
-    {
-      "id": "ios-018",
-      "front": "How do you handle deep linking in iOS?",
-      "back": "URL Schemes: Custom URLs (myapp://). Universal Links: Standard https URLs associated with app domain. Handle in scene(_:openURLContexts:) or application(_:open:options:).",
-      "tags": [
-        "navigation",
-        "deep-linking"
-      ]
-    },
-    {
-      "id": "ios-019",
-      "front": "What is App Transport Security (ATS)?",
-      "back": "iOS security feature requiring HTTPS for network connections. Enforces TLS 1.2+, forward secrecy. Can add exceptions in Info.plist but App Store may reject. Best practice: Use HTTPS everywhere.",
-      "tags": [
-        "security",
-        "networking"
-      ]
-    },
-    {
-      "id": "ios-020",
-      "front": "Explain the Keychain and when to use it",
-      "back": "Secure storage for sensitive data (passwords, tokens, keys). Persists across app reinstalls. Use SecItemAdd/Update/Delete/CopyMatching APIs or wrapper libraries. Required for credentials.",
-      "tags": [
-        "security",
-        "persistence"
-      ]
-    },
-    {
-      "id": "ios-021",
-      "front": "What are the different ways to pass data between view controllers?",
-      "back": "Forward: Property injection, initializer. Backward: Delegation, closures, NotificationCenter. Shared: Singleton, dependency injection container. Prefer explicit passing over global state.",
-      "tags": [
-        "architecture",
-        "navigation"
-      ]
-    },
-    {
-      "id": "ios-022",
-      "front": "How does UICollectionViewCompositionalLayout work?",
-      "back": "Modern layout API with three levels: Item \u2192 Group \u2192 Section. Each level defines size (fractional, absolute, estimated). Supports orthogonal scrolling, section headers, decorations.",
-      "tags": [
-        "uikit",
-        "layout"
-      ]
-    },
-    {
-      "id": "ios-023",
-      "front": "What is Diffable Data Source?",
-      "back": "Type-safe data source for UITableView/UICollectionView. Uses snapshots instead of reloadData. Automatically calculates and animates differences. Requires Hashable items.",
-      "tags": [
-        "uikit",
-        "performance"
-      ]
-    },
-    {
-      "id": "ios-024",
-      "front": "Explain scene-based lifecycle (iOS 13+)",
-      "back": "UISceneDelegate handles per-window lifecycle instead of UIApplicationDelegate. Supports multiple windows on iPad. SceneDelegate: foreground/background. AppDelegate: app launch, push notifications.",
-      "tags": [
-        "lifecycle"
-      ]
-    },
-    {
-      "id": "ios-025",
-      "front": "What is the purpose of Info.plist?",
-      "back": "Configuration file declaring app metadata: bundle ID, version, required device capabilities, permissions (camera, location), URL schemes, supported orientations, ATS exceptions.",
-      "tags": [
-        "configuration"
-      ]
-    },
-    {
-      "id": "testing_394cb39087e3",
-      "front": "Unit testing best practices",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Unit testing best practices"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "testing_99d655367931",
-      "front": "Describe UI Testing strategies in iOS. What are the pros/cons of each, and when would you choose one over another? Include example code and common pitfalls.",
-      "back": "UI Testing in iOS focuses on interacting with the app's UI elements programmatically to simulate user actions and verify the app's behavior.  Key strategies include Record/Replay (using Xcode's UI recorder), programmatic UI interaction, and leveraging accessibility identifiers.\n\n*   **Record and Replay:** Xcode provides a feature to record your interactions with the app and generate UI test code.  This is good for quickly creating basic tests, especially for simple workflows. \n\n    *Example: After recording, Xcode might generate code like `app.buttons[\"MyButton\"].tap()`.\n\n    *   **Pros:** Easy to get started, requires minimal coding initially. Good for initial test creation and exploration.\n    *   **Cons:**  Generates fragile tests as it relies on exact UI element descriptions.  UI changes often break these tests.  Difficult to maintain and extend for complex scenarios.  Not suitable for data-driven testing.\n\n*   **Programmatic UI Interaction:**  Writing UI tests directly in code using `XCUIElement` and related APIs.  This provides more control and flexibility.\n\n    *Example: `let myButton = app.buttons[\"MyButton\"].firstMatch; XCTAssertTrue(myButton.exists); myButton.tap()`\n\n    *   **Pros:** More robust and maintainable than record/replay. Allows for complex test logic, data-driven testing, and better control over test execution. Less susceptible to minor UI changes.\n    *   **Cons:**  Requires more coding effort. Steeper learning curve for the `XCUIElement` API.\n\n*   **Accessibility Identifiers:** Setting `accessibilityIdentifier` on UI elements in your code.  This provides a stable and reliable way to locate elements in UI tests, even if other properties change.  This is the recommended approach for robust UI testing.\n\n    *Example (in code):\n    ```swift\n    myButton.accessibilityIdentifier = \"myUniqueButtonID\"\n    ```\n\n    *Example (in UI test):\n    ```swift\n    let myButton = app.buttons[\"myUniqueButtonID\"].firstMatch\n    XCTAssertTrue(myButton.exists)\n    myButton.tap()\n    ```\n\n    *   **Pros:**  Highly maintainable and resilient to UI changes.  Provides a clear and consistent way to identify elements.  Improves accessibility for users with disabilities.\n    *   **Cons:** Requires developers to add accessibility identifiers to UI elements during development.\n\n**Common Pitfalls:**\n\n*   **Over-reliance on Record/Replay:**  Avoid using record/replay as the primary method for creating UI tests.  It's better to write tests programmatically with accessibility identifiers.\n*   **Hardcoding UI element properties:**  Don't rely on properties like labels or titles that might change. Use accessibility identifiers instead.\n*   **Ignoring asynchronous operations:**  UI tests often need to wait for animations, network requests, or other asynchronous operations to complete before asserting results. Use `XCTWaiter` or `expectation(for:evaluatedWith:handler:)` to handle asynchronous behavior.\n*   **Flaky Tests:**  UI tests can be prone to flakiness due to timing issues or environmental factors.  Retry failed tests, use explicit waits, and ensure a clean test environment.\n*   **Not using `firstMatch`:** When querying for elements, especially in complex hierarchies, use `firstMatch` to ensure you're only interacting with the intended element.  Without it, the test might interact with a different element than expected, leading to unpredictable results.\n\n**When to Use Which Strategy:**\n\n*   Use **Record/Replay** for initial exploration and quickly generating basic tests, but refactor them to use programmatic UI interaction and accessibility identifiers.\n*   Use **Programmatic UI Interaction** with **Accessibility Identifiers** as the primary strategy for creating robust and maintainable UI tests.\n\nAlternatives to XCUITest include Appium and other cross-platform testing frameworks, but XCUITest is the native and most tightly integrated solution for iOS UI testing.",
-      "code_example": null,
-      "tags": [
-        "testing",
-        "ui testing",
-        "xcuitest",
-        "accessibility",
-        "ios"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "testing_76bda1e74f8b",
-      "front": "Explain Snapshot testing, its benefits, and how you'd implement it in an iOS project. What are its limitations and when would you choose it over other testing approaches?",
-      "back": "Snapshot testing verifies that the UI of your app doesn't change unexpectedly. It works by rendering a UI component or screen and saving it as a \"snapshot\" (usually an image or a textual representation of the view hierarchy). Subsequent tests compare the rendered UI against the saved snapshot.  If there are any differences, the test fails, indicating a potential UI regression.\n\n*Benefits:*\n- Detects unintended UI changes quickly.\n- Tests complex UI layouts efficiently.\n- Reduces the need for extensive manual UI testing.\n- Provides visual documentation of UI components.\n\n*Implementation:* Using `SwiftSnapshotTesting` library.\n```swift\nimport SnapshotTesting\nimport XCTest\n\nclass MyViewTests: XCTestCase {\n    func testMyView() {\n        let view = MyView()\n        view.frame = CGRect(x: 0, y: 0, width: 320, height: 480)\n        assertSnapshot(matching: view, as: .image)\n    }\n}\n```\nThis code renders `MyView`, takes a snapshot as an image, and compares it to the reference snapshot.  The first time you run this, it *creates* the reference snapshot. Subsequent runs *compare* against it.  To update snapshots, set `record = true` in `assertSnapshot` call.\n\n*Common Pitfalls/Edge Cases:*\n- **Dynamic Data**: Exclude or mock dynamic data (dates, user names) to avoid false failures.\n- **Fonts**: Ensure consistent font rendering across environments.\n- **Localization**: Test with different locales to catch localization issues.\n- **Accessibility**: Consider accessibility elements when creating snapshots.\n- **Asynchronous operations**: Ensure all async tasks are finished before taking the snapshot. Use `DispatchGroup` or similar.\n\n*Alternatives:*\n- **UI Automation Tests (XCUITest):**  More robust for end-to-end testing and user interaction, but slower and more brittle.\n- **Unit Tests:** Focused on logic, not visual appearance.\n\n*When to Use:*\n- When you need to quickly detect UI regressions.\n- For complex layouts where manual verification is time-consuming.\n- To document the intended appearance of UI components.\n\n*When NOT to Use:*\n- For testing user interactions or complex workflows.\n- When UI changes frequently and snapshots become outdated quickly.\n- As a replacement for all other testing methods; snapshot testing is *supplemental*.\n\nSnapshot tests are excellent at detecting unexpected UI changes, but they don't verify *correctness* of UI, just *consistency*. They are most effective when combined with other testing strategies.",
-      "code_example": null,
-      "tags": [
-        "testing",
-        "snapshot testing",
-        "UI testing",
-        "SwiftSnapshotTesting"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "testing_cb7a1cf32d96",
-      "front": "Explain different test double patterns (mocks, stubs, fakes, spies) and when you would use each.",
-      "back": "Test doubles replace real dependencies for isolated testing. **Mocks** verify interactions (method calls, arguments). **Stubs** provide canned responses to calls. **Fakes** are working implementations, but simplified (e.g., in-memory data store). **Spies** are stubs that also record interactions for later verification. Use mocks to verify behavior, stubs for predictable state, fakes for functional replacement, and spies when both state and behavior are important.",
-      "code_example": null,
-      "tags": [
-        "testing",
-        "test doubles",
-        "mocks",
-        "stubs",
-        "fakes",
-        "spies"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "testing_01f7c12dabda",
-      "front": "Explain strategies for testing asynchronous code in Swift, focusing on isolation and avoiding race conditions. Provide a practical example using `XCTestExpectation` and discuss alternative approaches like `DispatchGroup`.",
-      "back": "Testing asynchronous code requires careful consideration to ensure tests are reliable and avoid race conditions. Key is isolation: each test should operate in a clean environment, unaffected by previous tests.\n\nThe primary tool is `XCTestExpectation`. Create an expectation before triggering the async operation, fulfill it inside the completion handler, and then `waitForExpectations(timeout:)`.  This ensures the test waits for the async operation to complete before asserting results.\n\n```swift\nfunc testAsynchronousOperation() {\n    let expectation = XCTestExpectation(description: \"Async operation\")\n    \n    // Simulate an asynchronous operation\n    DispatchQueue.global().async {\n        // Perform some work here\n        Thread.sleep(forTimeInterval: 1.0) // Simulate network delay\n        \n        let result = \"Async Result\"\n        \n        DispatchQueue.main.async {\n            XCTAssertEqual(result, \"Async Result\", \"Result should match\");\n            expectation.fulfill()\n        }\n    }\n    \n    wait(for: [expectation], timeout: 5.0) // Wait up to 5 seconds\n}\n```\n\n*Pitfalls:* Forgetting to call `expectation.fulfill()` leads to test timeouts.  Incorrect timeouts can cause tests to fail prematurely or run excessively long.  Also, ensure assertions are performed *after* fulfilling the expectation, ideally within the same completion block.\n\n*Dispatch Groups:* Alternative: `DispatchGroup` provides more fine-grained control when dealing with multiple concurrent asynchronous operations.  Use `group.enter()` before each async task, `group.leave()` in each completion, and `group.notify(queue:)` to execute code after all tasks finish.  This is useful when you need to synchronize multiple async calls before asserting.\n\n*Alternatives:*  Combine `DispatchGroup` with `XCTestExpectation` for complex scenarios.  For example, enter multiple times into a group before calling async operations, then in the `group.notify` block, fulfill the expectation after asserting results.  This approach ensures all dispatched tasks are completed before assertions are made. `XCTWaiter` can be used to wait for multiple expectations.\n\n*When to use:* Use `XCTestExpectation` for simple async operations.  Use `DispatchGroup` when managing multiple concurrent asynchronous tasks and needing to synchronize their completion.\n\n*Isolation:* reset mock objects and clean up any shared resources in `tearDownWithError()`. Consider using in-memory databases or mock network responses to avoid external dependencies and ensure consistent test results.\n\n*Swift Version:* 5.5+",
-      "code_example": null,
-      "tags": [
-        "testing",
-        "asynchronous",
-        "XCTestExpectation",
-        "DispatchGroup",
-        "concurrency"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "performance_bf65b1996663",
-      "front": "Explain how you would use Instruments to profile an iOS app for performance bottlenecks. What are your favorite Instruments and strategies?",
-      "back": "Instruments is Apple's powerful performance analysis tool. I'd start by identifying a specific performance issue (e.g., slow scrolling, high CPU usage). Then, I'd use Instruments to gather data and pinpoint the root cause.\n\nCommon Instruments & Strategies:\n\n*   **Time Profiler:**  My go-to. Samples the call stack at regular intervals, showing where the app spends its time.  I look for \"hot spots\" - functions with high self-time or total time. Example: Finding a computationally expensive image processing routine slowing down UI.\n*   **Allocations:** Tracks memory allocations and deallocations. Useful for identifying memory leaks and excessive memory usage.  Look for persistent objects that should be released. Example:  Detecting a retain cycle preventing deallocation of a view controller.\n*   **Leaks:**  Specifically detects memory leaks (memory allocated but never released). It's crucial to run this regularly. Example:  Finding a Core Foundation object leak in a C-based library.\n*   **Core Animation:**  Helps optimize UI rendering performance.  Identifies offscreen rendering, excessive blending, and other rendering issues. Example: Finding a complex view hierarchy causing slow animations.\n*   **Network:** Monitors network requests and responses. Useful for identifying slow or inefficient network calls. Example:  Finding large image downloads blocking the main thread.\n*   **Energy Log:**  Tracks energy consumption. Important for battery life. Example: Identifying a background task consuming excessive power.\n\n**Profiling Workflow:**\n\n1.  **Profile on a real device:**  Simulators don't accurately reflect real-world performance.\n2.  **Build with Release configuration:** Debug builds are slower due to extra checks.\n3.  **Isolate the problem:** Focus on a specific scenario to minimize noise.\n4.  **Record for a short duration:**  Long recordings can be overwhelming.\n5.  **Analyze the results:** Look for patterns and anomalies.\n6.  **Iterate:**  Make changes based on the analysis and repeat the process.\n\n**Code Example (Illustrative):**\n\n```swift\n// In a slow image processing function:\nfunc processImage(image: UIImage) -> UIImage {\n  let context = CIContext()\n  guard let ciImage = CIImage(image: image) else { return image }\n\n  // Simulate a computationally expensive filter\n  let filter = CIFilter(name: \"CIPhotoEffectNoir\")\n  filter?.setValue(ciImage, forKey: kCIInputImageKey)\n\n  guard let outputCIImage = filter?.outputImage else { return image }\n  guard let cgImage = context.createCGImage(outputCIImage, from: outputCIImage.extent) else { return image }\n\n  return UIImage(cgImage: cgImage)\n}\n```\n\n**Common Pitfalls:**\n\n*   Profiling in Debug builds. Always profile in Release.\n*   Ignoring the call tree in Time Profiler.  Focus on the functions where the app spends the most time.\n*   Not understanding the difference between \"Self\" and \"Total\" time in Time Profiler.\n*   Failing to symbolicate the call stack (using dSYM files).  Makes it hard to read.\n*   Over-optimizing prematurely.  Focus on the biggest bottlenecks first.\n\n**Alternatives:**\n\n*   **os_signpost:**  For custom instrumentation within your code.\n*   **System Trace:** Lower-level analysis, often for deeper dives into OS behavior.\n\nInstruments is essential for identifying and resolving performance bottlenecks.  Understanding the different instruments and how to use them effectively is critical for building high-performance iOS apps.",
-      "code_example": null,
-      "tags": [
-        "performance",
-        "instruments",
-        "profiling",
-        "time profiler",
-        "allocations",
-        "memory leaks"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/dependency-injection/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "performance_8e4addee9ecb",
-      "front": "Memory optimization",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Memory optimization"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "performance_3727e7d481bd",
-      "front": "Describe strategies for optimizing app launch time. What are the key areas to investigate and improve?",
-      "back": "Key areas: \n1. **Code Loading:** Reduce dynamic libraries, use static linking where appropriate. Analyze binary size and dependencies.\n2. **Initialization:** Defer non-critical initializations. Use lazy loading. Move tasks to background threads (OperationQueues).\n3. **Framework Overhead:** Be mindful of the cost of large frameworks. Consider alternatives for specific functionalities.\n4. **I/O Operations:** Optimize Core Data setup by shipping pre-populated SQLite files or downloading initial data.  Avoid child contexts for background operations due to main thread blocking during saves. Use independent contexts.\n5. **UI Rendering:**  Optimize `drawRect:` by using Core Animation layers or pre-rendered images.  Move drawing to background threads if necessary.\n6. **Networking:**  Optimize network calls, reduce payload size, and cache data when possible.\n7. **Testing:** Use in-memory stores for Core Data during testing to improve speed. Employ `dispatch_group_t` to manage asynchronous operations during tests and ensure proper isolation.",
-      "code_example": null,
-      "tags": [
-        "performance",
-        "launch time",
-        "optimization",
-        "code loading",
-        "core data",
-        "ui rendering",
-        "networking",
-        "initialization",
-        "testing"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/4-core-data/core-data-fetch-requests/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "performance_213cf6d733df",
-      "front": "How can you optimize your iOS app for battery efficiency, focusing on common problem areas and practical solutions?",
-      "back": "Battery efficiency is crucial. Here's how to address it:\n\nCore Concept: Minimize power consumption by optimizing CPU, network, and location usage.\n\n1. **Network Requests:**\n   - Batch requests: Combine multiple small requests into fewer, larger ones.\n   - Use `URLSession` efficiently: Configure timeouts, cache policies, and connection reuse.\n   - Avoid polling: Use push notifications or observe changes instead.\n   - Use `isExpensive` for background URLSession tasks.\n\n   ```swift\n   // Batching network requests\n   func fetchMultipleResources() {\n       let urls = [url1, url2, url3]\n       for url in urls {\n           URLSession.shared.dataTask(with: url) { data, response, error in\n               // Process data\n           }.resume()\n       }\n   }\n\n   // Optimized URLSession Configuration\n   let config = URLSessionConfiguration.default\n   config.timeoutIntervalForRequest = 10 // Short timeout\n   config.requestCachePolicy = .returnCacheDataElseLoad // Use cache\n   let session = URLSession(configuration: config)\n   ```\n\n2. **Location Services:**\n   - Use the lowest necessary accuracy: `kCLLocationAccuracyBestForNavigation` is very power-intensive.\n   - Use significant location change updates when appropriate.\n   - Stop location updates when not needed: Always invalidate timers and remove observers.\n   - Monitor regions instead of continuous location tracking.\n\n   ```swift\n   // Request Location with Desired Accuracy\n   locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters // Lower accuracy\n   locationManager.startUpdatingLocation()\n\n   // Stop location updates\n   locationManager.stopUpdatingLocation()\n   ```\n\n3. **CPU Usage:**\n   - Avoid unnecessary computations: Optimize algorithms and data structures.\n   - Use background threads judiciously: Offload long-running tasks to background queues, but avoid excessive thread creation.\n   - Optimize image processing: Use efficient image formats (e.g., HEIF) and caching.\n   - Avoid UI updates on background threads: Always update UI on the main thread.\n\n   ```swift\n   // Background processing using OperationQueue\n   let operationQueue = OperationQueue()\n   operationQueue.addOperation {\n       let result = performExpensiveComputation()\n       DispatchQueue.main.async {\n           self.updateUI(with: result)\n       }\n   }\n   ```\n\n4. **Core Data:**\n   - Use separate contexts for background operations.  Don't create child contexts of the main context for background work, as saving will block the main thread.\n   - Batch import data efficiently (sqlite file in app bundle or downloaded from server).\n\n5. **Drawing:**\n   - Move expensive `drawRect` operations to the background. Consider using pre-rendered images or Core Animation layers as alternatives.\n\nCommon Pitfalls:\n   - Forgetting to stop location updates.\n   - Performing UI updates on background threads.\n   - Excessive logging in production builds.\n   - Inefficient data structures or algorithms.\n   - Retain cycles with background tasks.\n\nAlternatives:\n   - Energy Profiler in Instruments: Helps identify energy-intensive code.\n   - Power Management APIs: `UIDevice.isBatteryMonitoringEnabled` (less common now).\n\nWhen to Use:\n   - Always prioritize battery efficiency, especially for apps with continuous background activity (e.g., fitness trackers, navigation apps).",
-      "code_example": null,
-      "tags": [
-        "performance",
-        "battery",
-        "optimization",
-        "location",
-        "networking",
-        "core data"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "performance_ffa2502f7bb2",
-      "front": "Explain strategies for optimizing network performance in an iOS app. Cover asynchronous requests, data serialization, caching, and request prioritization. What are the trade-offs of each?",
-      "back": "Network optimization is crucial for a responsive iOS app. \n\n*Asynchronous Requests:*  Avoid blocking the main thread. Use `URLSession` for asynchronous requests.  Never use `Data(contentsOf:)` on the main thread, as it's synchronous and can freeze the UI.\n\n```swift\nlet url = URL(string: \"https://example.com/data\")!\nlet task = URLSession.shared.dataTask(with: url) { (data, response, error) in\n    guard let data = data, error == nil else { return }\n    DispatchQueue.main.async { // Update UI on main thread\n        // Process data\n    }\n}\ntask.resume()\n```\n\n*Data Serialization:*  Use efficient formats like JSON or Protocol Buffers.  JSON is human-readable but can be verbose. Protocol Buffers are binary, smaller, and faster to parse, but require schema definitions.  Choose based on data complexity, size, and performance needs.  Use `JSONDecoder` and `JSONEncoder` for JSON, or a library for Protocol Buffers.\n\n*Caching:* Implement caching to reduce network requests. `URLCache` provides built-in HTTP caching.  Store responses locally (e.g., in Core Data, Realm, or UserDefaults) for offline access or faster subsequent loads.  Consider cache invalidation strategies (time-based, event-based).\n\n*Request Prioritization:* Use `URLSessionTask` priorities (`.low`, `.default`, `.high`).  Prioritize user-initiated requests over background tasks. Implement a custom request queue with priorities using `OperationQueue`. Cancelling low-priority network operations in favour of high-priority user requests is also useful. `task.priority = URLSessionTask.defaultPriority`\n\n*Compression:* Enable GZIP compression on the server and client to reduce data transfer size. `URLSession` automatically handles GZIP decompression.\n\n*Image Optimization:*  Optimize images before uploading (resize, compress). Use appropriate image formats (JPEG for photos, PNG for graphics with transparency). Use a library like Kingfisher or SDWebImage for efficient image downloading and caching.\n\n*Connection Pooling:* `URLSession` uses connection pooling by default, reusing existing TCP connections for multiple requests to the same host.\n\n*Trade-offs:*\n- Asynchronous requests: require careful thread management.\n- Efficient formats: Protocol buffers require schema management.\n- Caching: increased memory usage and cache invalidation complexity.\n- Prioritization: complex queue management.\n- Compression: CPU overhead.\n\nCommon Pitfalls:\n- Blocking the main thread with synchronous network calls.\n- Ignoring HTTP caching headers.\n- Not handling network errors gracefully.\n- Over-caching stale data.\n- Inefficient image handling.\n\nAlternatives:\n- Using a third-party networking library like Alamofire or Moya, which provides higher-level abstractions and simplifies network operations.\n- Using a reactive framework like RxSwift or Combine to manage asynchronous network requests and data streams.",
-      "code_example": null,
-      "tags": [
-        "network",
-        "performance",
-        "optimization",
-        "urlsession",
-        "caching",
-        "asynchronous"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.objc.io/issues/4-core-data/core-data-fetch-requests/"
-      ]
-    },
-    {
-      "id": "networking_af7f793e90df",
-      "front": "Explain advanced `URLSession` usage, including background sessions, delegate-based APIs, and considerations for large file transfers. Give a specific example using background configuration.",
-      "back": "`URLSession` offers powerful networking capabilities beyond basic data fetching. Advanced usage includes background sessions, delegate-based interaction, and optimized handling of large files.\n\n**Background Sessions:** Allow tasks to continue even when the app is suspended or terminated. Use `URLSessionConfiguration.background(withIdentifier:)`.\n\n```swift\nlet identifier = \"com.example.backgroundTransfer\"\nlet backgroundConfig = URLSessionConfiguration.background(withIdentifier: identifier)\nlet session = URLSession(configuration: backgroundConfig, delegate: self, delegateQueue: nil)\n\nlet url = URL(string: \"https://example.com/largefile.zip\")!\nlet downloadTask = session.downloadTask(with: url)\ndownloadTask.resume()\n\n// Delegate methods (URLSessionDelegate, URLSessionTaskDelegate, URLSessionDownloadDelegate)\nfunc urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {\n    // Handle downloaded file at 'location'\n    print(\"Downloaded file to: \\(location)\")\n}\n\nfunc urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {\n    if let error = error {\n        print(\"Task completed with error: \\(error)\")\n    } else {\n        print(\"Task completed successfully\")\n    }\n}\n```\n\n**Delegate-Based APIs:** Provide fine-grained control and progress updates.  Implement `URLSessionDelegate`, `URLSessionTaskDelegate`, and protocol-specific delegates like `URLSessionDownloadDelegate` for download tasks.\n\n**Large File Transfers:** Use `URLSessionDownloadTask` and `URLSessionUploadTask` for efficient handling. For extremely large files, consider `NSInputStream` for streaming data.\n\n**Common Pitfalls:**\n*   Forgetting to handle errors in delegate methods.\n*   Not invalidating background sessions after completion.\n*   Incorrectly handling background session restoration after app relaunch (`application(_:handleEventsForBackgroundURLSession:completionHandler:)`).\n*   Blocking the main thread in delegate methods (dispatch to background queues).\n\n**Alternatives:**\n*   For simple requests, `async/await` with `URLSession.data(from: )` simplifies code, but lacks delegate-based progress reporting.\n*   Third-party libraries like Alamofire offer higher-level abstractions but may hide underlying `URLSession` complexity.\n\n**When to Use:**\n*   Background sessions: For tasks that must complete even when the app isn't in the foreground.\n*   Delegate-based APIs: For precise control, progress updates, and custom error handling.\n*   Large file transfers: When dealing with large files that require efficient downloading or uploading.\n",
-      "code_example": null,
-      "tags": [
-        "networking",
-        "URLSession",
-        "background",
-        "delegate",
-        "large files"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "networking_88601ef8bf23",
-      "front": "Explain HTTP/2 and HTTP/3, highlighting key differences, advantages, and considerations for mobile app development. How do they impact performance compared to HTTP/1.1?",
-      "back": "HTTP/2 and HTTP/3 are improved versions of HTTP, designed to address limitations of HTTP/1.1. HTTP/2 introduces binary framing, header compression (HPACK), and multiplexing (sending multiple requests over a single TCP connection). HTTP/3 uses UDP with QUIC, providing better handling of packet loss and head-of-line blocking.\n\n**Key Differences:**\n*   **Transport Protocol:** HTTP/2 uses TCP. HTTP/3 uses QUIC (UDP-based).\n*   **Head-of-Line Blocking:** HTTP/2 addresses it at TCP level (less effective). HTTP/3 solves it within QUIC.\n*   **Connection Migration:** HTTP/3 allows seamless connection migration (e.g., switching between WiFi and cellular).\n*   **Header Compression:** HTTP/2 uses HPACK. HTTP/3 uses QPACK (better resilience to packet loss).\n\n**Advantages:**\n*   **HTTP/2:** Reduced latency, improved page load times, better resource utilization.\n*   **HTTP/3:** Faster connection establishment, improved performance in lossy networks, seamless connection migration.\n\n**Code Example (URLSession is protocol agnostic):**\n```swift\nlet url = URL(string: \"https://example.com/data\")!\nlet task = URLSession.shared.dataTask(with: url) { data, response, error in\n    if let error = error {\n        print(\"Error: \\(error)\")\n        return\n    }\n    if let data = data {\n        print(\"Data received: \\(data)\")\n    }\n}\ntask.resume()\n```\n*Note: `URLSession` automatically negotiates the best available protocol (HTTP/2 or HTTP/3) if the server supports it.*  You don't typically need to write different code.\n\n**Common Pitfalls/Edge Cases:**\n*   **Server Support:** Ensure the server supports HTTP/2 or HTTP/3.\n*   **Middleboxes:** Some older firewalls or proxies may interfere with HTTP/2 or HTTP/3 connections.  HTTP/3's UDP reliance can be an issue if the network blocks UDP.\n*   **Debugging:** Debugging HTTP/3 can be more complex due to UDP.\n*   **Resource Prioritization:** Misconfigured resource prioritization can negate performance benefits.  Ensure proper server configuration.\n\n**Alternatives:**\n*   **HTTP/1.1:** Still widely used, but suffers from performance limitations compared to HTTP/2 and HTTP/3.\n\n**Impact on Performance:**\nHTTP/2 and HTTP/3 significantly improve performance compared to HTTP/1.1, especially in scenarios with many small resources or high network latency. Multiplexing reduces connection overhead, and header compression minimizes data transfer. HTTP/3 further improves performance in challenging network conditions. HTTP/3 connection migration is valuable for mobile devices that switch networks.\n\n**When to Use:**\nPrefer HTTP/2 or HTTP/3 whenever possible (if server supports it). They provide substantial performance improvements. HTTP/3 is particularly beneficial for mobile apps due to its resilience to network changes and packet loss. HTTP/1.1 is a fallback option if newer protocols are not supported.",
-      "code_example": null,
-      "tags": [
-        "networking",
-        "http",
-        "http2",
-        "http3",
-        "urlsession"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "networking_dcafb044d110",
-      "front": "REST vs GraphQL",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "REST vs GraphQL"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "networking_3f3e4ac61fbf",
-      "front": "How would you implement WebSocket communication in an iOS app? What are some key considerations for maintaining a stable and efficient connection?",
-      "back": "WebSocket offers full-duplex communication over a single TCP connection, ideal for real-time features. In iOS, `URLSessionWebSocketTask` (iOS 13+) provides a robust API.\n\nConcept:  `URLSession` manages the WebSocket connection.  You establish a task, send/receive messages, and handle connection state.\n\nExample:\n```swift\nimport Foundation\n\nclass WebSocketManager {\n    private var webSocketTask: URLSessionWebSocketTask?\n    private let url: URL\n    private let session: URLSession\n\n    init(url: URL, session: URLSession = .shared) {\n        self.url = url\n        self.session = session\n    }\n\n    func connect() {\n        webSocketTask = session.webSocketTask(with: url)\n        webSocketTask?.resume()\n        receiveMessage()\n    }\n\n    func disconnect() {\n        webSocketTask?.cancel(with: .normalClosure, reason: nil)\n    }\n\n    func sendMessage(message: String) {\n        webSocketTask?.send(.string(message)) { error in\n            if let error = error {\n                print(\"WebSocket send error: \\(error)\")\n            }\n        }\n    }\n\n    private func receiveMessage() {\n        webSocketTask?.receive { [weak self] result in\n            switch result {\n            case .failure(let error):\n                print(\"WebSocket receive error: \\(error)\")\n                self?.reconnect()\n            case .success(let message):\n                switch message {\n                case .string(let text):\n                    print(\"Received string: \\(text)\")\n                case .data(let data):\n                    print(\"Received data: \\(data)\")\n                @unknown default:\n                    fatalError()\n                }\n                self?.receiveMessage()\n            }\n        }\n    }\n\n    private func reconnect() {\n       //Implement exponential backoff strategy here\n       DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // Example: wait 2 seconds\n           self.connect()\n       }\n    }\n}\n```\n\nCommon Pitfalls:\n*   **Error Handling:**  Implement robust error handling for connection failures, message sending/receiving, and unexpected disconnections.  Use `ping` and `pong` frames to detect broken connections.\n*   **Reconnection Strategy:**  Implement a reconnection strategy with exponential backoff to avoid overwhelming the server after a disconnection.  Consider using a maximum retry limit.\n*   **Thread Safety:**  WebSocket callbacks occur on background threads. Ensure UI updates are dispatched to the main thread.\n*   **Message Serialization/Deserialization:**  Choose an appropriate serialization format (JSON, Protobuf) and handle serialization/deserialization efficiently.\n*   **Security:** Use WSS (WebSocket Secure) for encrypted communication. Validate server certificates.\n*   **Backgrounding:**  Handle background WebSocket connections carefully.  iOS may terminate connections when the app is backgrounded.  Consider using background tasks or push notifications to maintain connectivity.\n\nAlternatives:\n*   **Socket.IO:** A higher-level library built on top of WebSockets, providing features like automatic reconnection, namespaces, and broadcasting.\n*   **Server-Sent Events (SSE):**  A unidirectional protocol where the server pushes data to the client.  Simpler than WebSockets but not suitable for bidirectional communication.\n\nWhen to Use:\nUse WebSockets when you need real-time, bidirectional communication between your app and a server, such as for chat applications, live updates, or multiplayer games. Consider Socket.IO for added features or SSE for simpler server-push scenarios.",
-      "code_example": null,
-      "tags": [
-        "networking",
-        "websockets",
-        "urlsession",
-        "concurrency"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "networking_6431b3cd68e4",
-      "front": "Explain certificate pinning in iOS networking. Why and how is it used? What are the potential drawbacks and alternatives?",
-      "back": "Certificate pinning is a security technique where an app, instead of trusting the system's root certificates, validates the server's certificate against a pre-defined (pinned) certificate or its public key. This prevents man-in-the-middle (MITM) attacks, even if the attacker has compromised the system's root certificates.\n\n**Why use it?**\nStandard TLS/SSL relies on a chain of trust. If any certificate authority (CA) in that chain is compromised, attackers can issue rogue certificates for any domain. Pinning bypasses this by directly trusting the server's certificate.\n\n**How to implement:**\n```swift\nimport Foundation\n\nclass CertificatePinningDelegate: NSObject, URLSessionDelegate {\n    let pinnedCertificates: [Data]\n\n    init(certificates: [Data]) {\n        self.pinnedCertificates = certificates\n    }\n\n    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {\n        guard let serverTrust = challenge.protectionSpace.serverTrust else {\n            completionHandler(.cancelAuthenticationChallenge, nil)\n            return\n        }\n\n        // Get the server's certificate\n        if let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0) {\n            let serverCertificateData = SecCertificateCopyData(serverCertificate) as Data\n\n            // Check if the server certificate matches any of the pinned certificates\n            if pinnedCertificates.contains(serverCertificateData) {\n                completionHandler(.useCredential, URLCredential(trust: serverTrust))\n                return\n            }\n        }\n\n        // Pinning failed\n        completionHandler(.cancelAuthenticationChallenge, nil)\n    }\n}\n\n// Example Usage:\nlet certificateURL = Bundle.main.url(forResource: \"my_server\", withExtension: \"cer\")!\nlet certificateData = try! Data(contentsOf: certificateURL)\nlet pinningDelegate = CertificatePinningDelegate(certificates: [certificateData])\n\nlet sessionConfiguration = URLSessionConfiguration.default\nsessionConfiguration.urlSession.delegate = pinningDelegate\n\nlet session = URLSession(configuration: sessionConfiguration)\n```\n\n**Common Pitfalls:**\n*   **Certificate Rotation:** Certificates expire. You must update your app with the new certificate before the old one expires, or the app will stop working. Automate this process if possible.\n*   **Key Pinning vs. Certificate Pinning:**  Pinning the public key is more flexible than pinning the entire certificate.  When the certificate is renewed, as long as the public key remains the same, the app doesn't need an update.\n*   **Backup Pinning:**  Pin multiple certificates, including intermediate certificates, to provide a fallback if the primary certificate needs to be revoked or replaced quickly.\n*   **Handling Pinning Failures:** Provide a graceful fallback. Don't just crash the app.  Consider logging the failure and attempting to connect without pinning (with standard TLS) or displaying an error message to the user.\n\n**Alternatives:**\n*   **TrustKit:** An open-source framework that simplifies certificate pinning in iOS apps. It handles certificate rotation and provides a more robust and easier-to-use API.\n*   **Standard TLS/SSL:** Relying solely on the system's trusted root certificates. This is the default behavior and is sufficient for most apps, but vulnerable to CA compromise.\n\n**When to use:**\nUse certificate pinning when you need the highest level of security and control over the connections your app makes, especially when dealing with sensitive data or critical infrastructure.\n",
-      "code_example": null,
-      "tags": [
-        "networking",
-        "security",
-        "certificate pinning",
-        "URLSession",
-        "TLS",
-        "SSL"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.avanderlee.com/swift/core-data/"
-      ]
-    },
-    {
-      "id": "networking_431f69c77375",
-      "front": "Explain background URL sessions in iOS.  What are their benefits and limitations? Provide a practical example of how to use them and discuss potential pitfalls.",
-      "back": "Background URL sessions allow apps to perform networking tasks even when suspended or terminated.  They're managed by the system, ensuring uploads/downloads complete reliably. Benefits: reliable transfers, battery optimization. Limitations: less control, system-managed priority. \n\nConcept: `URLSessionConfiguration.background(withIdentifier:)` creates a background session.  The system launches the app in the background to handle delegate calls.\n\nExample:\n```swift\nfunc startBackgroundDownload(url: URL, identifier: String) {\n    let config = URLSessionConfiguration.background(withIdentifier: identifier)\n    let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)\n    let task = session.downloadTask(with: url)\n    task.resume()\n}\n\n// URLSessionDownloadDelegate methods:\nfunc urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {\n    // Handle downloaded file.  Move it before the system cleans up.\n    let fileManager = FileManager.default\n    let destinationURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(\"downloadedFile.dat\")\n    do {\n        try fileManager.moveItem(at: location, to: destinationURL)\n        print(\"File moved to: \\(destinationURL)\")\n    } catch {\n        print(\"Error moving file: \\(error)\")\n    }\n}\n\nfunc urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {\n    if let error = error {\n        print(\"Task completed with error: \\(error)\")\n    } else {\n        print(\"Task completed successfully\")\n    }\n}\n\nfunc urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {\n    let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)\n    print(\"Download progress: \\(progress)\")\n    // Update UI if necessary.  Dispatch to main queue!\n    DispatchQueue.main.async {\n        // Update progress bar, etc.\n    }\n}\n```\n\nPitfalls:\n*   Delegate methods are *required*.  The system relies on them to inform the app of completion/errors.\n*   Moving the downloaded file out of the temporary location in `didFinishDownloadingTo` is crucial. The system cleans up the temporary directory shortly after the delegate call.\n*   The app might be killed before completing the task if the system is under memory pressure. Handle this gracefully by saving state and resuming later.\n*   Background sessions are not suitable for low-latency or real-time communication.\n*   The `identifier` in `URLSessionConfiguration.background(withIdentifier:)` is used to re-launch the app. Ensure it's unique and persistent.\n*   Avoid long-running tasks in delegate methods; offload processing to background threads.\n\nAlternatives: For foreground tasks, use standard `URLSession` with default configuration.  For simple downloads, consider `DispatchQueue.global().async` + `Data(contentsOf:)` (but handle cancellation carefully and avoid blocking the main thread!). Libraries like Alamofire offer higher-level abstractions but ultimately rely on `URLSession`.",
-      "code_example": null,
-      "tags": [
-        "networking",
-        "URLSession",
-        "background",
-        "concurrency",
-        "delegation"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.avanderlee.com/swift/core-data/"
-      ]
-    },
-    {
-      "id": "networking_a38f04f89b89",
-      "front": "Network layer architecture",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Network layer architecture"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "data_persistence_0658a152705c",
-      "front": "Explain the Core Data stack, including Managed Object Contexts, and how they interact. When would you use multiple contexts?",
-      "back": "The Core Data stack consists of: Persistent Store Coordinator (PSC), Managed Object Context (MOC), and Persistent Store.\n\nThe PSC acts as a central point, connecting the MOC and Persistent Store.\n\nThe MOC manages object graphs, tracking changes to managed objects. Objects are tied to a specific MOC.\n\nThe Persistent Store handles reading/writing data to disk, often a SQLite database.\n\nUse multiple contexts for concurrency: a main-thread context for UI and background contexts for long-running operations to avoid blocking the UI. Changes can then be merged.",
-      "code_example": null,
-      "tags": [
-        "Core Data",
-        "Persistence",
-        "Concurrency",
-        "Data Management"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
-      "id": "data_persistence_4ef0b438bba1",
-      "front": "Explain SwiftData's fundamental architecture and how it differs from Core Data. Focus on the roles of the Model Container, Model Context, and persistent storage.",
-      "back": "SwiftData simplifies data persistence compared to Core Data. \n\n**Core Concepts:**\n\n*   **Model Container:** This is the entry point. It manages the schema (your data model) and the persistent storage.  Think of it as the database file and the schema definition combined. Unlike Core Data's managed object model, persistent store coordinator, and managed object context setup, SwiftData bundles these. Initialization involves providing your model classes.  It handles the underlying SQLite database setup.\n\n*   **Model Context:**  This is your scratchpad. You create, read, update, and delete objects within a model context.  Changes are tracked here.  It's analogous to Core Data's `NSManagedObjectContext`.  Saving the context persists the changes to the underlying storage.\n\n*   **Persistent Storage:**  SwiftData uses SQLite by default. The Model Container handles the interaction.  You rarely need to interact with SQLite directly. \n\n**Differences from Core Data:**\n\n*   **Simplified Setup:** Core Data requires setting up a managed object model, persistent store coordinator, and managed object context. SwiftData streamlines this with the Model Container.\n*   **Type Safety:**  SwiftData leverages Swift's type system more effectively, reducing the need for string-based entity names and key paths.\n*   **Integration with SwiftUI:** SwiftData is designed to work seamlessly with SwiftUI, offering property wrappers like `@Query` for easy data fetching.\n*   **Less Boilerplate:**  SwiftData aims to reduce boilerplate code associated with Core Data.\n\n**Code Example:**\n\n```swift\nimport SwiftData\n\n// 1. Define your Model\n@Model\nclass Item {\n    var title: String\n    var timestamp: Date\n\n    init(title: String, timestamp: Date = Date()) {\n        self.title = title\n        self.timestamp = timestamp\n    }\n}\n\n// In your SwiftUI view:\nstruct ContentView: View {\n    @Environment(\\ModelContext) private var modelContext\n    @Query private var items: [Item]\n\n    var body: some View {\n        List {\n            ForEach(items) { item in\n                Text(item.title)\n            }\n        }\n        .toolbar {\n            Button(\"Add Item\") {\n                let newItem = Item(title: \"New Item\")\n                modelContext.insert(newItem)\n                //No need to save context explicitly, done automatically unless disabled\n            }\n        }\n    }\n}\n\n//In your app:\n@main\nstruct SwiftDataApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n        .modelContainer(for: Item.self)\n    }\n}\n```\n\n**Common Pitfalls:**\n\n*   **Forgetting `@Model`:**  SwiftData won't recognize your class as a model without the `@Model` macro.\n*   **Context Management:**  Ensure you're using the correct `ModelContext`. In SwiftUI, use `@Environment(\\ModelContext)`.  For background tasks, create a new context.\n*   **Schema Migrations:**  SwiftData handles basic schema changes, but complex migrations might require manual intervention (not fully fleshed out as of the current release).\n*   **Relationship management:** SwiftData simplifies relationships, but you still need to understand inverse relationships to avoid data inconsistencies. Using `@Relationship` macro.\n\n**Alternatives:**\n\n*   **Core Data:**  Still a powerful option for complex data models and advanced features, but requires more setup.\n*   **Realm:**  Another mobile database solution with a different architecture.\n*   **SQLite (Directly):**  Provides the most control but requires writing SQL queries and managing the database yourself.\n*   **UserDefaults:**  Suitable for simple key-value storage, not for complex data models.",
-      "code_example": null,
-      "tags": [
-        "SwiftData",
-        "Data Persistence",
-        "Core Data",
-        "Model Container",
-        "Model Context"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
-      "id": "data_persistence_8b4d32ff8bcc",
-      "front": "Compare and contrast Core Data and SwiftData. When would you choose one over the other?",
-      "back": "Core Data is a mature, powerful framework for managing an app's data model. It's not just persistence; it's an object graph management system. You define entities, attributes, and relationships in a schema. Core Data handles persistence (often SQLite), change tracking, validation, and even undo/redo. \n\nSwiftData, introduced in iOS 17, is Apple's modern data persistence framework built on top of Core Data. It simplifies the process, leveraging Swift's features like `@Model` macro for declarative data modeling. It integrates seamlessly with SwiftUI.  \n\n**Core Data:**\n*   **Pros:** Mature, flexible, handles complex data models & relationships, supports migrations, background processing.\n*   **Cons:** Steeper learning curve, more boilerplate code, manual management of the Core Data stack (managed object context, persistent store coordinator).\n\n**SwiftData:**\n*   **Pros:** Simpler API, declarative data modeling, SwiftUI integration, automatic schema migration.\n*   **Cons:** Relatively new, fewer features than Core Data, limited customization, may not be suitable for highly complex scenarios.\n\n**Example (Core Data):**\n```swift\nimport CoreData\n\nclass Task: NSManagedObject {\n @NSManaged public var title: String?\n @NSManaged public var isCompleted: Bool\n}\n\n// Creating a new task\nlet task = Task(context: managedObjectContext)\ntask.title = \"Buy groceries\"\ntask.isCompleted = false\n\n// Saving the context\ndo {\n try managedObjectContext.save()\n} catch {\n print(\"Error saving context: \\(error)\")\n}\n```\n\n**Example (SwiftData):**\n```swift\nimport SwiftData\n\n@Model\nclass Task {\n var title: String\n var isCompleted: Bool = false\n\n init(title: String) {\n self.title = title\n }\n}\n\n// Creating a new task\nlet task = Task(title: \"Buy groceries\")\nmodelContext.insert(task)\n\n// Saving is automatic\n```\n\n**When to use which:**\n*   **Core Data:** Use when you need advanced features like versioning, complex relationships, or fine-grained control over persistence. If you have an existing Core Data project, sticking with it might be the best option.\n*   **SwiftData:** Use when you want a simpler, more SwiftUI-friendly approach, especially for new projects.  If you need rapid development and your data model is relatively straightforward, SwiftData is a great choice.\n\n**Pitfalls:**\n*   **Core Data:**  Forgetting to save the context, incorrect thread management, complex migrations.\n*   **SwiftData:** Limited customization, potential issues with very large datasets, lack of some advanced Core Data features.",
-      "code_example": null,
-      "tags": [
-        "data persistence",
-        "Core Data",
-        "SwiftData",
-        "iOS 17"
-      ],
-      "sources": [
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
-      "id": "data_persistence_59337dbc4bff",
-      "front": "Migration strategies",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Migration strategies"
-      ],
-      "sources": [
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
-      "id": "data_persistence_2eb6ab885fc3",
-      "front": "Concurrency with Core Data",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Concurrency with Core Data"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
-      "id": "data_persistence_df6a8453f934",
-      "front": "Caching strategies",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Caching strategies"
-      ],
-      "sources": [
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
-      "id": "data_persistence_bb47d01824a0",
-      "front": "Keychain usage",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Keychain usage"
-      ],
-      "sources": [
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
       "id": "uikit_cbb58d70cd1a",
-      "front": "Describe the UIViewController lifecycle. What responsibilities do you typically handle in each phase, and why? Discuss potential issues.",
-      "back": "The lifecycle consists of: `loadView`, `viewDidLoad`, `viewWillAppear`, `viewDidAppear`, `viewWillDisappear`, `viewDidDisappear`, and `dealloc`. \n\n- `loadView`: Rarely overridden. Creates the view. Avoid heavy operations here.\n- `viewDidLoad`:  One-time setup, data initialization, UI configuration.  Avoid network requests that block UI.\n- `viewWillAppear`: Called before view appears. Good for refreshing data, hiding/unhiding elements.  Consider animation performance.\n- `viewDidAppear`: Called after view appears. Start animations, analytics tracking. Avoid long blocking operations.\n- `viewWillDisappear`:  Called before view disappears.  Save state, stop timers, remove observers.  Ensure timely cleanup.\n- `viewDidDisappear`: Called after view disappears. Release resources.  Clean up notifications.\n- `dealloc`:  Release retained objects to prevent memory leaks.  Unregister from notifications and KVO.\n\nPotential issues: Incorrect resource management in `dealloc`, blocking the main thread in `viewDidLoad`, forgetting to save/restore state.",
+      "front": "Explain the UIViewController lifecycle. Describe the purpose of each method, and when you might override them. What considerations should you make when overriding these methods?",
+      "back": "The UIViewController lifecycle defines the sequence of events that occur from the moment a view controller is initialized until it's deallocated. Understanding this lifecycle is crucial for managing resources, updating the UI, and handling data.\n\n**Key Lifecycle Methods:**\n\n*   `init(coder:)`/`init(nibName:bundle:)`:  Initializers. `init(coder:)` is used when a view controller is loaded from a storyboard or xib, while `init(nibName:bundle:)` is used when explicitly loading from a nib file. Override these to perform custom initialization. *Pitfall*: Always call `super.init`.\n*   `loadView()`:  Responsible for creating the view the controller manages. *Pitfall*: Do *not* call `super.loadView()` unless you know what you're doing. Typically, you'll create a view and assign it to `self.view`. Rarely overridden; prefer using storyboards or xibs.\n*   `viewDidLoad()`: Called after the view has been loaded into memory.  Ideal for initial setup, data loading, and configuring subviews. Guaranteed to be called only once. *Pitfall*: Avoid heavy computations here, as it can delay the initial display.\n*   `viewWillAppear(_ animated:)`: Called right before the view is added to the view hierarchy.  Use this to prepare the view for display, like updating data or starting animations. *Pitfall*: Don't perform long-running tasks that block the UI thread.\n*   `viewDidAppear(_ animated:)`: Called after the view has been fully presented on the screen.  Good for starting animations that require the view to be visible or for tracking view appearance. *Pitfall*: Avoid allocating large resources here if they're not immediately needed.\n*   `viewWillDisappear(_ animated:)`: Called right before the view is removed from the view hierarchy.  Use this to save data, stop animations, or clean up resources. *Pitfall*: Make sure to properly handle any ongoing operations to prevent unexpected behavior.\n*   `viewDidDisappear(_ animated:)`: Called after the view has been completely removed from the screen.  Ideal for releasing resources or stopping network requests. *Pitfall*: Don't assume the view controller will be deallocated immediately after this method is called.\n*   `deinit`: Called before the view controller is deallocated.  Use this to release any strong references to avoid memory leaks. *Pitfall*: Remove observers and invalidate timers here.\n\n**Example:**\n\n```swift\nclass MyViewController: UIViewController {\n\n    override func viewDidLoad() {\n        super.viewDidLoad()\n        // Set up initial UI elements\n        view.backgroundColor = .white\n        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))\n        label.center = view.center\n        label.textAlignment = .center\n        label.text = \"Hello, World!\"\n        view.addSubview(label)\n    }\n\n    override func viewWillAppear(_ animated: Bool) {\n        super.viewWillAppear(animated)\n        // Start animations, update data\n        print(\"View will appear\")\n    }\n\n    override func viewDidDisappear(_ animated: Bool) {\n        super.viewDidDisappear(animated)\n        // Release resources\n        print(\"View did disappear\")\n    }\n\n    deinit {\n        print(\"MyViewController deinitialized\")\n        // Remove observers, invalidate timers\n    }\n}\n```\n\n**Common Pitfalls:**\n\n*   **Forgetting to call `super`:**  Always call `super` in overridden methods to ensure the default behavior is executed.\n*   **Performing heavy tasks on the main thread:** Avoid blocking the UI thread with long-running operations.\n*   **Memory leaks:**  Release strong references in `deinit` to prevent memory leaks.\n*   **Incorrect resource management:**  Allocate and release resources at the appropriate lifecycle stages.\n\n**Alternatives:**\n\n*   **MVVM/VIPER:**  Consider using architectural patterns like MVVM or VIPER to separate concerns and reduce the complexity of view controllers.\n*   **Combine/RxSwift:** Use reactive frameworks to handle asynchronous operations and data updates in a more declarative way.\n\nOverriding lifecycle methods allows fine-grained control over a view controller's behavior, but it's important to understand the purpose of each method and avoid common pitfalls to ensure a smooth and efficient user experience.",
       "code_example": null,
       "tags": [
         "uikit",
-        "viewcontroller",
+        "uiviewcontroller",
         "lifecycle"
       ],
       "sources": [
@@ -617,8 +19,8 @@
     },
     {
       "id": "uikit_3907f47b5463",
-      "front": "Explain how to programmatically create Auto Layout constraints in UIKit, including best practices and potential pitfalls. Provide a practical example.",
-      "back": "Auto Layout programmatically involves creating `NSLayoutConstraint` objects and activating them. First, disable `translatesAutoresizingMaskIntoConstraints` on views you want to constrain.  This tells the system you'll handle layout. Core concept: constraints define relationships (equality, lessThanOrEqual, greaterThanOrEqual) between view attributes (e.g., leading, trailing, top, bottom, width, height, centerX, centerY). \n\nExample:\n```swift\nlet myView = UIView()\nmyView.translatesAutoresizingMaskIntoConstraints = false\nview.addSubview(myView)\n\nlet myButton = UIButton()\nmyButton.translatesAutoresizingMaskIntoConstraints = false\nview.addSubview(myButton)\n\n// Constraints to center myView in its superview\nmyView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true\nmyView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true\nmyView.widthAnchor.constraint(equalToConstant: 100).isActive = true\nmyView.heightAnchor.constraint(equalToConstant: 50).isActive = true\n\n// Constraints to place myButton below myView with some padding\nmyButton.topAnchor.constraint(equalTo: myView.bottomAnchor, constant: 20).isActive = true\nmyButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true\nmyButton.widthAnchor.constraint(equalToConstant: 150).isActive = true\nmyButton.heightAnchor.constraint(equalToConstant: 40).isActive = true\n```\n\nBest practices:\n*   Use anchors (e.g., `topAnchor`, `leadingAnchor`) for type safety and readability.\n*   Activate multiple constraints at once using `NSLayoutConstraint.activate([constraint1, constraint2])` for better performance.\n*   Consider using a helper function or custom view to encapsulate constraint creation logic for reusability.\n*   Prioritize constraints correctly using the `priority` property to handle conflicts gracefully.\n\nCommon pitfalls:\n*   Forgetting to disable `translatesAutoresizingMaskIntoConstraints` leads to conflicts.\n*   Creating conflicting constraints causes runtime errors. Use debug tools (e.g., Xcode's layout debugger) to identify and resolve conflicts.\n*   Incorrectly specifying constants or multipliers can lead to unexpected layouts.\n*   Strong reference cycles if constraints capture `self` without using `[weak self]`.\n\nAlternatives:\n*   Visual Format Language (VFL):  More compact syntax, but harder to read and debug. Less type-safe. Avoid for complex layouts.\n*   Third-party libraries (e.g., SnapKit, Cartography):  Provide a more concise and expressive syntax for creating constraints. Consider for large projects with extensive programmatic layout.\n*   Storyboards/XIBs:  Visually design layouts, but can become cumbersome for complex dynamic layouts.  Not suitable when the layout needs to change significantly at runtime.\n\nWhen to use programmatic Auto Layout:\n*   Dynamic layouts that change based on runtime conditions (e.g., screen size, orientation, data).\n*   Creating reusable custom views.\n*   Implementing animations that involve constraint changes.\n*   Situations where Storyboards become too complex or unmanageable.\n",
+      "front": "Explain how to create Auto Layout constraints programmatically in UIKit, including best practices and common pitfalls.",
+      "back": "Programmatic Auto Layout offers precise control over UI. Core concept: constraints define relationships between views (position, size). \n\n**Explanation:**\nWe use `NSLayoutConstraint` to define rules. `translatesAutoresizingMaskIntoConstraints = false` is crucial; UIKit's legacy system interferes otherwise. Constraints are then activated.\n\n**Code Example:**\n```swift\nlet myView = UIView()\nmyView.backgroundColor = .red\nmyView.translatesAutoresizingMaskIntoConstraints = false // Disable autoresizing mask translation\nview.addSubview(myView)\n\nNSLayoutConstraint.activate([\n myView.widthAnchor.constraint(equalToConstant: 100),\n myView.heightAnchor.constraint(equalToConstant: 100),\n myView.centerXAnchor.constraint(equalTo: view.centerXAnchor),\n myView.centerYAnchor.constraint(equalTo: view.centerYAnchor)\n])\n```\n\n**Common Pitfalls:**\n1. **Forgetting `translatesAutoresizingMaskIntoConstraints`:**  Leads to conflicts, unpredictable behavior. Views will try to manage their own layout based on frame.\n2. **Constraint Conflicts:**  Overlapping/contradictory rules cause runtime errors. Use debug console to identify conflicts.\n3. **Insufficient Constraints:**  Views need enough constraints to fully define their position and size.  Ambiguous layouts result.\n4. **Incorrect Anchors:**  Using incorrect view anchors when creating constraints (e.g., using `topAnchor` when `bottomAnchor` is needed).\n5. **Priority Issues:** Understand constraint priorities. Use `constraint.priority = .defaultHigh` to allow some constraints to be broken if necessary.\n\n**Best Practices:**\n*   **Activation:** Always activate constraints using `NSLayoutConstraint.activate([constraint1, constraint2])`. This is more efficient than activating individually.\n*   **Readability:** Create constraints within functions or computed properties for better organization.\n*   **Debugging:** Use Xcode's visual debugger and constraint solver logs to diagnose issues.\n*   **Custom Views:** When creating custom views, define constraints within the `init` methods or `updateConstraints` method.\n*   **Safe Area:** Use `safeAreaLayoutGuide` for views that need to respect the safe area insets.\n\n**Alternatives:**\n*   **Interface Builder (Storyboards/XIBs):** Visually design layouts. Good for simple UIs, but less flexible for dynamic layouts.\n*   **SwiftUI:** Declarative UI framework.  Uses a different approach to layout (stacks, grids, etc.).  Consider for new projects.\n*   **Third-party libraries (e.g., SnapKit, Cartography):** Provide a more concise syntax for creating constraints. Can improve code readability, but adds a dependency.\n\n**When to Use Programmatic Auto Layout:**\n*   Dynamic layouts that change based on data or user interaction.\n*   Custom views with complex layout requirements.\n*   Situations where Interface Builder becomes too cumbersome or difficult to manage.\n*   When creating reusable UI components or libraries.",
       "code_example": null,
       "tags": [
         "uikit",
@@ -629,338 +31,97 @@
       ],
       "sources": [
         "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code"
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
       ]
     },
     {
       "id": "uikit_52abee5c8d09",
-      "front": "Explain UICollectionView Compositional Layouts. How do they differ from older approaches, and what are their benefits? Provide a code example demonstrating a basic compositional layout.",
-      "back": "Compositional layouts in UICollectionView (iOS 13+) offer a declarative and flexible way to define complex layouts.  Instead of manually calculating frames (as with UICollectionViewFlowLayout's delegate methods) or creating custom layout subclasses, you compose layouts from smaller, reusable components. Key benefits include: 1. Declarative: Layout is defined as data, making it easier to understand and modify. 2. Flexible: Supports complex layouts like grids, lists, carousels, and more, all within a single collection view. 3. Reusable: Layout components (items, groups, sections) can be reused across different sections or collection views. 4. Performance: Optimized by the system for efficient layout calculations and rendering.  Older approaches (UICollectionViewFlowLayout, custom layout subclasses) required more manual frame calculations and were less flexible. Flow layout struggles with anything beyond simple grids/lists. Custom layout subclasses offer flexibility but are complex to write and maintain.  Example: Create a simple two-column grid layout: ```swift // Swift 5.5+ func createCompositionalLayout() -> UICollectionViewLayout {  let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))  let item = NSCollectionLayoutItem(layoutSize: itemSize)  item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)   let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(150))  let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])   let section = NSCollectionLayoutSection(group: group)  section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)   let layout = UICollectionViewCompositionalLayout(section: section)  return layout } ``` Common pitfalls:  - Incorrect sizing: Fractional dimensions can be confusing. Ensure the fractions add up correctly within a group or section.  - Forgetting contentInsets: Items and groups can overlap if insets are not properly configured. - Overly complex layouts: While powerful, overly complex layouts can become difficult to manage. Break down layouts into smaller, reusable components. - Not invalidating layout: If your data changes significantly, remember to invalidate the layout to trigger a recalculation. `collectionView.collectionViewLayout.invalidateLayout()`  Alternatives: While compositional layouts are generally preferred, consider UICollectionViewFlowLayout for very simple grid/list layouts where the added complexity of compositional layouts isn't needed.  For extremely custom layouts with complex animations or interactions, a custom layout subclass might still be the best option, but compositional layouts should be your default choice.",
+      "front": "Explain UICollectionView compositional layouts. How do they differ from flow layouts? Provide a code example showcasing a simple compositional layout.",
+      "back": "Compositional layouts in UICollectionView, introduced in iOS 13, offer a more flexible and powerful way to define the visual structure of a collection view compared to the traditional flow layout.  Instead of a linear arrangement, compositional layouts allow you to create complex, nested layouts using `NSCollectionLayoutSection` and `NSCollectionLayoutGroup`. \n\n**Core Concepts:**\n*   `NSCollectionLayoutSize`: Defines the size of items, groups, and sections. Can be absolute, fractional (relative to the container), or estimated.\n*   `NSCollectionLayoutItem`: Represents a single item in the collection view.\n*   `NSCollectionLayoutGroup`: A container for items, arranged horizontally, vertically, or customly. Groups can be nested.\n*   `NSCollectionLayoutSection`: A container for groups, defining the overall layout of a section.  Includes properties for scrolling behavior, content insets, and boundary supplementary items (headers/footers).\n*   `UICollectionViewCompositionalLayout`: The layout object responsible for arranging the collection view's content based on the defined sections.\n\n**Difference from Flow Layout:**\nFlow layouts are simpler, arranging items in a grid-like fashion, flowing to the next line or column when the current one is full. Compositional layouts provide much more control, allowing for custom arrangements, variable item sizes within a group, and nested groups for complex layouts.\n\n**Code Example:**\n```swift\nimport UIKit\n\nclass ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {\n\n    private var collectionView: UICollectionView!\n\n    override func viewDidLoad() {\n        super.viewDidLoad()\n        \n        // 1. Create the compositional layout\n        let layout = UICollectionViewCompositionalLayout {\n            (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in\n            \n            // 2. Define the item size\n            let itemSize = NSCollectionLayoutSize(\n                widthDimension: .fractionalWidth(1.0),\n                heightDimension: .fractionalHeight(1.0))\n            let item = NSCollectionLayoutItem(layoutSize: itemSize)\n            item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)\n\n            // 3. Define the group size\n            let groupSize = NSCollectionLayoutSize(\n                widthDimension: .fractionalWidth(1.0),\n                heightDimension: .absolute(50))\n            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])\n\n            // 4. Define the section\n            let section = NSCollectionLayoutSection(group: group)\n            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)\n            return section\n        }\n\n        // 5. Initialize the collection view\n        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)\n        collectionView.dataSource = self\n        collectionView.delegate = self\n        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: \"cell\")\n        collectionView.backgroundColor = .white\n        view.addSubview(collectionView)\n        collectionView.translatesAutoresizingMaskIntoConstraints = false\n        NSLayoutConstraint.activate([\n            collectionView.topAnchor.constraint(equalTo: view.topAnchor),\n            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),\n            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),\n            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)\n        ])\n    }\n\n    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {\n        return 20\n    }\n\n    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {\n        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: \"cell\", for: indexPath)\n        cell.backgroundColor = .lightGray\n        return cell\n    }\n}\n```\n\n**Common Pitfalls:**\n*   Incorrectly calculating sizes:  Fractional sizes can be tricky; ensure they add up correctly within their container.\n*   Forgetting content insets:  Items can appear cramped if you don't consider insets.\n*   Performance issues: Complex layouts with many items can impact performance.  Use estimated sizes and prefetching to optimize.\n\n**When to Use vs Alternatives:**\n*   Use compositional layouts when you need highly customized and dynamic layouts that are difficult or impossible to achieve with flow layouts.\n*   Alternatives include using flow layouts for simple grids, or custom layouts by subclassing `UICollectionViewLayout` for extremely specific needs.  However, compositional layouts generally provide the best balance of flexibility and ease of use for most complex scenarios.  Consider the complexity of your desired layout when choosing the appropriate approach.",
       "code_example": null,
       "tags": [
         "uikit",
-        "collectionview",
+        "uicollectionview",
         "compositional layout"
       ],
       "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
         "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.objc.io/issues/13-architecture/viper/"
       ]
     },
     {
       "id": "uikit_4f13a4d89b98",
-      "front": "Diffable data sources",
-      "back": "",
+      "front": "Explain diffable data sources in UIKit. How do they improve upon older approaches, and what are their limitations?",
+      "back": "Diffable data sources (introduced in iOS 13, Swift 5.1+) revolutionize `UITableView` and `UICollectionView` updates by adopting a declarative approach. Instead of manually calculating and applying index path changes, you define the desired state (a new snapshot) and let the data source handle the transition.\n\n*Core Concept:* Diffable data sources use the `NSDiffableDataSourceSnapshot` to represent the data's state. You create snapshots representing the current and new data, and the data source automatically computes the minimal set of changes (insertions, deletions, moves, and updates) to update the view.\n\n*Code Example:* \n```swift\nenum Section {\n  case main\n}\n\nstruct Item: Hashable {\n  let id = UUID()\n  let title: String\n}\n\nclass MyViewController: UIViewController, UITableViewDelegate {\n  @IBOutlet var tableView: UITableView!\n  \n  private var dataSource: UITableViewDiffableDataSource<Section, Item>!\n  private var items: [Item] = []\n\n  override func viewDidLoad() {\n    super.viewDidLoad()\n    items = [Item(title: \"Item 1\"), Item(title: \"Item 2\")]\n\n    dataSource = UITableViewDiffableDataSource<Section, Item>(tableView: tableView) {\n      (tableView, indexPath, item) -> UITableViewCell? in\n      let cell = tableView.dequeueReusableCell(withIdentifier: \"Cell\", for: indexPath)\n      cell.textLabel?.text = item.title\n      return cell\n    }\n    tableView.delegate = self\n    applyInitialSnapshot()\n  }\n\n  func applyInitialSnapshot() {\n    var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()\n    snapshot.appendSections([.main])\n    snapshot.appendItems(items)\n    dataSource.apply(snapshot, animatingDifferences: true)\n  }\n  \n  func addItem() {\n    items.append(Item(title: \"New Item\"))\n    var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()\n    snapshot.appendSections([.main])\n    snapshot.appendItems(items)\n    dataSource.apply(snapshot, animatingDifferences: true)\n  }\n}\n```\n\n*Improvements over older approaches (e.g., `beginUpdates`/`endUpdates`):*\n- *Safety:* Reduces the risk of inconsistent UI state due to incorrect index path calculations.\n- *Performance:* Optimized diffing algorithm for efficient updates.\n- *Readability:* Declarative style simplifies update logic.\n- *Animation handling:* Built-in support for animated updates.\n\n*Common Pitfalls/Edge Cases:*\n- *Hashable conformance:*  Items in the data source *must* conform to the `Hashable` protocol for the diffing algorithm to work correctly.  Ensure your `hash(into:)` method and `==` operator are implemented properly.  Incorrect implementations will lead to unexpected behavior.\n- *Data mutations:*  Modifying items *after* they've been added to the snapshot without creating a new snapshot will *not* update the UI. Snapshots capture the *state* of the data at a specific point in time.\n- *Large datasets:* While generally efficient, very large datasets might require optimization to avoid performance bottlenecks during snapshot creation and diffing.\n- *Reloading Data:* Avoid calling `reloadData()` when using diffable data sources.  It defeats the purpose and negates the performance benefits.\n- *Supplementary Views/Cells:* Remember to configure supplementary views (e.g., header/footer views) and cells using the `dataSource.supplementaryViewProvider` property.\n\n*When to use vs. Alternatives:*\n- *Use Diffable Data Sources:* For most `UITableView` and `UICollectionView` scenarios, especially when dealing with dynamic data and frequent updates. They are the preferred approach for new projects.\n- *Alternatives (Legacy):*\n  - `beginUpdates`/`endUpdates`:  Use only for very simple, localized updates or when maintaining older codebases.  They are generally more error-prone.\n  - Third-party libraries: Some libraries offer similar functionality, but diffable data sources are the standard, Apple-provided solution.\n\nDiffable data sources promote cleaner, safer, and more efficient UI updates in table and collection views. Mastering their usage is crucial for senior iOS developers.",
       "code_example": null,
       "tags": [
-        "Diffable data sources"
+        "uikit",
+        "uitableview",
+        "uicollectionview",
+        "diffabledatasource",
+        "snapshot",
+        "ios13",
+        "swift5.1"
       ],
       "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.objc.io/issues/4-core-data/core-data-overview/",
         "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
+        "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "uikit_022fbd7dc4a5",
-      "front": "Discuss the approaches and considerations when integrating UIKit and SwiftUI within a single iOS application. Include techniques, potential challenges, and best practices for a seamless user experience.",
-      "back": "Integrating UIKit and SwiftUI requires careful planning.  You can embed SwiftUI views within UIKit using `UIHostingController`, and embed UIKit views in SwiftUI using `UIViewRepresentable` or `UIViewControllerRepresentable`. \n\n**Core Concepts:**\n- `UIHostingController`:  Bridges SwiftUI into UIKit. It's a UIKit view controller that manages a SwiftUI view hierarchy.\n- `UIViewRepresentable`:  Allows UIKit views to be used within SwiftUI.  You create a struct conforming to this protocol and implement `makeUIView(context:)` and `updateUIView(_:context:)`.\n- `UIViewControllerRepresentable`: Similar to `UIViewRepresentable`, but for entire UIKit view controllers.\n\n**Code Example:**\n```swift\n// Embedding SwiftUI in UIKit\nlet swiftUIView = MySwiftUIView()\nlet hostingController = UIHostingController(rootView: swiftUIView)\nnavigationController?.pushViewController(hostingController, animated: true)\n\n// Embedding UIKit in SwiftUI\nstruct MyUIKitView: UIViewRepresentable {\n    func makeUIView(context: Context) -> UILabel {\n        let label = UILabel()\n        label.text = \"Hello from UIKit!\"\n        return label\n    }\n\n    func updateUIView(_ uiView: UILabel, context: Context) {\n        // Update the view if needed\n    }\n}\n\nstruct ContentView: View {\n    var body: some View {\n        VStack {\n            Text(\"SwiftUI View\")\n            MyUIKitView()\n        }\n    }\n}\n```\n\n**Challenges:**\n- **Data Flow:** Managing data flow between the two frameworks can be tricky. Use `ObservableObject` and `@ObservedObject` in SwiftUI and delegation or closures in UIKit and ensure data consistency.\n- **Lifecycle Differences:** UIKit and SwiftUI have different view lifecycles.  Be mindful of when views are created, updated, and destroyed.\n- **Performance:**  Excessive bridging can impact performance. Optimize your code and profile to identify bottlenecks.\n- **Navigation:** Coordinating navigation between UIKit's `UINavigationController` and SwiftUI's `NavigationView` requires careful handling. Consider using a single source of truth for navigation state.\n- **Appearance:** Ensure visual consistency between UIKit and SwiftUI views. Use `UIAppearance` and SwiftUI's environment to standardize fonts, colors, and styles.\n\n**Best Practices:**\n- **Minimize Bridging:**  Reduce the amount of bridging required by rewriting UIKit components in SwiftUI where possible.\n- **Use Environment Objects:**  Pass data down the SwiftUI view hierarchy using environment objects to avoid prop drilling.\n- **Centralized State Management:** Employ a centralized state management solution (e.g., Redux, Combine) for complex applications.\n- **Testing:** Thoroughly test the integration to ensure functionality and visual consistency.\n\n**Common Pitfalls:**\n- Forgetting to update UIKit views in `updateUIView(_:context:)`.\n- Incorrectly handling the UIKit view lifecycle.\n- Creating retain cycles between UIKit and SwiftUI components.\n- Not accounting for different screen sizes and orientations.\n\n**Alternatives:**\n- **Migrate Entirely:** If feasible, migrate the entire app to SwiftUI for a more consistent and modern codebase.  This is a long-term strategy.\n- **Feature-Based Migration:** Migrate features one at a time to SwiftUI.\n\nWhen to use interop: When you have existing UIKit code that you want to reuse in a SwiftUI app, or when you need to use UIKit features that are not yet available in SwiftUI.  Also, when gradually migrating a large UIKit app to SwiftUI.\n",
+      "front": "Describe the mechanisms and best practices for integrating UIKit views and view controllers within a SwiftUI application, and vice versa. Detail the advantages and limitations of each approach.",
+      "back": "UIKit and SwiftUI interop is crucial for leveraging existing code or specific platform features. Two main mechanisms exist: `UIViewControllerRepresentable` and `UIViewRepresentable` for using UIKit in SwiftUI, and `UIHostingController` for using SwiftUI in UIKit.\n\n`UIViewControllerRepresentable` and `UIViewRepresentable` allow you to wrap UIKit views/controllers for use in SwiftUI.  They require implementing `makeUIViewController(context:)`/`makeUIView(context:)` to create the UIKit component and `updateUIViewController(_:context:)`/`updateUIView(_:context:)` to handle updates.\n\nExample:\n```swift\nstruct MyMapView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MKMapView {\n        MKMapView()\n    }\n\n    func updateUIView(_ uiView: MKMapView, context: Context) {\n        // Update the map view, e.g., setting annotations\n    }\n}\n```\n\n`UIHostingController` hosts a SwiftUI view within a UIKit context. Instantiate it with the SwiftUI view as the root view.\n\nExample:\n```swift\nlet swiftUIView = MySwiftUIView()\nlet hostingController = UIHostingController(rootView: swiftUIView)\nnavigationController?.pushViewController(hostingController, animated: true)\n```\n\nCommon pitfalls:\n*   **Lifecycle management:** UIKit and SwiftUI have different lifecycles. Ensure proper synchronization when passing data or reacting to events.\n*   **Performance:** Excessive interop can impact performance. Minimize unnecessary updates and consider using Combine or delegation for efficient communication.\n*   **Layout:** UIKit's Auto Layout and SwiftUI's layout system can conflict. Use constraints and `setContentHuggingPriority`/`setContentCompressionResistancePriority` carefully.\n*   **Data flow:** Managing data flow between the two worlds requires careful consideration. Using `@Binding` with coordinators can help.\n\nWhen to use which:\n*   Use `*Representable` when you need to embed a UIKit view/controller into a SwiftUI view hierarchy.\n*   Use `UIHostingController` when you want to display a SwiftUI view within a UIKit-based app.\n\nAlternatives:\n*   Refactoring UIKit code to SwiftUI (ideal long-term, but costly).\n*   Using a hybrid approach where core logic is framework-agnostic, and UI is implemented separately in UIKit and SwiftUI.",
       "code_example": null,
       "tags": [
         "uikit",
         "swiftui",
         "interoperability",
-        "ios",
-        "uiviewrepresentable",
-        "uihostingcontroller"
+        "ios"
       ],
       "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.objc.io/issues/13-architecture/viper/"
       ]
     },
     {
       "id": "uikit_5dc293584478",
-      "front": "Describe the process of creating custom view controller transitions in UIKit. What key components are involved, and what protocols must you implement?",
-      "back": "Custom transitions involve `UIViewControllerAnimatedTransitioning` (animation details), `UIViewControllerTransitioningDelegate` (provides the animator and interaction controller), and the presenting/presented view controllers. The delegate method `animationController(forPresented/Dismissed)` returns the animator object.  Interactive transitions use `UIPercentDrivenInteractiveTransition`.",
+      "front": "Explain custom view controller transitions in UIKit. How do you implement interactive transitions? What are some common pitfalls?",
+      "back": "Custom view controller transitions allow you to define how one view controller is presented or dismissed. Instead of using the default slide or fade, you create unique, engaging animations. \n\nConcept: Implementing custom transitions involves adopting `UIViewControllerTransitioningDelegate` in the presenting view controller. This delegate provides objects that handle the presentation and dismissal animations.  These objects conform to `UIViewControllerAnimatedTransitioning` for animations, and `UIViewControllerInteractiveTransitioning` for interactive control.\n\nExample:\n```swift\nclass MyViewController: UIViewController, UIViewControllerTransitioningDelegate {\n  let transition = MyCustomTransition()\n\n  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {\n    let destination = segue.destination\n    destination.transitioningDelegate = self\n    destination.modalPresentationStyle = .custom // or .fullScreen\n  }\n\n  func animationController(forPresentedController presented: UIViewController, presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {\n    transition.isPresenting = true\n    return transition\n  }\n\n  func animationController(forDismissedController dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {\n    transition.isPresenting = false\n    return transition\n  }\n}\n\nclass MyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning {\n  var isPresenting = false\n\n  func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {\n    return 0.5\n  }\n\n  func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {\n    guard let toVC = transitionContext.viewController(forKey: .to),\n          let fromVC = transitionContext.viewController(forKey: .from)\n    else { return }\n\n    let containerView = transitionContext.containerView\n\n    if isPresenting {\n      containerView.addSubview(toVC.view)\n      toVC.view.alpha = 0\n      UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {\n        toVC.view.alpha = 1\n      }, completion: { _ in\n        transitionContext.completeTransition(!transitionContext.transitionWasCancelled)\n      })\n    } else {\n      UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {\n        fromVC.view.alpha = 0\n      }, completion: { _ in\n        transitionContext.completeTransition(!transitionContext.transitionWasCancelled)\n        fromVC.view.removeFromSuperview()\n      })\n    }\n  }\n}\n```\n\nInteractive Transitions: Implement `UIViewControllerInteractiveTransitioning` along with a gesture recognizer (e.g., `UIPanGestureRecognizer`).  Update the transition's progress based on the gesture's state using `updateInteractiveTransition(_:)`. Complete or cancel the transition based on the gesture's final state with `finishInteractiveTransition()` or `cancelInteractiveTransition()`.\n\nCommon Pitfalls:\n*   Forgetting to set `modalPresentationStyle` to `.custom` or `.fullScreen`. Otherwise, the transition delegate might not be called.\n*   Incorrectly calculating the transition duration. Ensure it aligns with animation complexity.\n*   Not handling the `transitionWasCancelled` state correctly in `animateTransition(using:)`.  Cleanup is crucial.\n*   Not adding the `toView` to the `containerView` during presentation.\n*   Conflicting gesture recognizers. Ensure gesture recognizers don't interfere with existing UI interactions.\n*   For interactive transitions, properly managing the transition context and updating the progress based on user input. Ensure proper cancellation and completion.\n\nAlternatives:\n*   Using built-in presentation styles (e.g., `UIModalPresentationStyle.formSheet`).\n*   Using UIKit Dynamics for physics-based animations (although less common for full view controller transitions).\n*   View animations for simpler transitions within a single view controller.\n\nUse custom transitions when you need fine-grained control over the animation and want to create a unique user experience. Consider the complexity and maintainability before opting for custom transitions over simpler alternatives.",
       "code_example": null,
       "tags": [
         "uikit",
+        "viewcontroller",
         "transitions",
         "animation",
-        "view controller"
+        "delegate"
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.objc.io/issues/13-architecture/viper/"
       ]
     },
     {
       "id": "uikit_f81b8d0bd6a2",
-      "front": "Explain the responder chain in UIKit, its purpose, and how you can interact with it. Provide examples of how it's used and potential pitfalls.",
-      "back": "The responder chain is a hierarchy of objects that can respond to events in iOS. When an event (like a touch) occurs, UIKit sends the event to the *first responder*. If the first responder can't handle the event, it's passed up the chain to the next responder, and so on, until an object handles it or the event is discarded. \n\nPurpose: Decouple event handling from specific views. Allows events to be handled by the most appropriate object, even if it's not the direct target of the event.\n\nInteraction: `UIResponder` is the base class for objects in the responder chain.  `UIView` and `UIViewController` are key participants. Override methods like `touchesBegan(_:with:)`, `touchesMoved(_:with:)`, `touchesEnded(_:with:)` to handle touch events.  You can also use `next` to manually traverse the chain.  \n\nExample: Consider a button inside a view controller.  If the button isn't connected to an `IBAction`, the touch event will travel up the chain. First, the button's `touchesBegan` will be called. If unhandled, it goes to the containing `UIView`, then the `UIViewController`, and potentially further up to the `UIWindow` and `UIApplication`.\n\n```swift\nclass CustomButton: UIButton {\n    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {\n        super.touchesBegan(touches, with: event)\n        print(\"Button touched!\")\n        // If we don't call super, the event stops here.\n    }\n}\n\nclass CustomView: UIView {\n    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {\n        super.touchesBegan(touches, with: event)\n        print(\"View touched!\")\n    }\n}\n\nclass MyViewController: UIViewController {\n    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {\n        super.touchesBegan(touches, with: event)\n        print(\"ViewController touched!\")\n    }\n}\n```\n\nCommon Pitfalls:\n*   **Forgetting `super`**:  If you override a `touches...` method and *don't* call `super`, you block the event from propagating further up the chain. This can lead to unexpected behavior.\n*   **Misunderstanding first responder**: Only one object can be the *first responder* at a time (typically a `UITextField` or `UITextView` when it's being edited).  Events related to keyboard appearance/disappearance are related to the first responder.\n*   **Incorrect view hierarchy**: If your views aren't properly nested, the event might not reach the intended responder.\n\nAlternatives:\n*   **Delegation**:  A view can delegate event handling to another object.  This is useful when you want a specific object to handle events from a view, regardless of the responder chain.\n*   **Closures/Callbacks**: Assigning closures to UI elements (e.g., button actions) is a common way to handle events directly, bypassing the responder chain for that specific event.\n*   **Target-Action**: Using `addTarget(_:action:for:)` on `UIControl` instances provides a direct route for handling events, avoiding the responder chain.\n\nWhen to Use: Responder chain is ideal when you want a flexible and dynamic way to handle events. Delegation, closures, and target-action are better suited for direct and specific event handling.",
+      "front": "Explain the responder chain in UIKit. How does it work, and how can you manipulate it to handle events in custom ways?",
+      "back": "The responder chain is a hierarchy of `UIResponder` objects that receive and handle events in an iOS app. When an event (like a touch) occurs, UIKit delivers it to the *first responder*, which is often the view where the touch happened. If the first responder doesn't handle the event, it's passed up the chain to the next responder.\n\nThe chain typically progresses from the view to its superview, then to the view controller, the view controller's parent view controller, the window, the app delegate. Each responder has the opportunity to handle the event or pass it along.  \n\n*Example:* Suppose you have a custom button inside a view. If the button isn't enabled or doesn't handle a touch, the touch event might be passed to the containing view or even the view controller.\n\n*Code Example:* To customize the responder chain, you can override `next` in a `UIResponder` subclass:\n\n```swift\nclass CustomView: UIView {\n    override var next: UIResponder? {\n        // Route events directly to the view controller\n        return self.viewController\n    }\n\n    var viewController: UIViewController? {\n        var responder: UIResponder? = self\n        while responder != nil {\n            if responder is UIViewController {\n                return responder as? UIViewController\n            }\n            responder = responder?.next\n        }\n        return nil\n    }\n\n    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {\n        print(\"Touch began in CustomView\")\n        super.touchesBegan(touches, with: event) // Pass event up the chain if needed\n    }\n}\n```\n\n*Pitfalls:* A common mistake is not calling `super`'s implementation of event handling methods (`touchesBegan`, etc.). This prevents the event from propagating up the chain if the current responder doesn't fully handle it. Another pitfall is creating circular dependencies in the `next` responder, which can lead to infinite loops.\n\n*Alternatives:*  While you can directly manipulate the responder chain, often delegation or target-action are better solutions for handling events, especially for UI interactions.  Delegation provides a clear contract between objects, while target-action provides a flexible way to connect UI elements to actions.  Directly manipulating the responder chain should be reserved for cases where you need to intercept or redirect events in a more fundamental way, such as creating custom input views or handling system-level events.",
       "code_example": null,
       "tags": [
         "uikit",
         "responder chain",
         "event handling",
-        "uiresponder",
-        "uiview",
-        "uiviewcontroller"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "security_33cf632c026b",
-      "front": "Keychain Services",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Keychain Services"
+        "uiresponder"
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.avanderlee.com/swift/core-data/"
-      ]
-    },
-    {
-      "id": "security_85b38a95715f",
-      "front": "Explain App Transport Security (ATS) in iOS. How does it enhance security and what are the implications for network communication?",
-      "back": "ATS is a privacy feature introduced in iOS 9 that enforces secure connections between an app and web services. It mandates HTTPS (TLS 1.2 or higher) and disables insecure HTTP connections.  It prevents accidental disclosure of sensitive user data during network transit by ensuring encryption and integrity.\n\nATS strengthens security by:\n1.  **Encryption:** Requires HTTPS, encrypting data in transit.\n2.  **Certificate Pinning (Optional):** Allows apps to trust only specific certificates, preventing man-in-the-middle attacks.\n3.  **Forward Secrecy:** Preferred cipher suites ensure that session keys are not compromised even if the server's private key is compromised later.\n\nImplications:\n-   **Compatibility:** Older servers not supporting TLS 1.2+ may break app functionality.\n-   **Development:** Requires developers to configure servers to meet ATS requirements.\n-   **User Experience:** Improved security and privacy for users.\n\nExample:\n```swift\n// Info.plist configuration to disable ATS (not recommended for production)\n// This is just for demonstration purposes.\n// In a real app, you should configure your server to support ATS.\n/*\n<key>NSAppTransportSecurity</key>\n<dict>\n    <key>NSAllowsArbitraryLoads</key>\n    <true/>\n</dict>\n*/\n\n// Example of a secure HTTPS request\nimport Foundation\n\nfunc fetchData(from urlString: String) {\n    guard let url = URL(string: urlString) else { return }\n\n    let task = URLSession.shared.dataTask(with: url) { (data, response, error) in\n        if let error = error {\n            print(\"Error: \\(error)\")\n            return\n        }\n\n        if let data = data {\n            // Process the data\n            print(\"Data received: \\(data)\")\n        }\n    }\n    task.resume()\n}\n\n// Example usage (HTTPS)\nfetchData(from: \"https://www.example.com/data\")\n\n//Example of disabling ATS for a specific domain\n/*\n<key>NSAppTransportSecurity</key>\n<dict>\n <key>NSExceptionDomains</key>\n <dict>\n  <key>example.com</key>\n  <dict>\n   <key>NSIncludesSubdomains</key>\n   <true/>\n   <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>\n   <true/>\n   <key>NSTemporaryExceptionMinimumTLSVersion</key>\n   <string>TLSv1.1</string>\n  </dict>\n </dict>\n</dict>\n*/\n```\n\nCommon pitfalls:\n-   Failing to update server configurations to support TLS 1.2+.\n-   Incorrectly configuring `Info.plist` to disable ATS entirely (NSAllowsArbitraryLoads), which should be avoided in production unless absolutely necessary and properly justified to Apple.\n-   Not handling potential errors when ATS blocks insecure connections.\n\nAlternatives:\n-   Disabling ATS entirely is strongly discouraged.  Instead, configure your server to meet ATS standards.\n-   Using exception domains to allow insecure connections for specific domains (use sparingly and with caution).\n\nWhen to Use: Always enable ATS in production apps to protect user data. Only disable or partially disable for specific, well-understood reasons during development or when interacting with legacy servers that cannot be upgraded (and even then, explore upgrading them). Document any exceptions thoroughly and justify their use.",
-      "code_example": null,
-      "tags": [
-        "security",
-        "ATS",
-        "networking",
-        "https",
-        "tls"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.avanderlee.com/swift/core-data/"
-      ]
-    },
-    {
-      "id": "security_199ddce13d96",
-      "front": "Biometric authentication",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Biometric authentication"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://developer.apple.com/news/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "security_b2f1eb5efae8",
-      "front": "Discuss data encryption strategies in iOS, focusing on when to use specific techniques like Keychain, Core Data encryption, or file-level encryption. Explain tradeoffs and security best practices.",
-      "back": "Data encryption is crucial for protecting sensitive information on iOS.  Several options exist, each with different strengths. The Keychain is specifically designed for storing small, sensitive data like passwords, certificates, and API keys. It offers strong encryption and secure storage managed by the system.  Use it via `Keychain Services API`. Example: `SecItemAdd/SecItemCopyMatching/SecItemUpdate/SecItemDelete`.  Core Data can be encrypted at rest using SQLCipher or similar libraries. This is useful when storing larger structured datasets. However, managing the encryption key becomes critical. Avoid hardcoding; store it securely in the Keychain. File-level encryption (e.g., using `FileProtectionType`) encrypts entire files.  This is suitable for larger unstructured data like images or documents.  Choose the appropriate `FileProtectionType` based on the required level of security and performance. Common mistakes: Hardcoding keys, using weak encryption algorithms, not salting passwords, and neglecting data sanitization. Avoid storing sensitive data in plain text in UserDefaults or other easily accessible locations. Always use strong encryption algorithms (AES-256 is a good choice). Regularly update encryption keys and algorithms. Consider using hardware-backed encryption (Secure Enclave) for the highest level of security.  Tradeoffs: Keychain is great for small secrets, Core Data encryption is good for structured data at rest, file encryption is good for unstructured data. Always consider the threat model and choose the best solution for your specific needs. Remember to handle key management securely, rotate keys periodically, and sanitize data before encryption. Incorrect usage of file protection levels can lead to data loss or unexpected behavior.",
-      "code_example": null,
-      "tags": [
-        "security",
-        "encryption",
-        "keychain",
-        "coredata",
-        "fileprotection"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.avanderlee.com/swift/core-data/"
-      ]
-    },
-    {
-      "id": "security_a325baeb20c1",
-      "front": "Explain code signing and provisioning profiles in iOS. Why are they important, and how do they work together to secure and distribute an app?",
-      "back": "Code signing and provisioning are crucial for iOS security and distribution. Code signing assures the user that the app is from a known source and hasn't been tampered with. Provisioning profiles authorize an app to run on specific devices and access certain services.\n\n**Code Signing:**\nUses digital certificates to verify the developer's identity and ensure the app's integrity. When you build your app, Xcode signs it with your private key, creating a signature embedded in the app bundle.  This signature can be verified using your public key, which is included in your developer certificate.\n\n**Provisioning Profiles:**\nAct as gatekeepers, linking your app's App ID, your developer certificate, and a list of authorized devices (for development/ad-hoc).  There are different types:\n   *Development: For running on your development devices.\n   *Ad Hoc: For limited distribution to testers.\n   *App Store: For submitting to the App Store.\n   *Enterprise: For in-house distribution within an organization.\n\n**How they work together:**\nThe provisioning profile is embedded in the app bundle during the build process. When the app is launched on a device, iOS verifies:\n   1. The app's signature against the developer certificate.\n   2. The provisioning profile's validity and its association with the device.\n   3. That the app's bundle identifier matches the App ID in the provisioning profile.\n   4. That the developer certificate in the provisioning profile matches the certificate used to sign the app.\n\nIf all checks pass, the app is allowed to run. If any check fails, the app will not launch.\n\n**Code Example (Illustrative):**\nWhile you don't directly *code* code signing/provisioning, you configure them in Xcode.  Here's how you'd typically set it up:\n\n1.  In Xcode, go to your project settings.\n2.  Select your target.\n3.  Go to \"Signing & Capabilities\".\n4.  Select your team (your developer account).\n5.  Xcode will attempt to automatically manage signing.  If you need more control, disable \"Automatically manage signing\" and manually select your provisioning profile and signing certificate.\n\n**Common Pitfalls:**\n*   Mismatched Bundle Identifier: Ensure your app's Bundle Identifier exactly matches the App ID in your provisioning profile.\n*   Expired Certificates/Profiles: Regularly renew your developer certificates and provisioning profiles.\n*   Incorrect Provisioning Profile Type:  Using a development profile for App Store submission, or vice versa.\n*   Device Not Included: If using a development or ad-hoc profile, make sure the test device is registered in your developer account and included in the profile.\n*   Not understanding Wildcard App IDs: Wildcard App IDs (e.g., `com.example.*`) are useful for development but limit capabilities like push notifications in production.\n\n**Alternatives:**\nThere aren't really *alternatives* to code signing and provisioning for standard iOS app distribution.  It's the foundation of Apple's security model. However, for enterprise distribution, you might use Mobile Device Management (MDM) solutions to manage app deployment and updates, but code signing and provisioning are still fundamentally required.\n\nWithout proper code signing and provisioning, your app will not run on user devices, and you risk exposing users to malicious or tampered software.  It's a cornerstone of iOS security.",
-      "code_example": null,
-      "tags": [
-        "security",
-        "code signing",
-        "provisioning profiles",
-        "certificates",
-        "iOS security"
-      ],
-      "sources": [
-        "https://developer.apple.com/news/"
-      ]
-    },
-    {
-      "id": "security_c64c3d914723",
-      "front": "Discuss secure coding practices in iOS development. Cover common vulnerabilities, mitigation techniques, and tools for ensuring application security.",
-      "back": "Secure coding is crucial for protecting user data and application integrity. Common vulnerabilities include: \n\n*   **Data breaches:** Storing sensitive data insecurely (e.g., plain text passwords). Mitigation: Use Keychain for credentials, encrypt data at rest and in transit (HTTPS), and avoid storing sensitive data locally if possible.\n*   **Injection attacks:** Allowing user input to directly affect code execution (e.g., SQL injection in Core Data). Mitigation: Use parameterized queries or ORM features that automatically escape user input. Validate and sanitize all user inputs on both the client and server sides.\n*   **Cross-Site Scripting (XSS):** While less relevant for native apps, if your app uses web views, ensure proper content security policies (CSP) are implemented to prevent malicious scripts from executing.\n*   **Man-in-the-Middle (MITM) attacks:** Intercepting network traffic. Mitigation: Enforce HTTPS with certificate pinning to prevent attackers from using fake certificates.\n*   **Reverse engineering/Tampering:** Attackers disassembling and modifying your app. Mitigation: Obfuscate code, use runtime integrity checks to detect tampering, and consider using jailbreak detection.\n*   **Insecure data storage:** Storing data in a way that other applications can access it.\n\nExample (Keychain usage):\n```swift\nimport Security\n\nfunc savePassword(password: String, account: String) {\n let passwordData = password.data(using: .utf8)!\n\n let query: [String: Any] = [\n kSecClass as String: kSecClassGenericPassword,\n kSecAttrAccount as String: account, // unique to the user\n kSecValueData as String: passwordData,\n kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly // Adjust accessibility based on security needs\n ]\n\n SecItemDelete(query as CFDictionary) // Delete any existing item\n\n let status = SecItemAdd(query as CFDictionary, nil)\n if status != errSecSuccess {\n print(\"Error saving password: \\(status)\")\n }\n}\n\nfunc retrievePassword(account: String) -> String? {\n let query: [String: Any] = [\n kSecClass as String: kSecClassGenericPassword,\n kSecAttrAccount as String: account,\n kSecReturnData as String: kCFBooleanTrue!,\n kSecMatchLimit as String: kSecMatchLimitOne\n ]\n\n var dataTypeRef: AnyObject?\n let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)\n\n if status == errSecSuccess {\n let retrievedData = dataTypeRef as! Data\n return String(data: retrievedData, encoding: .utf8)\n } else {\n print(\"Error retrieving password: \\(status)\")\n return nil\n }\n}\n```\nCommon pitfalls:\n*   Hardcoding secrets or API keys in the code.\n*   Disabling App Transport Security (ATS) without proper justification.\n*   Not validating server-side data.\n*   Using weak encryption algorithms.\n*   Ignoring security updates.\n\nTools:\n*   Static analysis tools: Detect potential vulnerabilities in your code (e.g., SwiftLint).\n*   Runtime analysis tools: Monitor application behavior at runtime (e.g., debuggers, security frameworks).\n*   Vulnerability scanners: Identify known vulnerabilities in third-party libraries.\n\nAlternatives:\nWhile you can roll your own encryption or security solutions, it's generally recommended to use well-vetted, standard libraries and frameworks provided by Apple (e.g., CryptoKit) or reputable third-party providers. This reduces the risk of introducing vulnerabilities through custom implementations.\n\nAlways stay up-to-date with the latest security best practices and vulnerabilities. Conduct regular security audits and penetration testing to identify and address potential weaknesses in your application.",
-      "code_example": null,
-      "tags": [
-        "security",
-        "ios",
-        "coding practices",
-        "vulnerabilities",
-        "keychain",
-        "encryption",
-        "https",
-        "mitm",
-        "xss",
-        "injection",
-        "static analysis",
-        "runtime analysis"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.objc.io/issues/16-swift/swift-functions/"
-      ]
-    },
-    {
-      "id": "security_a98037d94e1a",
-      "front": "Explain the OWASP Mobile Security Project and list the top 3 mobile security risks. How can you mitigate these risks in an iOS app?",
-      "back": "The OWASP Mobile Security Project aims to provide a standardized approach to securing mobile applications. It identifies common mobile security risks and provides guidance on how to address them. The top 3 (as of OWASP Mobile Top Ten 2023) are:\n\n1.  **Improper Platform Usage (MSTG-PLATFORM):** Misuse of platform features, OS permissions, or available security controls.  Example: Storing sensitive data in UserDefaults without encryption.\n\n    *Mitigation:* Follow platform security best practices.  Use Keychain for secrets. Properly handle permissions. Code example:\n    ```swift\n    // Storing a token securely in Keychain\n    let keychain = KeychainSwift()\n    keychain.set(\"your_token\", forKey: \"authToken\")\n    ```\n    Pitfalls:  Forgetting to encrypt UserDefaults.  Asking for unnecessary permissions.\n\n2.  **Insecure Data Storage (MSTG-DATA):** Sensitive data is stored insecurely on the device.  Example:  Storing API keys in plaintext in the app bundle or UserDefaults.\n\n    *Mitigation:*  Encrypt sensitive data at rest using Keychain, Core Data with encryption, or Realm with encryption.  Avoid storing sensitive data locally if possible. If you must, use the Keychain. Code example:\n    ```swift\n    import KeychainSwift\n\n    func saveApiKey(apiKey: String) {\n        let keychain = KeychainSwift()\n        keychain.set(apiKey, forKey: \"apiKey\")\n    }\n\n    func retrieveApiKey() -> String? {\n        let keychain = KeychainSwift()\n        return keychain.get(\"apiKey\")\n    }\n    ```\n    Pitfalls:  Hardcoding API keys.  Using weak encryption.\n\n3.  **Insufficient Cryptography (MSTG-CRYPTO):** Using weak or broken cryptographic algorithms, or implementing cryptography incorrectly. Example: Using MD5 for hashing passwords.\n\n    *Mitigation:* Use strong, modern cryptographic libraries like CryptoKit (Swift) or CommonCrypto (C).  Properly manage keys. Avoid custom crypto implementations if possible. Code example:\n    ```swift\n    import CryptoKit\n\n    func hashPassword(password: String) -> String? {\n        guard let data = password.data(using: .utf8) else {\n            return nil\n        }\n\n        let salt = generateSalt()\n        let saltedData = salt + data\n\n        let sha256Hashed = SHA256.hash(data: saltedData)\n        let hashedString = Data(sha256Hashed).base64EncodedString()\n\n        return hashedString\n    }\n\n    func generateSalt() -> Data {\n        var keyData = Data(count: 32)\n        let result = keyData.withUnsafeMutableBytes {\n            SecRandomCopyBytes(kSecRandomDefault, 32, $0.baseAddress!)\n        }\n        if result == errSecSuccess {\n            return keyData\n        } else {\n            return Data() // Handle error appropriately\n        }\n    }\n    ```\n    Pitfalls: Using deprecated algorithms.  Improper key management. Not salting passwords.\n\nAlternatives to storing data locally include using secure cloud storage and minimizing the amount of sensitive data handled by the mobile app.\n",
-      "code_example": null,
-      "tags": [
-        "security",
-        "OWASP",
-        "mobile security",
-        "iOS",
-        "Keychain",
-        "CryptoKit"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_0ea0235941aa",
-      "front": "Describe how to use LLDB to inspect variables and step through code.  Give specific commands and examples.",
-      "back": "Common LLDB commands:\n\n*   `po <variable>`: Print object description.\n*   `p <variable>`: Print variable's value.\n*   `bt`: Print backtrace.\n*   `continue` or `c`: Continue execution.\n*   `next` or `n`: Step over the next line.\n*   `step` or `s`: Step into the next function.\n*   `breakpoint set -name <method>`: Set breakpoint at method.\n*   `breakpoint set -file <file> -line <line_number>`: Set breakpoint at file/line.\n*   `breakpoint delete <breakpoint_id>`: Delete a breakpoint.\n*   `expression <variable> = <value>`: Modify variable value.\n*   `frame variable`: Show all variables in current frame.\nExample:\n`po myString` will print the description of `myString`.",
-      "code_example": null,
-      "tags": [
-        "debugging",
-        "lldb",
-        "xcode"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_aa5b0c0bdfb3",
-      "front": "Describe strategies for debugging memory issues in iOS apps beyond using Instruments. How would you identify retain cycles programmatically?",
-      "back": "Beyond Instruments (Leaks, Allocations), I'd use: 1) **Breakpoints:** Set breakpoints in `deinit` methods to see when objects are released (or not). 2) **Weak/Unowned References:** Verify proper usage in delegates/closures. 3) **Custom Memory Management:**  Inspect custom alloc/dealloc code.  4) **MLeaksFinder/FBMemoryProfiler:** Integrate 3rd party tools to detect memory leaks automatically. 5) **Snapshot debugging:** Capturing memory snapshots on device using MemoryGraph framework programmatically to triage later. To identify retain cycles programmatically, I'd utilize `CFGetRetainCount()` (though use cautiously, mostly for debugging) and analyze object graphs during runtime with debugger scripts or custom logging.",
-      "code_example": null,
-      "tags": [
-        "memory management",
-        "debugging",
-        "retain cycles",
-        "instruments"
-      ],
-      "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.objc.io/issues/15-testing/dependency-injection/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_6a4d1a449a68",
-      "front": "How do you approach analyzing crash logs in iOS, and what key information do you look for to diagnose and fix crashes?",
-      "back": "Crash log analysis is crucial for debugging. I start by examining the \"Exception Type\" and \"Exception Codes\" to understand the crash's nature (e.g., `EXC_BAD_ACCESS` indicates memory access issues). The \"Crashed Thread\" is vital; I inspect its backtrace to pinpoint the code where the crash originated.  Symbolication (replacing memory addresses with function names) is essential; Xcode usually handles this automatically if dSYMs are present.  The binary images section lists loaded libraries and their addresses, helping identify if a crash occurs within a specific framework. I pay close attention to the thread state (register values) for clues about the program's state at the crash.  For example:\n\n```swift\n// Example: potential crash scenario\nclass MyClass {\n    var myString: String?\n\n    func processString() {\n        // Force unwrap without checking for nil\n        let length = myString!.count // Potential crash here if myString is nil\n        print(\"String length: \\(length)\")\n    }\n}\n\nlet myObject = MyClass()\n// myObject.myString = \"Hello\" //Uncommenting this line avoids the crash\nmyObject.processString()\n```\n\nIn this example, if `myString` is nil, the force unwrap `myString!` will cause a crash. The crash log will show `EXC_BAD_INSTRUCTION` or `EXC_BREAKPOINT` depending on optimization levels, and the backtrace will lead directly to the line where the force unwrap happens.\n\nCommon pitfalls include: forgetting to symbolicate, misinterpreting thread backtraces (especially with asynchronous code), and overlooking the context surrounding the crash (e.g., user actions, device state).  For memory-related crashes, tools like Instruments (specifically, the Allocations and Leaks instruments) are invaluable for identifying memory leaks or over-releases that might lead to crashes later on.  Consider using a crash reporting framework like Firebase Crashlytics or Bugsnag to automatically collect and symbolicate crash logs from users' devices. These tools also provide insights into the frequency and distribution of crashes, helping prioritize fixes.  When analyzing crashes in concurrent code, look for race conditions or deadlocks, which can be challenging to reproduce but often leave specific patterns in the thread backtraces.",
-      "code_example": null,
-      "tags": [
-        "debugging",
-        "crash logs",
-        "symbolication",
-        "exception handling"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
-      ]
-    },
-    {
-      "id": "debugging_0c5380e23e69",
-      "front": "Explain symbolication in iOS development. Why is it important, and how does it work? What are common issues encountered during symbolication and how can you resolve them?",
-      "back": "Symbolication translates memory addresses in crash reports into human-readable function names, file names, and line numbers. Without it, crash reports are just hexadecimal addresses, making debugging nearly impossible.  It's crucial for identifying where crashes occur in your code.\n\nHere's how it works: When your app crashes, the OS generates a crash report containing the memory address of the instruction that caused the crash.  Symbolication uses debug symbols (dSYMs) files generated during the build process to map these addresses back to the original code. dSYMs contain the mapping between compiled code and source code.\n\nExample (Illustrative):\nImagine a crash report shows address `0x12345678`. The symbolicator searches the dSYM. If the dSYM contains an entry indicating that address `0x12345678` corresponds to `MyViewController.viewDidLoad() line 42`, the symbolicator replaces the address with this information in the crash report.\n\nCommon issues and solutions:\n1. **Missing dSYMs:** The most frequent problem.  Each build produces a unique dSYM.  If you archive your app, Xcode usually stores the dSYMs.  Ensure you archive before submitting to the App Store (or TestFlight). If missing, try to rebuild the exact version of the app.  Check Xcode's Organizer for archives.\n2. **Incorrect dSYMs:** Using dSYMs from a different build will result in incorrect or failed symbolication. Verify the build UUID in the crash report matches the UUID of the dSYM. Use `dwarfdump --uuid <dSYM_path>` to check the dSYM's UUID and compare it to the crash report.\n3. **Bitcode:** If your app was built with Bitcode enabled (the default for App Store submissions before Xcode 14), Apple recompiles the app. You *must* download the dSYMs from App Store Connect (formerly iTunes Connect) for the symbolication to work correctly.  These are different from the dSYMs generated by your local Xcode build. Navigate to TestFlight in App Store Connect, select the build, and download the dSYMs. \n4. **Stripped Symbols:** Sometimes debug symbols are intentionally stripped to reduce app size. This prevents symbolication. Avoid stripping symbols for production builds unless absolutely necessary. If you do, ensure you keep the stripped dSYMs.\n5. **Third-party Libraries:** If a crash occurs in a third-party library, you'll need the dSYMs for that library to symbolicate the crash report fully. Many SDKs provide dSYMs separately or include them in the framework bundle. Contact the SDK provider if necessary.\n\nWorkflow:\n1. **Obtain the Crash Report:** From users or App Store Connect.\n2. **Locate dSYMs:** From Xcode Archives, App Store Connect, or your build server.\n3. **Symbolicate:** Use Xcode's \"Symbolicate Crash Report...\" command (under \"Developer\" menu) or the `atos` command-line tool (`atos -arch arm64 -o <path_to_dSYM>/Contents/Resources/DWARF/<app_name> -l <load_address> <address_to_symbolicate>`).  The load address is the address where the app was loaded into memory, found in the crash report.\n\nExample `atos` usage:\n`atos -arch arm64 -o MyApp.app.dSYM/Contents/Resources/DWARF/MyApp -l 0x100000000 0x100045678`\n\nBest Practices:\n*   Always archive your app before distributing.\n*   Download dSYMs from App Store Connect for builds submitted with Bitcode.\n*   Store dSYMs securely and systematically.\n*   Automate symbolication as part of your CI/CD pipeline.\n\nAlternatives: Crash reporting SDKs (e.g., Firebase Crashlytics, Bugsnag, Sentry) automate crash report collection and symbolication.  They often provide enhanced features like grouping crashes, user context, and breadcrumbs, making debugging easier. However, understanding manual symbolication is still crucial for troubleshooting issues and for scenarios where SDKs aren't available or sufficient.",
-      "code_example": null,
-      "tags": [
-        "debugging",
-        "symbolication",
-        "crash reports",
-        "dSYMs",
-        "bitcode",
-        "atos"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_75b31908b8e1",
-      "front": "Describe your approach to debugging network-related issues in an iOS app. What tools and techniques do you use to identify and resolve problems with network requests and responses?",
-      "back": "Network debugging is crucial. I start with high-level checks: network reachability (using `NWPathMonitor` or Reachability library) to ensure the device has connectivity. Then, I examine the requests & responses.\n\n**Tools & Techniques:**\n*   **Charles Proxy/Proxyman:** My go-to. Allows me to intercept, inspect, and modify HTTP(S) traffic between the app and server. I check request headers, body, response codes, and latency.\n*   **URLSession's `configuration.requestCachePolicy`:** Check for caching issues. If data is stale, ensure cache policy is set correctly or disable caching temporarily for debugging.\n*   **Xcode's Network Inspector:**  A basic tool within Xcode. Useful for viewing network requests initiated by `URLSession`. Less powerful than Charles but convenient for a quick look.\n*   **Logging:**  Use `os_log` or custom logging to track the flow of network calls, request parameters, and response data.  Be mindful of sensitive data.\n*   **Server-side logs:** Correlate client-side issues with server-side logs to pinpoint problems originating from the backend.\n*   **Debugging tools (breakpoints, lldb):** Step through network code to understand data transformations or identify unexpected behavior in request/response handling.\n*   **Simulator limitations:** Remember the simulator shares the Mac's network.  Test on a real device for accurate cellular behavior.\n\n**Code Example (Logging):**\n```swift\nfunc fetchData(from url: URL) {\n    os_log(.info, \"Fetching data from: %{public}@\", url.absoluteString)\n    URLSession.shared.dataTask(with: url) { data, response, error in\n        if let error = error {\n            os_log(.error, \"Network error: %{public}@\", error.localizedDescription)\n            return\n        }\n        guard let httpResponse = response as? HTTPURLResponse else {\n            os_log(.error, \"Invalid HTTP response\")\n            return\n        }\n        os_log(.info, \"Response status code: %d\", httpResponse.statusCode)\n        guard (200...299).contains(httpResponse.statusCode) else {\n            os_log(.error, \"Bad response: %d\", httpResponse.statusCode)\n            return\n        }\n\n        if let data = data {\n            // Process data\n            os_log(.info, \"Data received: %d bytes\", data.count)\n        } else {\n            os_log(.error, \"No data received\")\n        }\n    }.resume()\n}\n```\n\n**Common Pitfalls:**\n*   **HTTPS issues (TLS/SSL):**  Ensure correct certificate pinning (if implemented) and proper server configuration.\n*   **JSON parsing errors:** Validate JSON responses against the expected schema. Use tools like JSONLint.\n*   **Request timeouts:**  Increase timeout intervals if requests consistently time out.  Consider user's network.\n*   **Background tasks:**  Ensure background network requests are properly configured and handled using `URLSessionConfiguration.background(withIdentifier:)`.\n*   **Data Serialization/Deserialization:** Ensure the server and client agree on data formats.\n*   **Race conditions:**  Ensure that UI updates are performed on the main thread after a network request completes.\n*   **Ignoring Error Codes:** Always handle different HTTP status codes appropriately.\n\n**Alternatives:**\n*   **Fakes/Mocks:**  For unit testing, use mock network layers (e.g., `URLProtocol` stubs) to simulate different server responses. This allows for isolated testing of network-dependent components. As described in the documentation, creating a fake TransportSession can be useful. \n*   **Postman/Insomnia:**  Useful for testing API endpoints directly, independent of the app.\n\nMy workflow involves using Charles/Proxyman to capture traffic, logging to track the app's behavior, and server-side logs to correlate issues. Combining these allows for efficient debugging.",
-      "code_example": null,
-      "tags": [
-        "networking",
-        "debugging",
-        "URLSession",
-        "Charles Proxy",
-        "Proxyman",
-        "logging",
-        "HTTP",
-        "HTTPS",
-        "reachability",
-        "unit testing"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_a0af6467c998",
-      "front": "Describe your approach to debugging view-related issues in iOS. What tools and techniques do you use beyond `NSLog`?",
-      "back": "Debugging view issues requires a multi-faceted approach. Beyond basic logging, I leverage several powerful tools.\n\n**Concept:**\nThe core idea is to inspect the view hierarchy, constraints, and rendering properties at runtime to pinpoint the source of visual problems.\n\n**Tools & Techniques:**\n\n1.  **View Debugger (Xcode):**  This is my primary tool. It allows me to pause the app and inspect the entire view hierarchy in 3D. I can examine each view's properties (frame, bounds, alpha, background color, constraints, etc.) and identify layout issues, clipping problems, or incorrect view ordering. I can also select a view and see its constraints highlighted.\n\n2.  **Debug View Hierarchy at Runtime:** Using `po` in LLDB (debugger), I can print the view hierarchy or specific views' properties to the console. For example, `po self.view.recursiveDescription()` will output a detailed description of the view hierarchy.\n\n3.  **UI Testing:** While primarily for testing, UI tests can help isolate view issues.  Writing a UI test that interacts with a specific view can reveal unexpected behavior or state.  Use `recordFailureWithDescription` to add helpful debugging information to test failures.\n\n4.  **Color Blended Layers:** In the Simulator, enable \"Color Blended Layers\" under Debug -> Graphics. This highlights areas where views are overlapping, which can cause performance issues or visual artifacts.\n\n5.  **Core Animation Instrument:** Use Instruments.app (part of Xcode) to profile the app's rendering performance.  Look for excessive layer creation, offscreen rendering, or other performance bottlenecks that could be contributing to visual glitches. Also, check \"Color Offscreen-Rendered Yellow\" to visualize performance issues.\n\n6.  **Constraint Debugging:** Xcode provides constraint debugging tools. You can inspect constraints in the debugger and see if any are broken or ambiguous.  Pay attention to console warnings about unsatisfiable constraints.\n\n7.  **Custom Drawing & Overrides:** If a view involves custom drawing, temporarily override `draw(_ rect:)` to add debugging code.  For example, you can fill the view with a distinct color to confirm it's being drawn at all.\n\n**Code Example (Swift):**\n\n```swift\noverride func draw(_ rect: CGRect) {\n    super.draw(rect)\n    #if DEBUG\n    UIColor.red.setFill()\n    UIRectFill(rect) // Make sure the view is actually drawing\n    #endif\n}\n```\n\n**Common Pitfalls & Edge Cases:**\n*   **Hidden Views:**  Ensure views aren't accidentally hidden (`isHidden = true`) or have an alpha of 0.\n*   **Incorrect Frames:** Double-check the frame calculations, especially when dealing with dynamic content or auto layout.\n*   **Z-Ordering Issues:**  Verify the view hierarchy is correct so views are in the desired order.\n*   **Offscreen Rendering:** If a view is rendering offscreen, it can impact performance. Instruments can help identify this.\n*   **Constraint Conflicts:** Unsatisfiable constraints can lead to unexpected layout. Xcode's constraint debugger is crucial.\n*   **Ambiguous Layout:** Constraints should fully define the view's position and size. Ambiguous layouts can result in unpredictable behavior.\n\n**When to use vs. Alternatives:**\nWhile `NSLog` or `print` statements can be helpful for basic debugging, they are insufficient for complex view debugging. The View Debugger and Instruments are essential for in-depth analysis. Color Blended Layers and similar simulator features are valuable for quickly identifying potential issues. Debug View Hierarchy at Runtime is useful for getting a quick overview of the view hierarchy without pausing the app. Custom Assert Macros are helpful for ensuring values are what you expect in tests.",
-      "code_example": null,
-      "tags": [
-        "debugging",
-        "view debugging",
-        "xcode",
-        "instruments",
-        "auto layout",
-        "constraints"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_3561e6d6eeee",
-      "front": "Explain performance profiling in iOS development. Describe tools, techniques, and common performance bottlenecks.",
-      "back": "Performance profiling identifies performance bottlenecks in your app. It's crucial for ensuring a smooth user experience. \n\n**Tools:**\n*   **Instruments:** Apple's powerful performance analysis tool. It offers various instruments (CPU profiler, memory allocator, network monitor, etc.) to collect data.\n*   **Xcode Debugger:** Useful for stepping through code and inspecting variables, but less suited for overall performance analysis.\n*   **os_signpost:** Custom instrumentation for logging specific events to Instruments.\n\n**Techniques:**\n*   **Time Profiler:** Identifies CPU-intensive functions. Look for functions with high \"Self\" time.\n*   **Allocations Instrument:** Tracks memory allocations and leaks. Use it to find objects that are never deallocated.\n*   **Leaks Instrument:** Detects memory leaks.\n*   **Core Animation Instrument:** Monitors frame rates and identifies drawing bottlenecks.\n*   **Network Instrument:** Analyzes network traffic.\n*   **Energy Log:** Monitors battery consumption.\n\n**Common Bottlenecks:**\n*   **CPU-bound operations:** Complex calculations, image processing, large data parsing, excessive looping.\n*   **Memory leaks:** Objects that are allocated but never deallocated, leading to memory pressure and crashes.  Strong reference cycles are a common cause. Use Instruments' Allocations and Leaks tools.\n*   **I/O operations:**  Reading/writing large files, network requests.  Move to background threads and use caching.\n*   **UI rendering:**  Complex view hierarchies, offscreen rendering, excessive auto layout calculations.  Optimize view drawing and layout.\n*   **GCD abuse:** Using the main queue for long-running tasks, creating too many concurrent queues.\n\n**Example (Instruments - Time Profiler):**\n1.  Run your app in Instruments using the Time Profiler.\n2.  Reproduce the slow behavior.\n3.  Analyze the call tree in Instruments.  Functions with high \"Self\" time are good candidates for optimization.\n\n**Example (os_signpost):**\n```swift\nimport os.signpost\n\nlet signpostLog = OSLog(subsystem: \"com.example.app\", category: \"Performance\")\n\nfunc mySlowFunction() {\n    os_signpost(.begin, log: signpostLog, name: \"mySlowFunction\")\n    // ... perform slow operation ...\n    Thread.sleep(forTimeInterval: 1.0) // Simulate a slow operation\n    os_signpost(.end, log: signpostLog, name: \"mySlowFunction\")\n}\n\nmySlowFunction()\n```\n\n**Pitfalls:**\n*   **Profiling in Debug mode:** Debug mode adds overhead, so always profile in Release mode.\n*   **Ignoring real-world scenarios:**  Test with realistic data sets and network conditions.\n*   **Premature optimization:**  Optimize only after identifying actual bottlenecks.\n*   **Not using Instruments:** Relying solely on gut feeling or Xcode debugger.\n\n**Alternatives:**\nWhile Instruments is the primary tool, other options exist:\n*   **Third-party APM tools:** Offer more advanced monitoring and analytics.\n*   **Custom logging:** Useful for tracking specific events, but can be less comprehensive than Instruments.\n\nProfiling is an iterative process. Identify a bottleneck, optimize the code, and then profile again to verify the improvement.",
-      "code_example": null,
-      "tags": [
-        "performance",
-        "profiling",
-        "instruments",
-        "debugging",
-        "optimization"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.objc.io/issues/13-architecture/viper/"
       ]
     }
   ]

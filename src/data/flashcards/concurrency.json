@@ -4,176 +4,17 @@
   "description": "async/await, actors, tasks, and modern concurrency",
   "cards": [
     {
-      "id": "conc-001",
-      "front": "What is async/await in Swift?",
-      "back": "Language feature for asynchronous code. async marks function that can suspend. await marks suspension point. Compiler ensures thread safety. Replaces completion handlers with linear code flow.",
-      "tags": [
-        "async-await"
-      ]
-    },
-    {
-      "id": "conc-002",
-      "front": "What's the difference between Task and Task.detached?",
-      "back": "Task: Inherits actor context and priority from caller. Task.detached: Runs independently, no inherited context. Prefer Task for most cases. Detached for truly independent work.",
-      "tags": [
-        "tasks"
-      ]
-    },
-    {
-      "id": "conc-003",
-      "front": "Explain actors in Swift",
-      "back": "Reference type with isolated state. Only one task accesses actor at a time. Use await to access from outside. Prevents data races at compile time. Perfect for shared mutable state.",
-      "tags": [
-        "actors"
-      ]
-    },
-    {
-      "id": "conc-004",
-      "front": "What is @MainActor?",
-      "back": "Global actor for main thread. Guarantees code runs on main thread. Use for UI code. Can mark class, function, or property. Async calls to @MainActor auto-dispatch to main thread.",
-      "tags": [
-        "actors",
-        "main-thread"
-      ]
-    },
-    {
-      "id": "conc-005",
-      "front": "How do you handle cancellation in Swift concurrency?",
-      "back": "Check Task.isCancelled or call Task.checkCancellation() (throws). Propagates through async calls. task.cancel() signals cancellation. AsyncSequence ends on cancellation.",
-      "tags": [
-        "tasks",
-        "cancellation"
-      ]
-    },
-    {
-      "id": "conc-006",
-      "front": "What is a continuation and when do you use it?",
-      "back": "Bridges callback-based code to async/await. withCheckedContinuation (safe) or withUnsafeContinuation (fast). Must call resume exactly once. Use to wrap legacy async APIs.",
-      "tags": [
-        "async-await",
-        "interop"
-      ]
-    },
-    {
-      "id": "conc-007",
-      "front": "Explain structured concurrency",
-      "back": "Child tasks are scoped to parent. Parent waits for children. Cancellation propagates down. async let and TaskGroup provide structure. Prevents orphaned tasks and resource leaks.",
-      "tags": [
-        "structured-concurrency"
-      ]
-    },
-    {
-      "id": "conc-008",
-      "front": "What's the difference between async let and TaskGroup?",
-      "back": "async let: Fixed number of concurrent tasks, results bound to variables. TaskGroup: Dynamic number of tasks, add tasks in loop, collect results. Use async let for known count.",
-      "tags": [
-        "structured-concurrency"
-      ]
-    },
-    {
-      "id": "conc-009",
-      "front": "What is Sendable?",
-      "back": "Protocol marking types safe to share across concurrency domains. Value types usually auto-conform. Classes must be final with immutable properties or use locks. @Sendable for closures.",
-      "tags": [
-        "sendable",
-        "thread-safety"
-      ]
-    },
-    {
-      "id": "conc-010",
-      "front": "How does AsyncSequence work?",
-      "back": "Async version of Sequence. Use for-await-in to iterate. Elements arrive over time. Built-in: URLSession.bytes, NotificationCenter.notifications. Create with AsyncStream.",
-      "tags": [
-        "async-sequence"
-      ]
-    },
-    {
-      "id": "conc-011",
-      "front": "What is AsyncStream?",
-      "back": "Create custom AsyncSequence from callbacks. AsyncStream.Continuation yields values. yield(_:) adds element, finish() ends stream. Bridges delegate patterns to async/await.",
-      "tags": [
-        "async-sequence"
-      ]
-    },
-    {
-      "id": "conc-012",
-      "front": "Explain task priority in Swift",
-      "back": "Priorities: userInitiated > high > medium > low > utility > background. Set via Task(priority:). Higher priority tasks scheduled first. Priority can be elevated (not lowered) by system.",
-      "tags": [
-        "tasks"
-      ]
-    },
-    {
-      "id": "conc-013",
-      "front": "What is actor reentrancy?",
-      "back": "When actor awaits, other tasks can execute on it. State may change during suspension. Always revalidate state after await. Don't assume state persists across await points.",
-      "tags": [
-        "actors"
-      ]
-    },
-    {
-      "id": "conc-014",
-      "front": "How do you use nonisolated in actors?",
-      "back": "Marks method/property as not requiring actor isolation. Can be called synchronously from outside. Must only access immutable state or use other nonisolated members. Good for constants.",
-      "tags": [
-        "actors"
-      ]
-    },
-    {
-      "id": "conc-015",
-      "front": "What's the difference between GCD and Swift Concurrency?",
-      "back": "GCD: Manual queue management, completion handlers, no compile-time safety. Swift Concurrency: Automatic scheduling, async/await, compiler-enforced safety, structured cancellation.",
-      "tags": [
-        "comparison"
-      ]
-    },
-    {
-      "id": "conc-016",
-      "front": "How do you handle errors in async functions?",
-      "back": "Mark async throws, use try await at call site. Errors propagate like sync code. Task catches unhandled errors (access via task.result). TaskGroup can use throwing variant.",
-      "tags": [
-        "error-handling"
-      ]
-    },
-    {
-      "id": "conc-017",
-      "front": "What is @TaskLocal?",
-      "back": "Thread-local-like storage for tasks. Value bound for task scope, inherited by child tasks. Use for request IDs, logging context. Set via TaskLocal.withValue { }.",
-      "tags": [
-        "tasks"
-      ]
-    },
-    {
-      "id": "conc-018",
-      "front": "Explain global actors",
-      "back": "@globalActor creates singleton actor for isolation. @MainActor is built-in global actor. Create custom: @globalActor actor MyActor { static let shared = MyActor() }. Share isolation domain.",
-      "tags": [
-        "actors"
-      ]
-    },
-    {
-      "id": "conc-019",
-      "front": "How do you test async code?",
-      "back": "XCTest supports async: func testExample() async throws { }. Use await directly in test. For tasks, await task.value. Mock actors for isolation testing.",
-      "tags": [
-        "testing"
-      ]
-    },
-    {
-      "id": "conc-020",
-      "front": "What are the common Swift Concurrency pitfalls?",
-      "back": "1) Actor reentrancy bugs 2) Forgetting @MainActor for UI 3) Blocking threads with sync calls 4) Not handling cancellation 5) Sendable violations 6) Retain cycles in Task closures.",
-      "tags": [
-        "best-practices"
-      ]
-    },
-    {
       "id": "concurrency_ef63c6d3be70",
-      "front": "Structured Concurrency",
-      "back": "",
+      "front": "Explain Swift's Structured Concurrency. How does it improve upon older concurrency models like GCD, and what are its core components (async/await, Tasks, Actors)?",
+      "back": "Structured concurrency ensures predictable execution and simplifies error handling by creating explicit parent-child relationships between concurrent tasks. It improves upon GCD by enforcing compile-time checks for proper task management, preventing issues like orphaned tasks and unhandled errors.\n\n**Core Components:**\n\n*   **async/await:**  `async` marks a function as potentially suspending, while `await` pauses execution until the async function returns. This makes asynchronous code look and behave like synchronous code.\n\n```swift\nfunc fetchData(from url: URL) async throws -> Data {\n    let (data, _) = try await URLSession.shared.data(from: url)\n    return data\n}\n```\n\n*   **Tasks:** Represent a unit of asynchronous work.  Tasks can be created using `Task {}` or by detaching a closure with `Task.detached {}`. Detached tasks are not part of the current structured concurrency scope and require manual management.\n\n```swift\nfunc processData() async {\n    async let data1 = fetchData(from: URL(string: \"...\")!)\n    async let data2 = fetchData(from: URL(string: \"...\")!)\n\n    do {\n        let result1 = try await data1\n        let result2 = try await data2\n        // Process results\n    } catch {\n        // Handle errors\n    }\n}\n```\n\n*   **Actors:** Protect mutable state from concurrent access. Only one task can access an actor's state at a time, preventing data races. Accessing an actor's properties or methods requires using `await`.\n\n```swift\nactor Counter {\n    private var count = 0\n\n    func increment() async {\n        count += 1\n    }\n\n    func getCount() -> Int {\n        return count\n    }\n}\n\nlet counter = Counter()\n\nTask {\n    await counter.increment()\n    print(counter.getCount())\n}\n```\n\n**Common Pitfalls:**\n\n*   **Ignoring Errors:**  Failing to handle errors thrown by `async` functions can lead to unexpected behavior.\n*   **Deadlocks:**  Occur when two or more tasks are blocked indefinitely, waiting for each other. Avoid circular dependencies between actors and tasks.\n*   **Over-using detached tasks:** Detached tasks lose the benefits of structured concurrency, making error handling and cancellation more difficult. Use them sparingly and only when truly necessary.\n\n**When to Use vs. Alternatives:**\n\n*   **Structured Concurrency (async/await, Tasks, Actors):**  Preferred for new projects or when refactoring existing code. Offers better readability, error handling, and data race prevention compared to GCD and Operation Queues.\n*   **GCD:**  Useful for simple background tasks and dispatching work to specific queues. Can be more efficient for very low-level operations where performance is critical.\n*   **Operation Queues:**  Suitable for managing complex dependencies between tasks and controlling concurrency levels.  Offers more control over task execution order and cancellation than GCD, but less safety than structured concurrency.\n\nStructured concurrency provides a safer and more maintainable way to write concurrent code in Swift, reducing the risk of common concurrency issues and improving overall application stability.",
       "code_example": null,
       "tags": [
-        "Structured Concurrency"
+        "concurrency",
+        "swift",
+        "async/await",
+        "tasks",
+        "actors",
+        "GCD"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
@@ -181,11 +22,15 @@
     },
     {
       "id": "concurrency_0a59c109c99a",
-      "front": "Actors and Actor isolation",
-      "back": "",
+      "front": "Explain Actors in Swift's concurrency model. What problem do they solve, and how does actor isolation work? Provide an example and discuss potential pitfalls.",
+      "back": "Actors address data races in concurrent environments by providing a safe way to encapsulate state and ensure exclusive access. An actor is a reference type that protects its mutable state, allowing only one thread to access its properties or methods at a time.\n\n**Core Concept:**\nActors enforce *actor isolation*.  This means that any access to an actor's state must go through its methods, and these methods are executed serially, preventing data races.  The compiler enforces this isolation at compile time.\n\n**Code Example:**\n```swift\nactor Counter {\n    private var count = 0\n\n    func increment() async {\n        count += 1\n        print(\"Count is now: \\(count)\")\n    }\n\n    nonisolated func currentCount() -> Int {\n        return count\n    }\n}\n\nfunc testCounter() async {\n    let counter = Counter()\n    \n    await withTaskGroup(of: Void.self) { group in\n        for _ in 0..<100 {\n            group.addTask {\n                await counter.increment()\n            }\n        }\n    }\n\n    print(\"Final count: \\(counter.currentCount())\")\n}\n```\nIn this example, `Counter` is an actor. The `increment()` method is automatically isolated to the actor instance. Multiple tasks can call `increment()` concurrently, but the actor ensures that they are executed one at a time, preventing race conditions on `count`. The `currentCount()` method is marked `nonisolated` because it only returns the value of count, without modifying it, and it can be accessed without requiring an `await`.  This is useful for read-only access.\n\n**Common Pitfalls:**\n*   **Deadlocks:**  If two actors are waiting for each other, a deadlock can occur.  This often happens when one actor calls an `async` method on another actor while holding a lock or waiting for something else.  Careful design is needed to avoid circular dependencies.\n*   **Reentrancy:** While an actor is processing an `async` function, it *can* be re-entered via another `async` call.  If the state changes during the first `async` call, the second call might see unexpected results.  Always ensure that your actor's methods are reentrant-safe.\n*   **Forgetting `await`:**  When calling an `async` method on an actor from outside the actor, you *must* use `await`.  Forgetting `await` will cause a compiler error.\n*   **Performance:** Because actor methods are executed serially, excessive contention can lead to performance bottlenecks. Consider using finer-grained actors or other concurrency mechanisms if needed.\n\n**When to Use vs. Alternatives:**\n*   **Use Actors:** When you have mutable state that needs to be accessed concurrently and you want to avoid data races. Actors are excellent for encapsulating data and ensuring thread safety.\n*   **Alternatives:**\n    *   **DispatchQueues with Barriers:**  Can be used for managing concurrent access to shared resources, but require manual locking and are more prone to errors.  Actors provide a higher-level, safer abstraction.\n    *   **NSLock/NSRecursiveLock:** Low-level locking mechanisms that require careful management to avoid deadlocks.  Actors provide a more structured approach to concurrency.\n    *   **Atomic Properties (Objective-C):** Atomic properties provide basic thread safety, but can be less performant than actors and don't prevent all types of race conditions.\n    *   **Immutable Data Structures:** If possible, using immutable data structures eliminates the need for locking altogether.\n\nActors are a powerful tool for writing safe and efficient concurrent code in Swift. By understanding their core principles and potential pitfalls, you can leverage them to build robust and scalable applications.",
       "code_example": null,
       "tags": [
-        "Actors and Actor isolation"
+        "concurrency",
+        "actors",
+        "actor isolation",
+        "swift",
+        "async/await"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
@@ -193,16 +38,11 @@
     },
     {
       "id": "concurrency_c4f511d6cdf5",
-      "front": "Explain the Sendable protocol and its role in Swift concurrency. How does it help prevent data races, and what are some common ways to adopt it?",
-      "back": "The `Sendable` protocol (Swift 5.5+) is a marker protocol indicating that a type's values are safe to be shared between concurrent execution contexts (e.g., different threads or actors). It prevents data races by ensuring that only immutable or properly synchronized data is accessed concurrently.  Types conforming to `Sendable` guarantee that instances can be copied without introducing concurrency issues.  \n\n**Core Concept:**\n`Sendable` doesn't enforce any specific synchronization mechanism itself. Instead, it's a *promise* that the type inherently manages its state safely when shared concurrently. The Swift compiler uses this promise to enforce compile-time checks and warnings about potential data races.\n\n**Adoption:**\n1. **Immutable Types:** Structs and enums with only immutable stored properties are implicitly `Sendable`.  No explicit conformance is needed.\n\n2. **Value Types:**  Value types that are thread-safe are also implicitly `Sendable`.\n\n3. **Classes:** Classes are generally *not* implicitly `Sendable` because they have mutable state and reference semantics.  To make a class `Sendable`, you must use synchronization mechanisms like locks or actors to protect its mutable state.  Even then, you MUST mark the class as `@unchecked Sendable`. This tells the compiler that *you* have ensured thread safety, even though it can't verify it automatically. Misusing `@unchecked Sendable` is dangerous and can lead to data races.\n\n4. **Actors:** Actors inherently provide mutual exclusion for their state, so actor types are implicitly `Sendable`.\n\n**Code Example:**\n```swift\n// Implicit Sendable (struct with immutable properties)\nstruct Point: Sendable {\n    let x: Int\n    let y: Int\n}\n\n// Implicit Sendable (enum)\nenum State: Sendable {\n    case idle\n    case running\n    case completed\n}\n\n// Class - requires explicit synchronization and @unchecked Sendable\nclass Counter {\n    private var value: Int = 0\n    private let lock = NSLock()\n\n    func increment() {\n        lock.lock()\n        defer { lock.unlock() }\n        value += 1\n    }\n\n    func getValue() -> Int {\n        lock.lock()\n        defer { lock.unlock() }\n        return value\n    }\n}\n\nextension Counter: @unchecked Sendable {}\n\n// Actor - inherently Sendable\nactor MyActor {\n    private var count: Int = 0\n\n    func increment() {\n        count += 1\n    }\n\n    func getCount() -> Int {\n        return count\n    }\n}\n```\n\n**Common Pitfalls:**\n*   Forgetting synchronization in classes and marking them `@unchecked Sendable` without proper protection.  This is a major source of data races.\n*   Assuming a type is `Sendable` without verifying its thread safety.\n*   Passing non-`Sendable` data across actor boundaries or to concurrent tasks without proper isolation.\n\n**Alternatives:**\n*   **Data Isolation:** Instead of sharing mutable state, consider copying data or using immutable data structures.\n*   **Actors:** Actors provide a higher-level concurrency model that simplifies thread safety.\n*   **DispatchQueues (with caution):**  While possible, using `DispatchQueue.sync` to protect data is error-prone and can lead to deadlocks.  Actors are generally preferred.\n\n`Sendable` is crucial for writing safe concurrent code in Swift.  It provides a compile-time safety net to help prevent data races, but it requires careful consideration of the thread safety of your types.",
+      "front": "Sendable protocol",
+      "back": "",
       "code_example": null,
       "tags": [
-        "concurrency",
-        "sendable",
-        "actors",
-        "thread safety",
-        "data race",
-        "swift"
+        "Sendable protocol"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
@@ -210,11 +50,15 @@
     },
     {
       "id": "concurrency_adf2fcd2570c",
-      "front": "Task Groups",
-      "back": "",
+      "front": "How do Task Groups in Swift concurrency help manage child tasks and propagate results, and what are their advantages over dispatch groups?",
+      "back": "Task Groups enable structured concurrency, allowing you to create dynamic child tasks within a parent task. They provide a scope where child tasks execute concurrently, and the parent task waits for all children to complete before continuing. Results can be collected and aggregated. Task Groups offer better error handling and cancellation compared to dispatch groups.\n\n```swift\nfunc processData() async throws -> [Int] {\n    await withTaskGroup(of: Int.self, returning: [Int].self) { group in\n        for i in 1...5 {\n            group.addTask {\n                // Simulate some work\n                try? await Task.sleep(nanoseconds: UInt64(i * 100_000_000))\n                if i == 3 { throw MyError.simulatedError }\n                return i * 2\n            }\n        }\n\n        var results: [Int] = []\n        for await result in group {\n            results.append(result)\n        }\n\n        return results\n    }\n}\n\nenum MyError: Error {\n    case simulatedError\n}\n\n//Usage\nTask {\n    do {\n        let processedData = try await processData()\n        print(\"Processed data: \\(processedData)\")\n    } catch {\n        print(\"Error processing data: \\(error)\")\n    }\n}\n```\n\n**Core Concept:** Task Groups provide a structured way to manage concurrent child tasks.  `withTaskGroup` creates the group, `addTask` adds work, and the `await` on the group waits for completion.\n\n**Advantages over Dispatch Groups:**\n*   **Structured Concurrency:** Task Groups enforce a clear parent-child relationship, improving code clarity and error handling.\n*   **Cancellation Propagation:**  Cancelling the parent task automatically cancels child tasks.\n*   **Error Propagation:** Errors thrown by child tasks are automatically propagated to the parent task, simplifying error handling. DispatchGroups require manual error tracking.\n*   **Type Safety:** Task Groups are type-safe, ensuring that the results returned by child tasks are of the expected type.\n\n**Common Pitfalls:**\n*   Not awaiting all child tasks: If you don't iterate over the TaskGroup, the parent task might complete before all children are done.\n*   Ignoring errors:  Make sure to handle errors propagated from child tasks using `try await` or `try? await` when adding tasks, and then handling the error in the `do/catch` block.\n*   Accidental synchronous work: Ensure work within `addTask` is truly asynchronous to avoid blocking the Task Group.\n\n**When to Use:**\nUse Task Groups when you need to perform multiple independent asynchronous operations concurrently and aggregate their results.  Use Dispatch Groups for lower-level concurrency management when finer-grained control is needed and structured concurrency isn't a priority.",
       "code_example": null,
       "tags": [
-        "Task Groups"
+        "concurrency",
+        "taskgroup",
+        "swift",
+        "async",
+        "structured concurrency"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
@@ -222,29 +66,32 @@
     },
     {
       "id": "concurrency_b2a458c2caac",
-      "front": "AsyncSequence and AsyncStream",
-      "back": "",
+      "front": "Explain `AsyncSequence` and `AsyncStream` in Swift. How do they facilitate asynchronous data processing, and what are their key differences and use cases?",
+      "back": "`AsyncSequence` and `AsyncStream` are Swift's answer to dealing with asynchronous data streams. Think of `AsyncSequence` as the asynchronous counterpart to `Sequence`. It represents a series of values produced over time, asynchronously. You can iterate over it using `for await in`. `AsyncStream`, on the other hand, is a type that lets you create an `AsyncSequence` by manually yielding values to it.\n\nKey Differences:\n*   `AsyncSequence`: A protocol defining the structure of an asynchronous sequence.  You *consume* data from an `AsyncSequence`.\n*   `AsyncStream`: A concrete type that *produces* an asynchronous sequence. It acts as a bridge between synchronous and asynchronous code.\n\nUse Cases:\n*   `AsyncSequence`: Ideal for representing data feeds like network streams, file reads, or sensor data.\n*   `AsyncStream`: Useful when you need to adapt existing synchronous APIs to the async/await world or when you have complex logic for producing asynchronous values.\n\nExample:\n\n```swift\n// Using AsyncStream to create an asynchronous sequence of numbers\nlet stream = AsyncStream<Int> { continuation in\n    Task {\n        for i in 1...5 {\n            continuation.yield(i)\n            try? await Task.sleep(nanoseconds: 1_000_000_000) // Simulate delay\n        }\n        continuation.finish()\n    }\n}\n\n// Consuming the AsyncStream using AsyncSequence\nTask {\n    for await number in stream {\n        print(\"Received: \\(number)\")\n    }\n    print(\"Stream finished\")\n}\n```\n\nCommon Pitfalls:\n*   Forgetting to call `continuation.finish()` in `AsyncStream` can lead to infinite loops.\n*   Not handling errors properly within the `AsyncStream`'s closure can cause unexpected behavior.\n*   Over-yielding values in `AsyncStream` without proper backpressure handling can lead to memory issues.\n\nAlternatives:\n*   Combine framework: Offers more powerful operators for transforming and combining asynchronous data streams, but has a steeper learning curve.\n*   GCD: Lower-level API for managing concurrency, suitable for simple asynchronous tasks but requires more manual management.\n\nWhen to Use:\n*   Use `AsyncSequence` and `AsyncStream` when you have a clear need for asynchronous data streams and want to leverage the simplicity and readability of async/await.\n*   Choose Combine for complex data transformations and reactive programming.\n*   Consider GCD for simple, low-level asynchronous operations.",
       "code_example": null,
       "tags": [
-        "AsyncSequence and AsyncStream"
+        "concurrency",
+        "async/await",
+        "AsyncSequence",
+        "AsyncStream"
       ],
       "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/"
       ]
     },
     {
       "id": "concurrency_63f51f17b095",
-      "front": "Explain the purpose of MainActor and global actors in Swift concurrency, including how they ensure thread safety and how they differ from GCD. Provide a practical example.",
-      "back": "MainActor and global actors address thread safety in Swift's concurrent environment.  \n\n**Core Concept:**\n\n*   **Data Races:**  Occur when multiple threads access and modify the same data concurrently, leading to unpredictable behavior. Actors isolate state, ensuring that only one thread can access it at a time.\n*   **MainActor:** A global actor that executes code on the main thread. UI updates *must* occur on the main thread.  `@MainActor` ensures code runs on the main thread.\n*   **Global Actors:** Custom actors that provide isolation similar to MainActor, but for other contexts. They define a specific execution context.\n\n**Code Example:**\n\n```swift\nimport Foundation\n\nactor Counter {\n    private var count = 0\n\n    func increment() -> Int {\n        count += 1\n        return count\n    }\n}\n\n@MainActor\nclass MyViewController: UIViewController {\n    let counter = Counter()\n    @IBOutlet weak var label: UILabel!\n\n    func updateUI() async {\n        let newCount = await counter.increment()\n        label.text = \"Count: \\(newCount)\"\n    }\n\n    @IBAction func buttonTapped(_ sender: UIButton) {\n        Task {\n            await updateUI()\n        }\n    }\n}\n```\n\n**Explanation:**\n\n1.  `Counter` is an actor, protecting its `count` property from concurrent access. Only one task can call `increment` at a time.\n2.  `MyViewController` is a UIViewController that needs to update the label, which *must* occur on the main thread. `@MainActor` attribute ensures that the `MyViewController` will run on the main thread.\n3.  `buttonTapped` starts a `Task` to increment the counter and update the UI.\n4.  `updateUI` is marked `async` because it needs to `await` the result of `counter.increment()`.  Because `MyViewController` is running on MainActor, the UI updates are also performed on the main thread.\n\n**Common Pitfalls:**\n\n*   **Forgetting `await`:**  When calling an actor's method, you *must* use `await`.  Failing to do so will result in a compiler error.\n*   **Deadlocks:**  Be careful when calling `await` from within an actor.  If two actors are waiting for each other, a deadlock can occur.\n*   **Overuse of MainActor:** Performing long-running tasks on the main thread will block the UI. Offload intensive work to background tasks or global actors.\n\n**When to Use vs. Alternatives (GCD):**\n\n*   **Actors:**  Ideal for managing state and ensuring thread safety. They provide compile-time safety, preventing data races.  Actors are preferred when data isolation and preventing race conditions are paramount.\n*   **GCD:**  Lower-level API for managing concurrent tasks. More flexible but requires manual synchronization (locks, semaphores) to avoid data races. GCD is still useful for dispatching tasks to background queues, but for state management, actors are generally safer and easier to use.\n\n**Key Differences from GCD:**\n\n*   **Compile-time Safety:** Actors provide compile-time guarantees about thread safety. GCD requires manual synchronization, which is prone to errors.\n*   **Data Isolation:** Actors inherently isolate their state. GCD requires explicit locking mechanisms.\n*   **Simplicity:** Actors simplify concurrent programming by handling the synchronization details internally.\n\nIn summary, `MainActor` ensures UI updates occur on the main thread, while global actors create isolated contexts for thread-safe concurrent operations, offering a safer and more manageable alternative to GCD's manual synchronization.",
+      "front": "Explain MainActor and global actors. How do they ensure thread safety and what are their use cases? Provide a code example.",
+      "back": "MainActor and global actors in Swift concurrency manage shared mutable state safely across threads.\n\nMainActor:  Ensures code executes on the main thread, vital for UI updates and avoiding UI freezes.  It's a global actor implicitly used for UI-related tasks. All UI updates MUST happen on the MainActor.\n\nGlobal Actors:  Enable you to define custom execution contexts (similar to dispatch queues) to isolate specific resources or data. Accessing data guarded by an actor is always serialized, preventing race conditions.  You can create multiple instances of global actors.\n\nThread Safety: Actors achieve thread safety by serializing access to their internal state.  Only one task can access an actor's mutable state at a time. This prevents data races and ensures consistency.\n\nUse Cases:\n* MainActor: All UI updates, interacting with UIKit/AppKit.\n* Global Actors: Managing access to shared resources (e.g., a database connection pool, a file system).  Performing long-running tasks on background threads while ensuring data consistency.\n\nExample:\n```swift\nimport Foundation\n\nactor Counter {\n    private var count = 0\n\n    func increment() async -> Int {\n        count += 1\n        return count\n    }\n\n    func getCount() -> Int {\n        return count\n    }\n}\n\n@MainActor\nclass MyViewController {\n    let counter = Counter()\n\n    func updateUI() async {\n        let newCount = await counter.increment()\n        // Safely update UI on the main thread\n        print(\"Count: \\(newCount)\")\n    }\n}\n\n// Usage\nlet viewController = MyViewController()\nTask {\n    await viewController.updateUI()\n}\n```\n\nCommon Pitfalls:\n* Deadlocks:  Occur when two or more tasks are blocked indefinitely, waiting for each other.  Avoid circular dependencies between actors.\n* Actor reentrancy: An actor can re-enter itself if it suspends during a call and another task calls it before the first task resumes. Be mindful of state changes during suspension points.\n* Forgetting `await`: If you forget `await` when calling an `async` function on an actor, the compiler will likely warn you, but the code will execute synchronously, potentially blocking the current thread.\n\nAlternatives:\n* GCD:  Lower-level, requires manual thread management and synchronization (e.g., locks).  More error-prone than actors.\n* OperationQueues: Higher-level than GCD, but still requires manual synchronization for shared mutable state.\n\nActors are generally preferred for managing shared mutable state due to their built-in thread safety and ease of use.  GCD and OperationQueues are useful for general concurrency tasks where shared mutable state is not a primary concern.",
       "code_example": null,
       "tags": [
         "concurrency",
-        "swift",
-        "mainactor",
-        "global actor",
+        "actors",
+        "MainActor",
+        "global actors",
         "thread safety",
-        "gcd"
+        "swift"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
@@ -252,133 +99,20 @@
     },
     {
       "id": "concurrency_dbfc3f91d97e",
-      "front": "Explain different techniques for preventing data races in Swift, considering both performance and complexity tradeoffs.",
-      "back": "I'd focus on these:\n1. **Serial Queues:** Simple. Guarantee serial access. Great for simple cases, but limit concurrency. Example: file access.\n2. **Dispatch Barrier:** Allows concurrent reads, exclusive writes. Good balance. `DispatchWorkItemFlags.barrier`.  Example: Cache with frequent reads, infrequent writes.\n3. **Locks:**  `NSLock`, `NSRecursiveLock`, `os_unfair_lock`. Fine-grained control. `os_unfair_lock` avoids priority inversion, unlike `NSLock`. Can cause deadlocks if not managed carefully.\n4. **@actor:** Swift 5.5+. Simplifies concurrent code by isolating state. Compiler enforces mutual exclusion.  Avoids explicit locking. Example: Data model shared between views.\n5. **Atomic Operations:** `OSAtomic.h` (legacy), `Atomic<T>`. Low-level, lock-free. Best performance if used correctly. Complex, error-prone.  Example: Incrementing a counter.\nChoose the right tool for job. Actors and serial queues are often easiest. Unfair locks offer a good balance. Use atomic operations as a last resort.",
+      "front": "Explain data races in concurrent programming and describe strategies to prevent them in Swift.  Include common pitfalls and alternative solutions.",
+      "back": "Data races occur when multiple threads access and modify the same memory location concurrently, without proper synchronization, leading to unpredictable behavior.  To prevent them, we ensure exclusive access to shared resources.\n\n**Strategies:**\n\n1.  **Locks (Mutexes):** Provide mutual exclusion. Only one thread can hold the lock at a time.\n    ```swift\n    import Foundation\n\n    class SafeCounter {\n        private var counter = 0\n        private let lock = NSRecursiveLock()\n\n        func increment() {\n            lock.lock()\n            defer { lock.unlock() }\n            counter += 1\n        }\n\n        func value() -> Int {\n            lock.lock()\n            defer { lock.unlock() }\n            return counter\n        }\n    }\n    ```\n    *   `NSRecursiveLock` allows the same thread to acquire the lock multiple times (recursion).\n    *   `defer` ensures the lock is always released, even if errors occur.\n\n2.  **Serial Dispatch Queues:** GCD serial queues execute tasks one at a time, eliminating concurrent access.\n    ```swift\n    let serialQueue = DispatchQueue(label: \"com.example.serial\", qos: .default)\n    var sharedResource = 0\n\n    serialQueue.async {\n        // Access and modify sharedResource safely\n        sharedResource += 1\n    }\n\n    serialQueue.async {\n        // Access and modify sharedResource safely\n        sharedResource *= 2\n    }\n    ```\n\n3.  **Dispatch Barriers:** Used with concurrent queues to create exclusive write access.  Multiple readers can access concurrently, but a writer gets exclusive access.\n    ```swift\n    let concurrentQueue = DispatchQueue(label: \"com.example.concurrent\", attributes: .concurrent)\n    var data = [Int]()\n\n    func readData() {\n        concurrentQueue.async {\n            // Read data safely\n            print(data)\n        }\n    }\n\n    func writeData(newValue: Int) {\n        concurrentQueue.async(flags: .barrier) {\n            // Write data exclusively\n            data.append(newValue)\n        }\n    }\n    ```\n\n4.  **Atomic Operations:**  Provide low-level primitives for thread-safe operations on single variables (e.g., using `OSAtomic` functions or `Atomic` property wrappers in newer Swift versions).\n\n5.  **Actors (Swift 5.5+):**  Provide a higher-level concurrency model that isolates state and ensures that only one task can access the actor's state at a time.\n    ```swift\n    actor Counter {\n        private var count = 0\n\n        func increment() {\n            count += 1\n        }\n\n        func getCount() -> Int {\n            return count\n        }\n    }\n\n    let counter = Counter()\n\n    Task {\n        await counter.increment()\n        print(await counter.getCount())\n    }\n    ```\n\n**Common Pitfalls:**\n\n*   **Deadlocks:** Occur when threads are blocked indefinitely, waiting for each other to release locks.  Avoid circular dependencies in lock acquisition.\n*   **Priority Inversion:** A low-priority thread holds a lock needed by a high-priority thread.  Use priority inheritance or adjust thread priorities.\n*   **Over-locking:**  Holding locks for too long reduces concurrency. Minimize the critical section.\n*   **Forgetting to unlock:** Always ensure locks are released, even in error conditions (using `defer`).\n*   **Incorrect Queue Usage:** Using the wrong type of queue (e.g., concurrent instead of serial) can lead to data races.\n\n**Alternatives:**\n\n*   **Immutable Data Structures:**  If data is immutable, no synchronization is needed.\n*   **Message Passing:** Threads communicate by sending messages, avoiding direct shared memory access.\n\n**When to Use:**\n\n*   Locks: When you need fine-grained control over synchronization and have complex data structures.\n*   Serial Queues:  When you need to ensure sequential execution of tasks that access shared resources.\n*   Dispatch Barriers: When you have a mix of read and write operations and want to allow concurrent reads but exclusive writes.\n*   Actors:  When you want a higher-level, safer concurrency model with isolated state.  Generally preferred for new code in Swift 5.5+.\n\nChoosing the right strategy depends on the specific requirements of your application and the complexity of the data being shared.",
       "code_example": null,
       "tags": [
         "concurrency",
         "data race",
-        "swift",
-        "synchronization",
-        "actors",
-        "locks",
-        "dispatch queue"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
-      ]
-    },
-    {
-      "id": "combine_e78094e3e387",
-      "front": "Explain Combine's Publisher/Subscriber model. How does it differ from delegation or notifications? Provide a practical example and discuss common pitfalls.",
-      "back": "Combine is a declarative Swift framework for handling asynchronous events. It uses a Publisher/Subscriber model for data streams.\n\n**Core Concepts:**\n*   **Publisher:** Emits a sequence of values over time and a completion or failure event.\n*   **Subscriber:** Receives values and completion/failure events from a Publisher.\n*   **Subscription:** Represents the connection between a Publisher and a Subscriber.\n*   **Operators:** Functions that modify, filter, or combine Publishers.\n\n**Difference from Delegation/Notifications:**\n*   **Delegation:** One-to-one, tightly coupled. Requires explicit protocol conformance.\n*   **Notifications:** One-to-many, loosely coupled. Can lead to scattered code and difficulty tracking data flow.\n*   **Combine:** Provides a unified, type-safe, and composable way to handle asynchronous events. Uses reactive programming principles, making data flow more predictable and easier to manage.\n\n**Example:**\n```swift\nimport Combine\n\n// Publisher: A timer that emits dates every second\nlet timerPublisher = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()\n\n// Subscriber: Prints the received date\nlet timerSubscription = timerPublisher\n    .sink(receiveValue: { date in\n        print(\"Current date: \\(date)\")\n    })\n\n// After 5 seconds, cancel the subscription\nDispatchQueue.main.asyncAfter(deadline: .now() + 5) {\n    timerSubscription.cancel()\n    print(\"Timer stopped.\")\n}\n```\n\n**Common Pitfalls:**\n*   **Retain Cycles:** Publishers and Subscribers can create strong reference cycles. Use `[weak self]` or `[unowned self]` in closures to avoid this.\n*   **Backpressure:** Publishers can emit data faster than Subscribers can process it. Use operators like `.throttle`, `.debounce`, or `.buffer` to manage the flow of data.\n*   **Error Handling:** Properly handle errors in your Publishers using `.catch` or `.retry` operators.  Failing to do so can silently stop your pipeline.\n*   **Memory Management:**  Store subscriptions in properties with appropriate scope to prevent premature deallocation and unexpected behavior.\n*   **Over-releasing:** Cancelling a subscription multiple times can lead to crashes. Ensure subscriptions are cancelled only once.\n\n**Alternatives:**\n*   **Delegation:** Suitable for simple one-to-one communication.\n*   **Notifications:** Useful for broadcasting events to multiple observers.\n*   **GCD (Grand Central Dispatch):** Lower-level API for managing concurrency. Can be used for asynchronous tasks but requires more manual management.\n*   **Async/Await:**  More modern approach for handling asynchronous operations, focused on sequential code flow, but may not be as suitable for complex data stream transformations as Combine.\n\n**When to use Combine:**\n*   Complex asynchronous data flows.\n*   UI event handling (e.g., text field changes, button taps).\n*   Networking requests and responses.\n*   Any situation where you need to react to changes in data over time.\n\nCombine offers a powerful and type-safe way to manage asynchronous events in Swift. Understanding its core concepts and potential pitfalls is crucial for building robust and maintainable iOS applications.",
-      "code_example": null,
-      "tags": [
-        "combine",
-        "publisher",
-        "subscriber",
-        "asynchronous",
-        "reactive programming"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://developer.apple.com/news/",
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.avanderlee.com/swift/core-data/"
-      ]
-    },
-    {
-      "id": "combine_d81a9c91347b",
-      "front": "Explain Combine's `map`, `flatMap`, and `combineLatest` operators.  How do they transform and combine publishers?  Provide examples and use cases for each, including potential pitfalls.",
-      "back": "Combine offers powerful operators for transforming and combining publishers. `map` transforms each element emitted by a publisher. `flatMap` transforms each element into a *new* publisher and then flattens these publishers into a single stream. `combineLatest` waits for each of its input publishers to emit at least one value, then emits a new value whenever *any* of the upstream publishers emit, combining the latest values from each.\n\n**map**:  Use `map` for simple, synchronous transformations.  It's similar to `map` on arrays.  \n```swift\nimport Combine\n\nlet numbers = PassthroughSubject<Int, Never>()\n\nlet squaredNumbers = numbers\n    .map { $0 * $0 }\n    .sink { print(\"Squared: \\($0)\") }\n\nnumbers.send(1)\nnumbers.send(2)\nnumbers.send(3)\n// Prints: Squared: 1, Squared: 4, Squared: 9\n```\n\n**flatMap**: Use `flatMap` when you need to create a new publisher for each emitted value and then merge the results.  It's useful for asynchronous operations or when the transformation results in a stream of values.  A common pitfall is creating too many inner publishers, which can lead to performance issues.  Consider using `maxPublishers` to limit concurrency.\n\n```swift\nimport Combine\n\nlet strings = PassthroughSubject<String, Never>()\n\nlet urlPublisher = strings\n    .flatMap { string -> Future<URL, Error> in\n        return Future { promise in\n            guard let url = URL(string: string) else {  promise(.failure(URLError(.badURL))) ; return }\n            promise(.success(url))\n        }\n    }\n    .sink(receiveCompletion: { completion in\n        print(\"Completion: \\(completion)\")\n    }, receiveValue: { url in\n        print(\"URL: \\(url)\")\n    })\n\nstrings.send(\"https://www.example.com\")\nstrings.send(\"invalid url\")\nstrings.send(\"https://www.apple.com\")\n\n//prints URL, and completion with failure\n```\n\n**combineLatest**: Use `combineLatest` when you need to react to changes in multiple publishers.  It emits a new value only when *all* publishers have emitted at least once.  A common use case is combining data from multiple UI elements (e.g., text fields) to enable/disable a button.  A potential pitfall is that it won't emit anything until all input publishers have emitted at least one value. Also, order matters! The order of publishers in `combineLatest` determines the order of their values in the resulting tuple.\n\n```swift\nimport Combine\n\nlet namePublisher = CurrentValueSubject<String, Never>(\"\")\nagePublisher = CurrentValueSubject<Int, Never>(0)\n\nlet combinedPublisher = Publishers.CombineLatest(namePublisher, agePublisher)\n    .sink { (name, age) in\n        print(\"Name: \\(name), Age: \\(age)\")\n    }\n\nnamePublisher.send(\"Alice\")\nagePublisher.send(30)\nnamePublisher.send(\"Bob\")\n\n// Prints:\n// Name: Alice, Age: 30\n// Name: Bob, Age: 30\n\n```\n\nAlternatives:  For `map`, consider using `Publisher.handleEvents` for side effects without transforming the data.  For `flatMap`, explore `Publisher.switchToLatest` for managing the latest publisher from a stream of publishers (cancels previous ones). For combining, `zip` emits only when all publishers emit a new value *simultaneously* (index-aligned), which is different from `combineLatest`. `merge` combines values from multiple publishers of the *same* type into a single publisher.\n",
-      "code_example": null,
-      "tags": [
-        "combine",
-        "operators",
-        "map",
-        "flatMap",
-        "combineLatest",
-        "publisher",
-        "swiftui"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/16-swift/power-of-swift/",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "combine_1cf53805b48a",
-      "front": "Error handling in Combine",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Error handling in Combine"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.objc.io/issues/16-swift/swift-functions/"
-      ]
-    },
-    {
-      "id": "combine_83feeebb4e47",
-      "front": "Combine and async/await both address asynchronous programming. Compare and contrast their strengths, weaknesses, and ideal use cases. When would you choose one over the other and why?",
-      "back": "Both Combine and async/await simplify asynchronous code, but differ significantly.\n\n**Combine:** A declarative framework for handling asynchronous events over time. It uses publishers, subscribers, and operators to process data streams. Think of it as reactive programming.\n\n**async/await:** A language-level feature that allows writing asynchronous code in a synchronous style. It simplifies working with completion handlers and eliminates callback hell.\n\n**Strengths:**\n*   **Combine:** Powerful for complex data transformations and event handling. Great for UI updates based on data streams (e.g., search bars, network status). Centralized error handling and cancellation.\n*   **async/await:** Simpler syntax for basic asynchronous tasks. Easier to read and write than completion handlers. Integrates well with existing Swift code.\n\n**Weaknesses:**\n*   **Combine:** Steeper learning curve due to its reactive nature and operators. Can lead to complex chains of operators that are hard to debug.\n*   **async/await:** Less powerful for complex data transformations. Requires more manual error handling and cancellation in some cases.  Not ideal for continuous data streams.\n\n**Code Example (Combine):**\n```swift\nimport Combine\n\nfunc fetchDataPublisher() -> AnyPublisher<String, Error> {\n    Future<String, Error> {\n        promise in\n        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {\n            promise(.success(\"Data from network\"))\n        }\n    }\n    .eraseToAnyPublisher()\n}\n\n\nlet cancellable = fetchDataPublisher()\n    .sink(\n        receiveCompletion: { completion in\n            switch completion {\n            case .finished:\n                print(\"Finished\")\n            case .failure(let error):\n                print(\"Error: \\(error)\")\n            }\n        },\n        receiveValue: { value in\n            print(\"Received: \\(value)\")\n        }\n    )\n```\n\n**Code Example (async/await):**\n```swift\nfunc fetchDataAsync() async throws -> String {\n    try await Task.sleep(nanoseconds: 1_000_000_000) // Simulate network delay\n    return \"Data from network\"\n}\n\n\nTask {\n    do {\n        let data = try await fetchDataAsync()\n        print(\"Received: \\(data)\")\n    } catch {\n        print(\"Error: \\(error)\")\n    }\n}\n```\n\n**When to Use:**\n*   **Combine:** When dealing with complex, continuous data streams, reactive UI, or requiring robust error handling and cancellation.\n*   **async/await:** For simpler, one-off asynchronous tasks, improving code readability, and integrating with existing completion-handler-based APIs.\n\n**Common Pitfalls:**\n*   **Combine:** Over-complicating pipelines with unnecessary operators. Forgetting to store cancellables, leading to memory leaks. Incorrectly handling errors in the pipeline.\n*   **async/await:** Not handling errors with `try` and `catch`. Blocking the main thread with long-running asynchronous tasks.  Not understanding structured concurrency.\n\n**Alternatives:** Grand Central Dispatch (GCD) - lower level, more manual management needed. Operation Queues - useful for managing dependencies between asynchronous tasks.\n\nIn summary, Choose Combine for reactive streams and complex transformations. Opt for async/await for easier-to-read, straightforward asynchronous operations.  Understanding both allows you to select the best tool for the job.",
-      "code_example": null,
-      "tags": [
-        "combine",
-        "async/await",
-        "concurrency",
-        "asynchronous",
+        "mutex",
+        "gcd",
+        "dispatch barrier",
+        "actor",
         "swift"
       ],
       "sources": [
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "combine_4d7c72d6d8db",
-      "front": "Explain how to create a custom `Publisher` in Combine, including its purpose, implementation considerations, and potential use cases. What are the key components?",
-      "back": "A custom `Publisher` allows you to bridge existing asynchronous code, event sources, or delegate patterns into the Combine framework. It's essential when you need to expose non-Combine APIs as reactive streams.\n\nKey components:\n1.  `Publisher` protocol conformance: Define `Output` and `Failure` types.\n2.  `subscribe(_:)`: This method is called when a `Subscriber` attaches to the `Publisher`. You must create a custom `Subscription` here.\n3.  `Subscription` protocol conformance: Manages the relationship between the `Publisher` and `Subscriber`.  It handles demand and cancellation.\n4.  `receive(subscription:)`: Called on the `Subscriber` to signal the start of the subscription.\n5.  `receive(_:)`: Called on the `Subscriber` to send new values.  Can be called multiple times.\n6.  `receive(completion:)`: Called on the `Subscriber` to signal completion (success or failure).\n\nExample:\n```swift\nimport Combine\n\nclass MyCustomPublisher: Publisher {\n    typealias Output = String\n    typealias Failure = Never\n\n    private var subscribers: [AnySubscriber<String, Never>] = []\n\n    func subscribe<S: Subscriber>(_ subscriber: S) where S.Failure == Failure, S.Input == Output {\n        let subscription = MyCustomSubscription(subscriber: AnySubscriber(subscriber), publisher: self)\n        subscribers.append(AnySubscriber(subscriber))\n        subscriber.receive(subscription: subscription)\n    }\n\n    func send(value: String) {\n        subscribers.forEach { $0.receive(value) }\n    }\n\n    func complete() {\n        subscribers.forEach { $0.receive(completion: .finished) }\n    }\n}\n\nclass MyCustomSubscription: Subscription {\n    private var subscriber: AnySubscriber<String, Never>?\n    private var publisher: MyCustomPublisher\n\n    init(subscriber: AnySubscriber<String, Never>, publisher: MyCustomPublisher) {\n        self.subscriber = subscriber\n        self.publisher = publisher\n    }\n\n    func request(_ demand: Subscribers.Demand) {\n        // In a real implementation, you'd use the demand to control\n        // how much data you produce.\n        // For simplicity, we ignore demand here.\n    }\n\n    func cancel() {\n        subscriber = nil\n    }\n}\n\n// Usage:\nlet myPublisher = MyCustomPublisher()\nlet cancellable = myPublisher\n    .sink(receiveCompletion: { completion in\n        print(\"Completion: \\(completion)\")\n    }, receiveValue: { value in\n        print(\"Received: \\(value)\")\n    })\n\nmyPublisher.send(value: \"Hello\")\nmyPublisher.send(value: \"World\")\nmyPublisher.complete()\n```\n\nCommon Pitfalls:\n*   Incorrectly handling `Subscribers.Demand`: Not respecting demand can lead to backpressure issues, where the `Publisher` overwhelms the `Subscriber`.\n*   Memory leaks:  Ensure the `Subscription` cancels properly to avoid retaining the `Subscriber` or `Publisher`.\n*   Thread safety: If the `Publisher` interacts with shared mutable state, ensure proper synchronization.\n*   Incorrect error handling:  Make sure to handle errors correctly and send a `.failure` completion when appropriate.\n\nAlternatives:\n*   `PassthroughSubject`:  A simpler way to bridge imperative code when you don't need full control over subscription and demand.\n*   `CurrentValueSubject`:  Similar to `PassthroughSubject`, but it holds the latest value.\n*   `Future`:  For one-time asynchronous operations.\n\nWhen to Use:\nUse a custom `Publisher` when you need fine-grained control over the publishing process, especially when integrating with existing asynchronous APIs that don't natively support Combine.  Avoid it if a `Subject` or `Future` adequately meets your needs, as they are simpler to implement.",
-      "code_example": null,
-      "tags": [
-        "Combine",
-        "Publisher",
-        "Subscription",
-        "Asynchronous Programming"
-      ],
-      "sources": [
-        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "combine_32f69cce08dc",
-      "front": "Memory management in Combine",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Memory management in Combine"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "combine_b90e0a9fafad",
-      "front": "Debugging Combine pipelines",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Debugging Combine pipelines"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/",
-        "https://www.avanderlee.com/swift/core-data/"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
     }
   ]

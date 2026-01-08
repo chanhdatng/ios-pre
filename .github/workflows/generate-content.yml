@@ -89,6 +89,63 @@ jobs:
       - name: Run export
         run: python -m pipeline.main export
 
+      - name: Merge into original flashcard files
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+
+          # Mapping: generated file -> original file
+          mapping = {
+              'swift-generated.json': 'swift-fundamentals.json',
+              'concurrency-generated.json': 'concurrency.json',
+              'swiftui-generated.json': 'swiftui.json',
+              'architecture-generated.json': 'system-design.json',
+              'uikit-generated.json': 'ios-core.json',
+              'testing-generated.json': 'testing-generated.json',
+              'performance-generated.json': 'performance-generated.json',
+              'networking-generated.json': 'networking-generated.json',
+              'data_persistence-generated.json': 'data_persistence-generated.json',
+              'combine-generated.json': 'combine-generated.json',
+              'security-generated.json': 'security-generated.json',
+              'debugging-generated.json': 'debugging-generated.json',
+          }
+
+          flashcards_dir = 'src/data/flashcards'
+
+          for gen_file, orig_file in mapping.items():
+              gen_path = os.path.join(flashcards_dir, gen_file)
+              orig_path = os.path.join(flashcards_dir, orig_file)
+
+              if not os.path.exists(gen_path):
+                  continue
+
+              with open(gen_path) as f:
+                  gen_data = json.load(f)
+
+              # If original exists, merge; otherwise use generated as-is
+              if os.path.exists(orig_path):
+                  with open(orig_path) as f:
+                      orig_data = json.load(f)
+
+                  # Get existing fronts to avoid duplicates
+                  existing_fronts = {c['front'] for c in orig_data.get('cards', [])}
+
+                  # Add new cards that don't exist
+                  new_cards = [c for c in gen_data.get('cards', []) if c['front'] not in existing_fronts]
+                  orig_data['cards'].extend(new_cards)
+
+                  print(f"Merged {len(new_cards)} new cards into {orig_file}")
+              else:
+                  orig_data = gen_data
+                  print(f"Created {orig_file} with {len(gen_data.get('cards', []))} cards")
+
+              with open(orig_path, 'w') as f:
+                  json.dump(orig_data, f, indent=2)
+
+          print("Merge complete!")
+          EOF
+
       - name: Upload quality report
         uses: actions/upload-artifact@v4
         with:
@@ -110,11 +167,16 @@ jobs:
           body: |
             ## Auto-generated Content Update
 
-            This PR contains newly generated flashcards from the content pipeline.
+            This PR contains newly generated flashcards **merged into original files**.
 
             **Run:** #${{ github.run_number }}
             **Topic:** ${{ github.event.inputs.topic || 'all' }}
             **Limit:** ${{ github.event.inputs.limit || '10' }} per topic
+
+            ### What's Changed
+            - New cards generated with Gemini 2.5 Pro
+            - Merged into: `swift-fundamentals.json`, `concurrency.json`, `swiftui.json`, `system-design.json`, `ios-core.json`
+            - Duplicates automatically skipped
 
             ### Quality Report
             See attached artifact for full details.
