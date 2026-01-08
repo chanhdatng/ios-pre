@@ -17,6 +17,12 @@ on:
           - architecture
           - testing
           - performance
+          - networking
+          - data_persistence
+          - combine
+          - uikit
+          - security
+          - debugging
       limit:
         description: 'Max cards per topic'
         required: false

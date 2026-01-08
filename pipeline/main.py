@@ -12,7 +12,14 @@ from rich.console import Console
 from .embeddings import DocumentChunker, Embedder, Indexer
 from .generation import CodeVerifier, Flashcard, FlashcardGenerator
 from .generation.prompts import SENIOR_IOS_TOPICS
-from .scrapers import AppleDocsScraper, HWSScraper, SwiftOrgScraper
+from .scrapers import (
+    AppleDocsScraper,
+    HWSScraper,
+    KodecoScraper,
+    ObjcIOScraper,
+    SwiftLeeScraper,
+    SwiftOrgScraper,
+)
 from .verification import (
     DuplicateDetector,
     LinkValidator,
@@ -31,6 +38,9 @@ async def run_scrape() -> None:
         HWSScraper(rate_limit=0.5),
         SwiftOrgScraper(rate_limit=0.5),
         AppleDocsScraper(rate_limit=0.5),
+        SwiftLeeScraper(rate_limit=0.5),
+        KodecoScraper(rate_limit=0.5),
+        ObjcIOScraper(rate_limit=0.5),
     ]
     all_docs = []
 
