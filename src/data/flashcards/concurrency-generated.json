@@ -1,87 +1,117 @@
 {
   "topic": "concurrency",
-  "generated_at": "2026-01-07T12:45:54.004964+00:00",
+  "generated_at": "2026-01-08T03:55:15.486168+00:00",
   "cards": [
     {
       "id": "concurrency_ef63c6d3be70",
-      "front": "Explain Structured Concurrency in Swift. What benefits does it provide over unstructured concurrency?",
-      "back": "Structured concurrency, introduced in Swift 5.5+, enables safer and more predictable concurrent code.  It ties the lifetime of child tasks to the scope they're created in, ensuring they complete before the parent scope exits (or are cancelled). This avoids detached tasks, simplifies error handling via propagation, and improves code readability. Benefits: automatic task management, cancellation propagation, compiler assistance for data races, and improved debugging.  Unstructured concurrency (e.g., `Task { ... }`) offers more flexibility but requires manual management, increasing the risk of errors.",
+      "front": "Explain Swift's Structured Concurrency. What problems does it solve over older concurrency models like GCD?",
+      "back": "Swift's Structured Concurrency, introduced in Swift 5.5, provides a more predictable and safer way to write concurrent code using `async/await`, `Task`, and actors.\n\nIt improves over GCD by:\n\n1.  **Improved Readability**: `async/await` makes asynchronous code look and feel synchronous, improving code clarity.\n2.  **Error Handling**: Uses standard `try/catch` for error propagation across concurrency domains.\n3.  **Cancellation**: Built-in cancellation support makes it easier to stop ongoing tasks and manage resources. Tasks inherit cancellation contexts from their parents.\n4.  **Data Races**: Actors isolate state, preventing data races.\n5.  **Improved Debugging**: Async stack traces simplify debugging and troubleshooting concurrent code.\n\nExample: Fetching data concurrently using `async/await`:\n\n```swift\nfunc fetchData() async throws -> Data {\n  let (data, _) = try await URLSession.shared.data(from: url)\n  return data\n}\n```",
       "code_example": null,
       "tags": [
         "concurrency",
         "structured concurrency",
-        "swift",
-        "async/await"
+        "async/await",
+        "actors",
+        "GCD"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
     },
     {
       "id": "concurrency_0a59c109c99a",
-      "front": "Explain Actors and Actor isolation, including the benefits and trade-offs. How does it compare to other concurrency models?",
-      "back": "Actors encapsulate state and ensure exclusive access via a serial executor, preventing data races. Key benefits include safety and simplified reasoning about concurrent code. Trade-offs involve potential performance overhead due to message passing. Compared to locks, Actors provide higher-level abstraction reducing complexity. DispatchQueues are lower-level, requiring manual synchronization. Actor isolation ensures that access to the actor's state is only allowed from within the actor's context. Swift 5.5+",
+      "front": "Explain Swift Actors and Actor isolation. How do they prevent data races?",
+      "back": "Actors are reference types that protect their state from concurrent access. Actor isolation enforces that all access to an actor's state happens serially via its own isolated context. This prevents data races by ensuring only one thread can access the actor's mutable state at a time. You use `await` when interacting with an actor's properties or methods from outside its context, signaling a potential suspension point where the thread may yield to another task.",
       "code_example": null,
       "tags": [
         "concurrency",
         "actors",
-        "actor isolation",
-        "swift"
+        "swift",
+        "data races",
+        "actor isolation"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
     },
     {
       "id": "concurrency_c4f511d6cdf5",
-      "front": "What is the `Sendable` protocol and how does Swift 6 enhance its role in concurrency?",
-      "back": "`Sendable` indicates a type whose values can be safely passed between concurrent execution contexts. Swift 6 enhances concurrency by performing more sophisticated static analysis, reducing false positive warnings related to data races. It leverages isolation regions, allowing the compiler to prove code can safely run concurrently, reducing the need for manual `Sendable` conformance when safety can be statically verified.  This simplifies adopting concurrency.",
+      "front": "Explain the Sendable protocol and its role in Swift concurrency. Provide a practical scenario where its usage is crucial.",
+      "back": "The `Sendable` protocol ensures that types are safe to be transferred and accessed across concurrent contexts. It indicates that a type's state won't be corrupted due to race conditions when accessed from multiple threads.\n\nCrucial for data shared between tasks. Example: updating UI from background thread requires wrapping data in `Sendable` conformances to prevent data races when UIKit modifies UI elements concurrently.",
       "code_example": null,
       "tags": [
         "concurrency",
         "Sendable",
-        "Swift 6",
-        "data races",
-        "isolation regions"
+        "Swift",
+        "Data Races",
+        "Thread Safety"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
     },
     {
       "id": "concurrency_adf2fcd2570c",
-      "front": "Explain the problem that `withThrowingTaskGroup` and `withTaskGroup` had prior to Swift 5.9, and how `withThrowingDiscardingTaskGroup` solves it. Why is this a concern?",
-      "back": "Prior to Swift 5.9, tasks created in a `withTaskGroup` or `withThrowingTaskGroup` were only destroyed when `next()` was called. In server-like scenarios where tasks are continuously added without iterating with `next()`, child tasks aren't destroyed. This can lead to memory leaks.\n\n`withThrowingDiscardingTaskGroup` automatically discards and destroys each task as soon as it completes, preventing memory leaks in long-running task groups.  This is a concern for server apps which should handle connections smoothly.",
+      "front": "Explain Swift Concurrency Task Groups. When would you use them? What are their limitations?",
+      "back": "Task Groups enable dynamic creation of child tasks within a concurrent context.  They're useful when you have a collection of independent, asynchronous operations and want to await their collective completion.\n\nUsage:  `withTaskGroup` or `withThrowingTaskGroup` create a group, then `group.addTask` adds asynchronous work.  The `await group.next()` iterates through results as they complete, or returns `nil` when the group is finished.\n\nLimitations: Child tasks implicitly share the parent task's priority.  Managing dependencies *between* child tasks can be tricky. Canceling the parent task cancels all child tasks. Error handling requires consideration of the throwing vs. non-throwing versions.",
       "code_example": null,
       "tags": [
         "concurrency",
+        "swift concurrency",
         "task groups",
-        "swift 5.9",
-        "memory management"
+        "asynchronous"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
     },
     {
       "id": "concurrency_b2a458c2caac",
-      "front": "Compare and contrast `AsyncSequence` and `AsyncStream`. When would you choose one over the other? (SE-0314)",
-      "back": "`AsyncSequence` is a type that allows you to iterate over a series of values asynchronously. It's a protocol, meaning types conforming to it must provide an `AsyncIterator`.  `AsyncStream` is a concrete type that implements `AsyncSequence`. \n\nUse `AsyncStream` when you need manual control over the production of asynchronous values (e.g., bridging callbacks or delegate methods). Use `AsyncSequence` (or create your own custom type conforming to it) when you have an existing source of asynchronous values that can be represented as a sequence. `AsyncStream` provides back pressure.",
+      "front": "Compare and contrast `AsyncSequence` and `AsyncStream`. When would you choose one over the other?",
+      "back": "`AsyncSequence` is a *protocol* representing a sequence of asynchronously produced values. It's ideal for situations where you have a natural sequence, like reading lines from a file or processing a stream of network data.  `AsyncStream` is a *concrete type* that acts as a bridge between synchronous and asynchronous code. It allows you to *imperatively* push values into an asynchronous sequence. Use `AsyncStream` when you need to adapt existing synchronous code or manually generate asynchronous values. For example, wrapping delegate-based APIs or responding to external events. Since Swift 5.5, async streams can be built with a continuation to bridge imperative code and AsyncSequences.",
       "code_example": null,
       "tags": [
         "concurrency",
+        "async/await",
         "AsyncSequence",
-        "AsyncStream",
-        "Swift Concurrency"
+        "AsyncStream"
       ],
       "sources": [
-        "https://www.swift.org/documentation/",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/"
+      ]
+    },
+    {
+      "id": "concurrency_63f51f17b095",
+      "front": "Explain the difference between `MainActor` and creating a custom global actor. When would you use each?",
+      "back": "`MainActor` is a globally unique actor that executes tasks on the main thread. It's implicitly used for UI updates and other main-thread bound operations. A custom global actor allows you to define a separate, isolated execution context, useful for managing access to specific shared resources or enforcing specific thread confinement requirements beyond the main thread. Use `MainActor` for anything interacting with UI. Use custom actors for other concurrency domains with unique requirements (e.g. database access, file IO).",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "actors",
+        "MainActor",
+        "global actor"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_dbfc3f91d97e",
+      "front": "Explain different techniques for preventing data races in Swift, considering both performance and complexity tradeoffs.",
+      "back": "I'd focus on these:\n1. **Serial Queues:** Simple. Guarantee serial access. Great for simple cases, but limit concurrency. Example: file access.\n2. **Dispatch Barrier:** Allows concurrent reads, exclusive writes. Good balance. `DispatchWorkItemFlags.barrier`.  Example: Cache with frequent reads, infrequent writes.\n3. **Locks:**  `NSLock`, `NSRecursiveLock`, `os_unfair_lock`. Fine-grained control. `os_unfair_lock` avoids priority inversion, unlike `NSLock`. Can cause deadlocks if not managed carefully.\n4. **@actor:** Swift 5.5+. Simplifies concurrent code by isolating state. Compiler enforces mutual exclusion.  Avoids explicit locking. Example: Data model shared between views.\n5. **Atomic Operations:** `OSAtomic.h` (legacy), `Atomic<T>`. Low-level, lock-free. Best performance if used correctly. Complex, error-prone.  Example: Incrementing a counter.\nChoose the right tool for job. Actors and serial queues are often easiest. Unfair locks offer a good balance. Use atomic operations as a last resort.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "data race",
+        "swift",
+        "synchronization",
+        "actors",
+        "locks",
+        "dispatch queue"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
     }
   ]

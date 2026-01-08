@@ -1,0 +1,122 @@
+{
+  "topic": "combine",
+  "generated_at": "2026-01-08T03:55:15.486202+00:00",
+  "cards": [
+    {
+      "id": "combine_e78094e3e387",
+      "front": "Explain the roles of Publishers and Subscribers in Combine. How does a Subscriber signal demand to a Publisher, and why is this important?",
+      "back": "Publishers emit values, Subscribers consume them. Demand is signaled using `request(_:)`. A Subscriber initiates demand by requesting a specific number of values from the Publisher. This backpressure mechanism prevents overwhelming the Subscriber, allowing it to control the rate at which it receives data and manage resources efficiently.  For example, a Subscriber displaying images might request images only as needed.",
+      "code_example": null,
+      "tags": [
+        "Combine",
+        "Publishers",
+        "Subscribers",
+        "Backpressure",
+        "Demand"
+      ],
+      "sources": [
+        "https://developer.apple.com/news/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "combine_d81a9c91347b",
+      "front": "Explain the differences between `map`, `flatMap`, and `combineLatest` Combine operators. Provide use cases for each.",
+      "back": "`map`: Transforms each element emitted by a publisher.  `flatMap`: Transforms each element into a new publisher, then flattens the emitted values from those publishers into a single publisher. Useful for asynchronous operations where each value triggers another asynchronous task.\n`combineLatest`: Combines the latest values from multiple publishers into a single publisher, emitting a new value whenever any of the source publishers emit.  Crucial for reacting to changes from multiple sources (e.g., form validation).",
+      "code_example": null,
+      "tags": [
+        "combine",
+        "operators",
+        "map",
+        "flatMap",
+        "combineLatest",
+        "concurrency"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/16-swift/power-of-swift/",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "combine_1cf53805b48a",
+      "front": "Error handling in Combine",
+      "back": "",
+      "code_example": null,
+      "tags": [
+        "Error handling in Combine"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/16-swift/swift-functions/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "combine_83feeebb4e47",
+      "front": "Compare and contrast Combine and async/await in the context of handling asynchronous operations in iOS. When would you choose one over the other?",
+      "back": "Combine is a declarative, reactive programming framework for handling asynchronous events over time. async/await is a Swift language feature simplifying asynchronous code by making it appear synchronous.\n\nCombine is great for complex event processing, data transformations, and managing multiple asynchronous streams, offering powerful operators like `map`, `filter`, `debounce`, and `merge`. It excels in scenarios like UI updates based on network responses or reacting to user input.\n\nasync/await simplifies single asynchronous tasks, making code easier to read and reason about, especially when dealing with sequential asynchronous operations. It's ideal for network requests, file I/O, or any task with a clear start and end.\n\nChoose Combine when needing complex event handling, reactive UI, or managing multiple asynchronous streams. Choose async/await for simpler, sequential asynchronous tasks where readability and maintainability are paramount. Often, they can be used together; async/await can provide values to Combine publishers.",
+      "code_example": null,
+      "tags": [
+        "Combine",
+        "async/await",
+        "Concurrency",
+        "Asynchronous Programming"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "combine_4d7c72d6d8db",
+      "front": "How would you implement a custom Combine Publisher to manage and publish updates of locally changed Core Data objects to a remote server?",
+      "back": "A custom Publisher could encapsulate the UpstreamObjectSync logic, observing local Core Data context saves. It would manage a queue of objects needing sync, handle network requests via a Subject, retry failed requests, and publish success/failure events downstream. Errors are gracefully handled.",
+      "code_example": null,
+      "tags": [
+        "Combine",
+        "Custom Publisher",
+        "Core Data",
+        "Networking",
+        "Concurrency"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "combine_32f69cce08dc",
+      "front": "Discuss memory management considerations when using Combine. How do you avoid retain cycles and ensure proper resource cleanup with publishers and subscribers?",
+      "back": "Combine introduces the risk of retain cycles, especially when subscribers strongly capture publishers or other subscribers. `weak` or `unowned` references should be used when capturing `self` in closures passed to `sink` or custom operators.\n\nUse `handleEvents(receiveCancel: ...)` to perform cleanup when a subscription is cancelled.  For complex resource management, consider creating custom `Subscription` types that encapsulate resource lifecycle.  ARC handles most cleanup when subscriptions end naturally but explicit management is key for subscriptions tied to object lifecycles. Example: using `weak self` in `sink` or using `AnyCancellable` to manage subscriptions.",
+      "code_example": null,
+      "tags": [
+        "combine",
+        "memory management",
+        "retain cycles",
+        "arc",
+        "subscriptions"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "combine_b90e0a9fafad",
+      "front": "Debugging Combine pipelines",
+      "back": "",
+      "code_example": null,
+      "tags": [
+        "Debugging Combine pipelines"
+      ],
+      "sources": [
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    }
+  ]
+}

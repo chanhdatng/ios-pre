@@ -1,18 +1,17 @@
 {
   "topic": "swiftui",
-  "generated_at": "2026-01-07T12:45:54.004968+00:00",
+  "generated_at": "2026-01-08T03:55:15.486173+00:00",
   "cards": [
     {
       "id": "swiftui_52087b03c6db",
-      "front": "Explain the SwiftUI View lifecycle and how view identity affects it.",
-      "back": "SwiftUI views are data-dependent, meaning their lifecycle revolves around state changes. When state changes, SwiftUI re-evaluates the view's body and potentially re-renders. \n\nView identity, determined by the `id` property (or automatically by SwiftUI), is crucial. If the identity changes, SwiftUI considers it a completely new view and re-creates it, losing any internal state. Keeping identity stable across updates is key for preserving state and animations.  Use `.id()` modifier when needed to control identity.",
+      "front": "How does SwiftUI manage View identity and lifecycle and why is understanding this crucial?",
+      "back": "SwiftUI uses a combination of structural and explicit identity. Views are re-evaluated when their inputs change, potentially leading to re-creation. `.id()` modifier can provide explicit identity for persistent state/animations.  Understanding this prevents unexpected view recreations, optimizes performance, and ensures correct animation behavior.",
       "code_example": null,
       "tags": [
         "swiftui",
         "lifecycle",
-        "view",
         "identity",
-        "state"
+        "performance"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
@@ -20,11 +19,17 @@
     },
     {
       "id": "swiftui_cddc3f3f2aa5",
-      "front": "State management patterns",
-      "back": "",
+      "front": "Compare and contrast `@State`, `@Binding`, `@ObservedObject`, `@StateObject`, and `@EnvironmentObject` in SwiftUI. When would you use each?",
+      "back": "`@State`:  For simple, UI-local, value-type data.  Changes trigger view updates. \n`@Binding`:  Creates two-way connection to `@State` or other source of truth. Used to share state.\n`@ObservedObject`: For observable reference types (classes) conforming to `ObservableObject`. View updates when `@Published` properties change.  Lifecycle managed externally.\n`@StateObject`: Same as `@ObservedObject` but *owns* the lifecycle of the observable object.  Created only once.\n`@EnvironmentObject`:  Observable object passed down the view hierarchy.  Used for app-wide state. Requires `.environmentObject()` modifier.\nExample: `@State` for a TextField's text. `@Binding` to pass that text to a child view. `@ObservedObject` for data fetched from a network. `@StateObject` to ensure that expensive network call only happens once. `@EnvironmentObject` for user authentication status.",
       "code_example": null,
       "tags": [
-        "State management patterns"
+        "swiftui",
+        "state management",
+        "observedobject",
+        "stateobject",
+        "environmentobject",
+        "binding",
+        "state"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
@@ -32,14 +37,15 @@
     },
     {
       "id": "swiftui_57b904137e80",
-      "front": "In SwiftUI, what are the key differences between `@Observable` and `ObservableObject` for managing app state? When would you choose one over the other?",
-      "back": "`@Observable` (Swift 5.9+) is a newer, more lightweight protocol for making a class observable. It automatically synthesizes `objectWillChange` publishers.  `ObservableObject` requires manual conformance and explicit `objectWillChange` publishing. Use `@Observable` for simpler state management, especially with SwiftData. `ObservableObject` is preferable for legacy codebases or when fine-grained control over observation is needed. `@State` and `@Environment` properties automatically observe both.",
+      "front": "In SwiftUI, what are the key differences between `@Observable` and `ObservableObject` for managing app state, and when would you choose one over the other?",
+      "back": "`@Observable` (Swift 5.9+) offers a simpler, macro-based approach, directly tracking property changes within a class. It requires less boilerplate than `ObservableObject`.  `ObservableObject` requires conformance, `@Published` property wrappers, and manual setup.\n\nUse `@Observable` for new projects with Swift 5.9+.  Use `ObservableObject` for existing projects or when fine-grained control over observation is needed (e.g., custom `objectWillChange` emissions).  `@Observable` is generally more performant.",
       "code_example": null,
       "tags": [
         "SwiftUI",
         "State Management",
         "@Observable",
-        "ObservableObject"
+        "ObservableObject",
+        "Swift 5.9+"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
@@ -47,14 +53,11 @@
     },
     {
       "id": "swiftui_5db790af102a",
-      "front": "Explain the benefits of using Custom ViewModifiers in SwiftUI. Provide an example of a modifier that changes text color and font.",
-      "back": "Custom ViewModifiers promote code reuse, improve readability, and encapsulate styling logic. They allow you to apply the same set of modifiers to multiple views consistently.\n\nExample:\n```swift\nstruct TitleModifier: ViewModifier {\n  func body(content: Content) -> some View {\n    content\n      .font(.largeTitle)\n      .foregroundColor(.red)\n  }\n}\n\nextension View {\n    func titleStyle() -> some View {\n        modifier(TitleModifier())\n    }\n}\n\nText(\"Hello, world!\").titleStyle()\n```",
+      "front": "Custom ViewModifiers",
+      "back": "",
       "code_example": null,
       "tags": [
-        "SwiftUI",
-        "ViewModifier",
-        "Code Reuse",
-        "Styling"
+        "Custom ViewModifiers"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
@@ -62,11 +65,45 @@
     },
     {
       "id": "swiftui_0c71a581d980",
-      "front": "Preference Keys",
-      "back": "",
+      "front": "Explain SwiftUI Preference Keys and their use cases.  Why are they important in SwiftUI?",
+      "back": "Preference Keys allow child views to communicate information (preferences) up the view hierarchy to ancestor views.  They're crucial for things like reading sizes or positions of views, triggering actions based on child view state (e.g., showing a popup when a subview becomes visible), or sharing data for layout calculations.  They avoid tight coupling and provide a declarative way to handle such interactions. Example: tracking the height of dynamic content to adjust a container's size.",
       "code_example": null,
       "tags": [
-        "Preference Keys"
+        "swiftui",
+        "preferences",
+        "uikit",
+        "swiftui layout"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_fce609cc67b5",
+      "front": "Explain the SwiftUI Layout protocol, its purpose, and how it differs from using stacks and frames.",
+      "back": "The `Layout` protocol offers fine-grained control over view placement.  Instead of relying on built-in stack or frame behaviors, `Layout` lets you define custom layout algorithms.  It involves calculating sizes and positions of child views within a container.  Use when standard layouts are insufficient, e.g., circular layouts or custom grid systems. `SwiftUI 16.0+`",
+      "code_example": null,
+      "tags": [
+        "SwiftUI",
+        "Layout",
+        "Protocol",
+        "Custom Layouts"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_4bd31d70cc62",
+      "front": "Explain SwiftUI's animation system. How does SwiftUI handle animation behind the scenes?",
+      "back": "SwiftUI animations are declarative, meaning you describe the desired animation, and the system handles the implementation.  Under the hood, SwiftUI uses implicit and explicit animations. Implicit animations are triggered by state changes within a view. Explicit animations are created using `withAnimation` or `.animation(_:value:)` modifier, where you define the animation and the value that triggers it. SwiftUI then interpolates changes between the old and new states over a specified duration, using timing curves (e.g., easeIn, easeOut) to control the animation's pace. It leverages Core Animation for actual rendering.",
+      "code_example": null,
+      "tags": [
+        "swiftui",
+        "animation",
+        "coreanimation",
+        "implicit animation",
+        "explicit animation"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"

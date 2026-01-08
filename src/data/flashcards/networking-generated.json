@@ -1,0 +1,127 @@
+{
+  "topic": "networking",
+  "generated_at": "2026-01-08T03:55:15.486195+00:00",
+  "cards": [
+    {
+      "id": "networking_af7f793e90df",
+      "front": "Describe advanced `URLSession` usage beyond basic data tasks. How do you handle cancellation, background processing, and large file transfers efficiently?",
+      "back": "For cancellation, I use `URLSessionTask`'s `cancel()` method. For background processing, I either process data in the background with GCD after receiving it on the main run loop, or use a custom `Operation` subclass with its own run loop (like AFNetworking does). For large files, I use `NSInputStream` for asynchronous, line-by-line processing without loading the entire file into memory. Also using background session configurations is very useful, and is supported by URLSession",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "URLSession",
+        "cancellation",
+        "background",
+        "large files",
+        "NSInputStream",
+        "Operation",
+        "GCD"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "networking_88601ef8bf23",
+      "front": "Explain the key differences between HTTP/2 and HTTP/3 and the advantages of HTTP/3.",
+      "back": "HTTP/2 introduced multiplexing (multiple requests over a single connection), header compression (HPACK), and server push. HTTP/3 builds upon this using UDP with QUIC, eliminating head-of-line blocking at the TCP level and providing better congestion control and faster connection establishment. QUIC also provides built-in encryption, improving security. HTTP/3 is more resilient to packet loss and network changes.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "http",
+        "http2",
+        "http3",
+        "quic"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "networking_dcafb044d110",
+      "front": "Compare and contrast REST and GraphQL.  When would you choose one over the other in an iOS app?",
+      "back": "REST is an architectural style using standard HTTP methods. GraphQL is a query language for your API.\n\nREST:\n- Simpler to implement initially.\n- Can lead to over-fetching or under-fetching data.\n- Multiple round trips to get all needed data.\n- Well-established, mature ecosystem.\n\nGraphQL:\n- Client specifies exact data needed, avoiding over/under fetching.\n- Single endpoint, reducing round trips.\n- Requires more server-side setup.\n- Steeper learning curve.\n\nChoose GraphQL when:\n- Complex data requirements with multiple relationships.\n- Bandwidth optimization is critical.\n- Performance is paramount.\n\nChoose REST when:\n- Simple data requirements.\n- Rapid prototyping is needed.\n- Leveraging existing RESTful infrastructure.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "REST",
+        "GraphQL",
+        "architecture"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "networking_3f3e4ac61fbf",
+      "front": "Describe your experience implementing WebSocket communication in an iOS app. What considerations did you make regarding efficiency, error handling, and security?",
+      "back": "I've implemented WebSocket communication using `URLSessionWebSocketTask`. I prioritize efficiency by using binary messages when possible and implementing message compression. Error handling includes reconnect strategies with exponential backoff. For security, I always use WSS (WebSocket Secure), implement proper authentication/authorization, and validate incoming messages to prevent injection attacks.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "websockets",
+        "security",
+        "performance"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "networking_6431b3cd68e4",
+      "front": "What is certificate pinning and why is it important for network security in iOS apps?",
+      "back": "Certificate pinning validates the server's certificate against a pre-defined, trusted copy (pinned cert/public key) instead of relying solely on the system's trusted root certificates. Prevents MITM attacks where attackers use rogue certificates.\n\nImproves security, especially against compromised CAs. Implement via `URLSessionDelegate` methods to validate server trust. Can be bypassed if implemented incorrectly, so careful testing is vital.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "security",
+        "certificate pinning",
+        "URLSession",
+        "MITM"
+      ],
+      "sources": [
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "networking_431f69c77375",
+      "front": "How are background transfers (URLSessionConfiguration.background) different from simply using URLSession on a background thread?",
+      "back": "Background URLSession configurations allow transfers to continue even when the app is suspended or terminated.  The system manages the transfers, relaunching the app in the background to handle completion. Standard background threads don't have this OS-level persistence.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "background",
+        "URLSession"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.avanderlee.com/swift/core-data/"
+      ]
+    },
+    {
+      "id": "networking_a38f04f89b89",
+      "front": "Describe a robust network layer architecture for an iOS app. What are the key components and their responsibilities?",
+      "back": "A robust network layer typically includes: 1. **API Client/Manager:** Handles request creation, execution (using `URLSession`), and response parsing (JSON, etc.). 2. **Request Objects:** Encapsulate API endpoint, parameters, headers, and HTTP method. 3. **Response Models:**  Structures to represent the parsed data (using Codable). 4. **Error Handling:** Define a custom error enum to handle network failures, data parsing issues, or API-specific errors. 5. **Authentication:**  Handles token management.  6. **Caching:** Implement caching to reduce network requests and improve performance. E.g., using `URLCache` or a custom caching mechanism with `UserDefaults` or `CoreData`. The API Client is injected into interactors/viewmodels to fetch data. Response models should be immutable.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "architecture",
+        "URLSession",
+        "error handling",
+        "caching"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    }
+  ]
+}

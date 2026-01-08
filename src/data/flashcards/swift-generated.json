@@ -1,20 +1,17 @@
 {
   "topic": "swift",
-  "generated_at": "2026-01-07T12:45:54.004953+00:00",
+  "generated_at": "2026-01-08T03:55:15.486155+00:00",
   "cards": [
     {
       "id": "swift_32865dacda56",
-      "front": "Explain advanced use cases of generics, including variadic generics and how they interact with protocols and type erasure, with examples.",
-      "back": "Variadic generics (future) allow functions to accept a variable number of type parameters, removing limits like SwiftUI's old 10-view restriction.  Type erasure hides the underlying type, often to abstract concrete implementations behind protocols. Example:  `AnyView` erases the specific `View` type. This allows views with different types to be used interchangeably.  Using `any Protocol` indicates an existential type, implying dynamic dispatch and potential performance impact compared to generics using static dispatch.  Variadic generics improve this further, but this is still a work in progress in Swift. ",
+      "front": "Explain advanced Swift Generics, including variadic generics and their potential impact (e.g., SwiftUI). Explain Type Erasure with an example.",
+      "back": "Advanced generics include features like variadic generics, allowing a variable number of type parameters. Swift 5.6 introduced existential `any` to clarify dynamic dispatch. Type erasure hides concrete types behind a protocol.  Example:  `AnyView` in SwiftUI erases the specific view type, enabling different views in the same container (e.g., within a `VStack`). Without it, SwiftUI's view builders would be severely limited.  Variadic generics can remove arbitrary restrictions on container view item counts (e.g. SwiftUI's LazyVGrid limitations).",
       "code_example": null,
       "tags": [
+        "swift",
         "generics",
         "type erasure",
-        "protocols",
-        "AnyView",
-        "variadic generics",
-        "SwiftUI",
-        "existential types"
+        "swiftui"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
@@ -23,24 +20,23 @@
     },
     {
       "id": "swift_69325e446d81",
-      "front": "Explain how property wrappers work under the hood. How does Swift handle the wrapped value and projected value?",
-      "back": "Property wrappers use the `_propertyName` naming convention to store the wrapped value.  Accessing `propertyName` triggers the wrapper's `wrappedValue` getter/setter. The `$` prefix accesses the projected value via `projectedValue`.  Example: `@MyWrapper var x: Int` creates `_x` for storage, `x` for wrapped access, `$x` for projected access.  Swift 5.1+",
+      "front": "Property Wrappers implementation",
+      "back": "",
       "code_example": null,
       "tags": [
-        "swift",
-        "property wrappers",
-        "metaprogramming"
+        "Property Wrappers implementation"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
+        "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
+        "https://www.objc.io/issues/16-swift/swift-functions/"
       ]
     },
     {
       "id": "swift_5efaf49e1e55",
-      "front": "Explain Result Builders and their benefits. Provide a practical example beyond SwiftUI.",
-      "back": "Result Builders (previously Function Builders) allow you to create a DSL for building up data structures in a declarative way.  They provide a mechanism to accumulate partial results of computations. Benefits include improved readability, reduced boilerplate, and type safety when constructing complex objects.\n\nExample:\n```swift\n@resultBuilder\nstruct StringBuilder {\n    static func buildBlock(_ parts: String...) -> String {\n        parts.joined()\n    }\n\n    static func buildOptional(_ component: String?) -> String {\n        component ?? \"\"\n    }\n\n    static func buildEither(first component: String) -> String {\n        component\n    }\n\n    static func buildEither(second component: String) -> String {\n        component\n    }\n}\n\n@StringBuilder\nfunc createMessage(includeGreeting: Bool, name: String?) -> String {\n    if includeGreeting { \"Hello, \" }\n    name\n    if let name = name { \"!\" }\n}\n\nlet message = createMessage(includeGreeting: true, name: \"World\") // \"Hello, World!\"\n```",
+      "front": "Explain Swift Result Builders, their purpose, and provide a practical example. What are some limitations?",
+      "back": "Result Builders (formerly Function Builders) allow you to create DSL-like syntax for constructing values. They accumulate partial results of computations to produce a final result.\n\nPurpose: To simplify code generation, especially when dealing with complex structures like UI layouts (e.g., SwiftUI's `body`).\n\nExample:\n```swift\n@resultBuilder\nstruct StringBuilder {\n    static func buildBlock(_ parts: String...) -> String {\n        parts.joined()\n    }\n\n    static func buildOptional(_ component: String?) -> String {\n        component ?? \"\"\n    }\n\n    static func buildEither(first component: String) -> String {\n        component\n    }\n\n    static func buildEither(second component: String) -> String {\n        component\n    }\n}\n\n@StringBuilder\nfunc makeMessage(includeGreeting: Bool, name: String?) -> String {\n    if includeGreeting {\n        \"Hello, \"\n    }\n    name\n    if let name = name {\n        \"!\"\n    } else {\n        \"User!\"\n    }\n}\n\nlet message = makeMessage(includeGreeting: true, name: \"World\") // \"Hello, World!\"\n```\n\nLimitations:\n*   Can increase compile time if overused or in very complex scenarios.\n*   Debugging can be harder, especially with nested builders.\n*   Limited to specific result types defined by the builder itself.  Can't easily return different types based on conditions without careful design of `buildEither`.",
       "code_example": null,
       "tags": [
         "swift",
@@ -49,24 +45,23 @@
         "metaprogramming"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
         "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
         "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
       ]
     },
     {
       "id": "swift_76ae4455ed48",
-      "front": "Explain Swift Macros, including their purpose, key characteristics, and limitations. Provide a practical example of when to use one.",
-      "back": "Swift Macros enable compile-time code transformation. They're type-safe, run as external programs during compilation, and are built using SwiftSyntax.\n\nTypes:\n- ExpressionMacro (single expression)\n- AccessorMacro (getters/setters)\n- MemberAttributeMacro (attributes to members)\n- ConformanceMacro (protocol conformance)\n\nUse Cases: reduce boilerplate, generate code, enforce constraints.\n\nExample: `@AllPublished` macro adding `@Published` to all properties of an `ObservableObject`. They should be deterministic, producing consistent output from the same input, enabling incremental builds. Requires a macro definition and external module.",
+      "front": "Explain the core concepts behind Swift Macros, including their purpose, execution environment, and key limitations. Provide use case examples.",
+      "back": "Swift Macros enable compile-time code transformation, enhancing code generation and reducing boilerplate. They run as separate processes during compilation, transforming source code via SwiftSyntax. Macros are type-safe and sandboxed, limiting access to external resources. Key macro types: `ExpressionMacro`, `AccessorMacro`, `ConformanceMacro`, `MemberAttributeMacro`. Example use cases: generating initializers from properties, automatically conforming to protocols, generating localized strings. Limitations: increased build times, debugging complexity, and dependency on SwiftSyntax.",
       "code_example": null,
       "tags": [
         "swift",
         "macros",
         "compilation",
-        "SwiftSyntax",
-        "metaprogramming"
+        "SwiftSyntax"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
@@ -74,21 +69,58 @@
     },
     {
       "id": "swift_5b8fc7f45dfe",
-      "front": "Explain Swift's Automatic Reference Counting (ARC).  How does it work behind the scenes, and what are its limitations?",
-      "back": "ARC automatically manages memory by tracking object references. When an object has no strong references, it's deallocated.  Internally, ARC inserts retain/release calls at compile time. Limitations include its inability to handle retain cycles (resolved with `weak` and `unowned` references), and performance overhead from retain/release operations.  ARC does not handle memory leaks due to unmanaged resources e.g. open file handles.",
+      "front": "Explain ARC's role in Swift memory management and how it differs from manual memory management. What are strong, weak, and unowned references, and when would you use each?",
+      "back": "ARC automates memory management by tracking object references. When an object has no strong references, it's deallocated. \n\n*   `strong`: Default; keeps the object alive.\n*   `weak`: Allows the object to be deallocated if no other strong references exist, becoming `nil`. Used to prevent retain cycles, e.g., parent-child relationships where the child doesn't own the parent.\n*   `unowned`: Like `weak` but assumes the object will *never* be `nil` after initialization. Accessing a deallocated `unowned` reference results in a crash. Use when the other instance has the same or longer lifetime. Also prevents retain cycles.\n`weak let` (Swift 5.9+) makes a property immutable but still allows deallocation.",
       "code_example": null,
       "tags": [
         "memory management",
-        "arc",
-        "swift",
-        "retain cycle",
+        "ARC",
+        "strong",
         "weak",
-        "unowned"
+        "unowned",
+        "retain cycle"
       ],
       "sources": [
         "https://www.swift.org/documentation/",
         "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+        "https://www.objc.io/issues/16-swift/power-of-swift/",
+        "https://www.objc.io/issues/16-swift/swift-functions/"
+      ]
+    },
+    {
+      "id": "swift_112850a42615",
+      "front": "Explain Swift's Copy-on-Write (CoW) optimization. How does it improve performance? Give an example with arrays.",
+      "back": "CoW is a performance optimization where data isn't copied when assigned or passed as an argument. Instead, multiple references point to the same underlying data. A copy is only made when one of the references attempts to modify the data. This avoids unnecessary copying, saving memory and CPU cycles. For example:\n\nvar arr1 = [1, 2, 3]\nvar arr2 = arr1 // arr2 now points to the same data as arr1\narr2[0] = 4 // Modification: arr2 now gets a *copy* of the array, and modifies its copy\n\nWithout CoW, `arr2 = arr1` would create a full copy immediately, even if `arr2` was never modified.",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "performance",
+        "copy-on-write",
+        "optimization",
+        "arrays"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.objc.io/issues/16-swift/power-of-swift/",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "swift_3264a6b95015",
+      "front": "Explain the difference between `some Protocol` and `any Protocol` (Opaque vs Existential) in Swift. When would you use each?",
+      "back": "`some Protocol` (Opaque Type): guarantees the return is of a *specific* underlying type conforming to the protocol, even if the exact type is hidden from the caller.\n`any Protocol` (Existential Type): allows the return to be *any* type conforming to the protocol. Each time it can be a different type. \n\nUse `some` when you need static dispatch and performance is critical. Use `any` when you need type erasure and the specific type isn't known or needs to vary at runtime. \n\n`any` was introduced in Swift 5.6, with warnings in later versions, and required in Swift 6.",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "opaque types",
+        "existential types",
+        "protocols",
+        "performance"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/16-swift/power-of-swift/",
+        "https://www.objc.io/issues/16-swift/swift-functions/",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
       ]
     }
   ]

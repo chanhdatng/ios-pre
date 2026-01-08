@@ -1,95 +1,95 @@
 {
   "topic": "performance",
-  "generated_at": "2026-01-07T12:45:54.005016+00:00",
+  "generated_at": "2026-01-08T03:55:15.486191+00:00",
   "cards": [
     {
       "id": "performance_bf65b1996663",
-      "front": "How would you use Instruments to profile a slow scrolling `UITableView`?",
-      "back": "1. **Profile in Release:**  Debug builds are unoptimized, skewing results. \n2. **Choose 'Time Profiler':** Reveals where your app spends its time. \n3. **Record:** Start the app and trigger the slow scrolling.\n4. **Analyze the Call Tree:**  Look for heavy methods in `UITableViewDataSource` (e.g., `cellForRowAt`). Expand call stacks to find culprit code.\n5. **Investigate `Core Animation`:** If scrolling *looks* slow but CPU usage is low, check `Core Animation`.  Highlight flashes may indicate excessive drawing or layout.\n6. **Allocations:**  Excessive object allocations/deallocations during scroll degrade perf.\n7. **Example:**  If `cellForRowAt` shows high CPU, check for image decoding on the main thread.  Move it to a background queue (GCD, `Operation`) and cache results.",
+      "front": "Describe your approach to using Instruments for performance profiling in a complex iOS app. What are the key Instruments you focus on, and why?",
+      "back": "I start with the `Time Profiler` to identify hotspots \u2013 functions consuming the most CPU time. Then, I use `Allocations` to track memory usage, looking for leaks and excessive allocations.  For UI performance, `Core Animation` helps identify offscreen rendering and compositing issues. `Networking` is essential to investigate delays. Example: sluggish table view scrolls often traced via Time Profiler to inefficient cellForRowAt. Analyze Allocations instrument if scroll is caused by constant object allocation.",
       "code_example": null,
       "tags": [
         "performance",
         "instruments",
         "profiling",
-        "uitableview",
-        "ios"
+        "debugging"
       ],
       "sources": [
-        "https://www.swift.org/documentation/",
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+        "https://www.objc.io/issues/15-testing/dependency-injection/",
+        "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "performance_8e4addee9ecb",
-      "front": "Explain common memory optimization techniques in iOS, focusing on practical Swift examples. How do these techniques contribute to a smoother user experience?",
-      "back": "Common techniques include: 1) Using value types (structs, enums) where appropriate to avoid unnecessary reference counting. 2) Avoiding strong reference cycles using `weak` and `unowned`. 3) Using `autoreleasepool` for large, temporary object allocations. 4) Optimizing image loading using `URLCache` or framework like Kingfisher. 5) Efficient data structures (e.g., using `Set` instead of `Array` for membership checks). Benefits: Reduced memory footprint, fewer crashes, faster app launch, and improved UI responsiveness.",
+      "front": "What are some strategies for minimizing memory footprint in an iOS app dealing with large images?",
+      "back": "Several strategies include: 1. Downsampling: Reduce resolution before loading into memory. 2. Lazy loading: Load images only when visible. 3. Image caching: Use `NSCache` or similar to avoid reloading from disk/network. 4. Image format: Use compressed formats like JPEG/WebP where appropriate. 5. Tiling: Divide large images into smaller tiles and load them on demand. 6. Purging: Release memory when images are no longer needed using `autoreleasepool`.",
       "code_example": null,
       "tags": [
         "memory management",
-        "performance",
-        "optimization",
-        "ARC",
-        "Swift"
+        "images",
+        "performance"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "performance_3727e7d481bd",
-      "front": "How do you approach optimizing iOS app launch time?",
-      "back": "Analyze using Instruments (Time Profiler, System Trace). Prioritize: lazy loading, moving non-essential tasks to background threads (DispatchQueues, async/await), optimizing data serialization/deserialization (consider alternatives to JSON), and reducing startup code in `application(_:didFinishLaunchingWithOptions:)`.  Ensure appropriate use of SwiftUI's `@Observable` and split large views into subviews.",
+      "front": "Describe strategies for optimizing app launch time. What are the key areas to investigate and improve?",
+      "back": "Key areas: \n1. **Code Loading:** Reduce dynamic libraries, use static linking where appropriate. Analyze binary size and dependencies.\n2. **Initialization:** Defer non-critical initializations. Use lazy loading. Move tasks to background threads (OperationQueues).\n3. **Framework Overhead:** Be mindful of the cost of large frameworks. Consider alternatives for specific functionalities.\n4. **I/O Operations:** Optimize Core Data setup by shipping pre-populated SQLite files or downloading initial data.  Avoid child contexts for background operations due to main thread blocking during saves. Use independent contexts.\n5. **UI Rendering:**  Optimize `drawRect:` by using Core Animation layers or pre-rendered images.  Move drawing to background threads if necessary.\n6. **Networking:**  Optimize network calls, reduce payload size, and cache data when possible.\n7. **Testing:** Use in-memory stores for Core Data during testing to improve speed. Employ `dispatch_group_t` to manage asynchronous operations during tests and ensure proper isolation.",
       "code_example": null,
       "tags": [
         "performance",
         "launch time",
         "optimization",
-        "instruments",
-        "concurrency",
-        "swiftui"
+        "code loading",
+        "core data",
+        "ui rendering",
+        "networking",
+        "initialization",
+        "testing"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/4-core-data/core-data-fetch-requests/",
+        "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "performance_213cf6d733df",
-      "front": "How does inefficient CloudKit usage impact battery life? Describe strategies to optimize CloudKit for better battery performance.",
-      "back": "Inefficient CloudKit leads to excessive network requests & data processing, draining the battery.  \n\nOptimization strategies:\n1. **Batching:** Group multiple operations into a single request.\n2. **Predicates:** Filter data server-side to reduce transferred data. Use the right indexex.\n3. **Subscriptions:** Use push notifications for changes, avoiding constant polling.\n4. **Background Tasks:**  Schedule syncs during off-peak usage. Use `BGTaskScheduler` or `DispatchWorkItem`.\n5. **Data Size:** Minimize size of stored data and assets. Compress images/videos.\n6. **Record Zones:** organize your data.\n7. **Error Handling:** Properly handle network errors, avoid retry loops.\n8. **Rate Limiting:** respect and manage rate limits.",
+      "front": "How can you optimize your iOS app for better battery life? Provide several strategies. Discuss trade-offs.",
+      "back": "Strategies include: Efficient networking (batch requests, minimize data transfer), optimized data structures, lazy loading of resources, reducing background activity, using energy-efficient APIs (e.g., `DispatchWorkItem.qos` for background tasks), Core Data optimization (batching, efficient queries, using SQLite directly). Profile with Instruments to pinpoint energy hogs. Trade-offs: balance UX responsiveness with energy use.  Aggressive optimizations may impact user experience.",
       "code_example": null,
       "tags": [
         "performance",
         "battery",
-        "cloudkit"
+        "optimization",
+        "energy efficiency",
+        "power consumption"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "performance_ffa2502f7bb2",
-      "front": "How can you optimize network requests in a data-intensive iOS app using CloudKit, and why is it beneficial?",
-      "back": "Use `CKFetchRecordChangesOperation` for efficient data synchronization.  It only fetches changes since the last sync, reducing bandwidth and improving battery life. Batch requests when possible to reduce round trips. Utilize `NSPredicate` for filtering to retrieve only necessary data. Consider caching frequently accessed data locally to minimize network dependency. Prioritize fetching the most relevant data first to improve initial load times. Finally, monitor CloudKit usage with metrics. If using @Observable, split things out into separate SwiftUI views instead.",
+      "front": "Discuss strategies for optimizing network performance in an iOS app. What are the tradeoffs for each?",
+      "back": "Strategies include:\n1. **Asynchronous Requests:** Essential.  Avoid blocking the main thread.\n2. **Data Serialization:** Use efficient formats like JSON or Protocol Buffers.  Consider compression.\n3. **Caching:** Implement caching strategies (memory & disk) using `URLCache` or custom solutions.  Proper cache invalidation is crucial.\n4. **Request Prioritization:** Use `OperationQueue` to prioritize critical requests.  `qualityOfService` is key.\n5. **Connection Pooling:** Reuse connections.  `URLSession` handles this automatically.\n6. **Image Optimization:** Resize/compress images before uploading; use correct image formats (HEIF/WebP).\n7. **Prefetching:** Load data/images before they are needed, e.g., for table/collection views.\n8. **Content Delivery Networks (CDNs):**  Offload static assets.\n9. **Gzip Compression:** Enable gzip compression on the server and handle decompression on the client.\n10. **HTTP/2:** Use HTTP/2 for multiplexing requests over a single connection.\n11. **Websockets:** for persistent connections\n12. **Avoid synchronous networking at all costs.**\n\nTradeoffs involve complexity, memory usage, and battery consumption. Caching requires careful management to avoid stale data. Prioritization may starve low-priority requests. CDNs add cost. Asynchronous calls require managing concurrency.",
       "code_example": null,
       "tags": [
         "performance",
         "networking",
-        "cloudkit",
-        "swiftui"
+        "optimization",
+        "caching",
+        "asynchronous"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/4-core-data/core-data-fetch-requests/",
+        "https://www.objc.io/issues/15-testing/xctest/"
       ]
     }
   ]

@@ -1,0 +1,129 @@
+{
+  "topic": "security",
+  "generated_at": "2026-01-08T03:55:15.486210+00:00",
+  "cards": [
+    {
+      "id": "security_33cf632c026b",
+      "front": "Explain how Keychain Services enhances iOS app security.  Describe common vulnerabilities and mitigation strategies.",
+      "back": "Keychain Services provides a secure, encrypted store for sensitive data like passwords, certificates, and keys. It uses hardware encryption when available (Secure Enclave). \n\nVulnerabilities include: data leakage through improper access control (ACLs), weak encryption keys, and side-channel attacks. \n\nMitigation: Always use kSecAttrAccessible... options correctly, store only necessary data, consider additional encryption layers, and be aware of potential side-channel attacks.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "keychain",
+        "encryption",
+        "ACLs",
+        "authentication"
+      ],
+      "sources": [
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "security_85b38a95715f",
+      "front": "Explain App Transport Security (ATS) and its benefits. How would you disable it selectively?",
+      "back": "ATS enforces secure connections (HTTPS) for network requests, protecting user data by preventing interception and tampering.  Benefits include enhanced privacy and data integrity.  \n\nTo disable ATS selectively (e.g., for specific domains during development or testing), use `NSExceptionDomains` in the `Info.plist`. Be cautious and provide justification; consider using temporary exceptions and re-enabling ATS in production builds.  Since iOS 10 you need to specify `NSAllowsArbitraryLoadsInWebContent` to allow non secure connections on web views.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "networking",
+        "ATS",
+        "Info.plist"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "security_199ddce13d96",
+      "front": "How does `LocalAuthentication` ensure biometric data isn't directly accessed by your app?",
+      "back": "`LocalAuthentication` framework never exposes biometric data. It securely interacts with the Secure Enclave. Your app only receives a success/failure code, minimizing security risks. Remember to include a descriptive `NSFaceIDUsageDescription` in your `Info.plist`.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "biometrics",
+        "LocalAuthentication",
+        "Secure Enclave"
+      ],
+      "sources": [
+        "https://developer.apple.com/news/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "security_b2f1eb5efae8",
+      "front": "Describe common data encryption strategies in iOS and when you might use them.  What are the tradeoffs?",
+      "back": "Strategies include: \n*   **Keychain:** For small, sensitive data (passwords, API keys). Secure, OS-managed.\n*   **Core Data Encryption:** Encrypts the entire Core Data store. Easy to implement, but impacts performance. SQLCipher.\n*   **File Encryption:** Encrypt individual files. Flexible, but requires manual management.\n*   **Property List Encryption**: Encrypt Plist Files using `NSDataWritingOptions`. Easy, but less secure than other methods\n\nTradeoffs: Security vs. Performance, complexity of implementation, and granularity of encryption.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "encryption",
+        "keychain",
+        "core data",
+        "file encryption"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "security_a325baeb20c1",
+      "front": "Explain code signing and provisioning profiles in iOS development. What security benefits do they provide?",
+      "back": "Code signing assures the app's integrity and identity.  Provisioning profiles, tied to specific developer accounts and devices, authorize an app to run.  They link the app ID, developer certificate, and allowed devices.  This prevents unauthorized code from running on devices and ensures code originates from a trusted source. Example: Prevents malware sideloading.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "code signing",
+        "provisioning profiles",
+        "iOS"
+      ],
+      "sources": [
+        "https://developer.apple.com/news/"
+      ]
+    },
+    {
+      "id": "security_c64c3d914723",
+      "front": "Discuss common secure coding practices in iOS development to prevent vulnerabilities. Provide examples.",
+      "back": "Key practices include: Input validation (sanitize user input, prevent injection attacks), data protection (using Keychain for sensitive data, encrypting data at rest/in transit), secure networking (HTTPS, certificate pinning), proper session management (secure cookies, token validation), and avoiding common pitfalls like hardcoding secrets or insecure random number generation. Example: Use `OSRandomCopyBytes` instead of `arc4random` for cryptographically secure random numbers.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "coding practices",
+        "input validation",
+        "data protection",
+        "networking"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/16-swift/swift-functions/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "security_a98037d94e1a",
+      "front": "Describe the OWASP Mobile Security Project. What are some key risks it identifies for iOS apps, and how would you mitigate them?",
+      "back": "The OWASP Mobile Security Project provides resources for developing and maintaining secure mobile apps. Key risks include: \n\n*   **Insecure Data Storage:** Sensitive data stored unencrypted. Mitigate by using the Keychain, encrypting Core Data, and avoiding storing sensitive data locally.\n*   **Insufficient Cryptography:** Weak or improperly implemented encryption. Use strong, modern crypto libraries like CryptoKit (Swift 5.1+), TLS 1.3, and avoid custom crypto.\n*   **Insecure Authentication/Authorization:** Weak or bypassed authentication. Implement multi-factor authentication, strong password policies, and proper session management.\n*   **Client-Side Injection:** Exploiting vulnerabilities in web views or other client-side components. Sanitize inputs and use secure coding practices.\n*   **Reverse Engineering:** Code can be decompiled. Use code obfuscation techniques, runtime integrity checks, and protect sensitive logic.\n*   **Transport Layer Protection:** Data transmitted insecurely. Enforce TLS for all network communication, use certificate pinning, and validate server certificates.\n*   **Platform API misuse:** Improper use of Apple's APIs. Follow security best practices, and stay up to date with API changes.\n\nRegular security audits, penetration testing, and adhering to secure coding practices are crucial.",
+      "code_example": null,
+      "tags": [
+        "security",
+        "OWASP",
+        "mobile security",
+        "iOS",
+        "risk mitigation",
+        "cryptography",
+        "authentication"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    }
+  ]
+}

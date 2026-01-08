@@ -7,151 +7,315 @@
       "id": "swiftui-001",
       "front": "What's the difference between @State and @Binding?",
       "back": "@State: Owns the source of truth, local to view. @Binding: References state owned elsewhere, creates two-way connection. Parent uses @State, passes $state as Binding to child.",
-      "tags": ["state-management"]
+      "tags": [
+        "state-management"
+      ]
     },
     {
       "id": "swiftui-002",
       "front": "When do you use @StateObject vs @ObservedObject?",
       "back": "@StateObject: Creates and owns the ObservableObject instance (use in view that creates it). @ObservedObject: References externally-owned instance (passed in). Wrong choice causes object recreation.",
-      "tags": ["state-management"]
+      "tags": [
+        "state-management"
+      ]
     },
     {
       "id": "swiftui-003",
       "front": "Explain @EnvironmentObject and when to use it",
       "back": "Injects ObservableObject into view hierarchy. Access without explicit passing. Use for app-wide state (auth, settings). Must provide via .environmentObject() modifier on ancestor.",
-      "tags": ["state-management", "dependency-injection"]
+      "tags": [
+        "state-management",
+        "dependency-injection"
+      ]
     },
     {
       "id": "swiftui-004",
       "front": "What is the SwiftUI view lifecycle?",
-      "back": "init → body (computed) → onAppear → [updates via state changes] → onDisappear. Views are structs, recreated frequently. body is recomputed when state changes. Use onAppear for side effects.",
-      "tags": ["lifecycle"]
+      "back": "init \u2192 body (computed) \u2192 onAppear \u2192 [updates via state changes] \u2192 onDisappear. Views are structs, recreated frequently. body is recomputed when state changes. Use onAppear for side effects.",
+      "tags": [
+        "lifecycle"
+      ]
     },
     {
       "id": "swiftui-005",
       "front": "How does SwiftUI diffing work?",
       "back": "SwiftUI compares view identity and state to determine updates. Uses structural identity (position in hierarchy) or explicit id(). Only redraws changed parts. Keep body pure and fast.",
-      "tags": ["performance"]
+      "tags": [
+        "performance"
+      ]
     },
     {
       "id": "swiftui-006",
       "front": "What's the difference between NavigationStack and NavigationView?",
       "back": "NavigationStack (iOS 16+): Modern, value-based navigation with NavigationPath. NavigationView: Deprecated, uses NavigationLink with destination. Stack supports programmatic navigation.",
-      "tags": ["navigation"]
+      "tags": [
+        "navigation"
+      ]
     },
     {
       "id": "swiftui-007",
       "front": "How do you handle navigation programmatically in SwiftUI?",
       "back": "iOS 16+: NavigationStack with path binding, append/remove from NavigationPath. Pre-iOS 16: isActive binding on NavigationLink, or tag/selection. Use @State to control navigation state.",
-      "tags": ["navigation"]
+      "tags": [
+        "navigation"
+      ]
     },
     {
       "id": "swiftui-008",
       "front": "What is @ViewBuilder and when do you use it?",
       "back": "@ViewBuilder: Function builder enabling multiple views as closure content. Used for custom container views. Allows if/else, switch, ForEach without explicit Group. body property has implicit @ViewBuilder.",
-      "tags": ["view-composition"]
+      "tags": [
+        "view-composition"
+      ]
     },
     {
       "id": "swiftui-009",
       "front": "Explain GeometryReader and its uses",
       "back": "Provides parent size via GeometryProxy. Use for: Responsive layouts, positioning relative to parent, reading safe area. Caution: Takes all available space, can cause layout issues.",
-      "tags": ["layout"]
+      "tags": [
+        "layout"
+      ]
     },
     {
       "id": "swiftui-010",
       "front": "What are PreferenceKeys in SwiftUI?",
       "back": "Pass data up the view hierarchy (child to parent). Define PreferenceKey, set with preference(key:value:), read with onPreferenceChange. Used for: Coordination, custom navigation bars.",
-      "tags": ["data-flow"]
+      "tags": [
+        "data-flow"
+      ]
     },
     {
       "id": "swiftui-011",
       "front": "How do you create custom view modifiers?",
       "back": "Conform to ViewModifier protocol, implement body(content:). Apply with .modifier() or create View extension. Use for reusable styling, behavior composition. Can have @State.",
-      "tags": ["view-composition"]
+      "tags": [
+        "view-composition"
+      ]
     },
     {
       "id": "swiftui-012",
       "front": "What's the difference between task and onAppear?",
       "back": "task: Async context, automatically cancelled when view disappears. onAppear: Synchronous, fires every time view appears. Use task for async work (fetching), onAppear for sync setup.",
-      "tags": ["lifecycle", "concurrency"]
+      "tags": [
+        "lifecycle",
+        "concurrency"
+      ]
     },
     {
       "id": "swiftui-013",
       "front": "How does @Environment work?",
       "back": "Access environment values (colorScheme, locale, dismiss). Read-only by default. System provides many values. Custom: Define EnvironmentKey, extend EnvironmentValues, use .environment() modifier.",
-      "tags": ["dependency-injection"]
+      "tags": [
+        "dependency-injection"
+      ]
     },
     {
       "id": "swiftui-014",
       "front": "Explain List vs LazyVStack performance",
       "back": "List: Built-in cell reuse, optimized for large datasets, automatic separators/styling. LazyVStack: Creates views lazily but doesn't reuse, more customizable. Use List for long scrolling content.",
-      "tags": ["performance", "layout"]
+      "tags": [
+        "performance",
+        "layout"
+      ]
     },
     {
       "id": "swiftui-015",
       "front": "What is @MainActor and why is it important?",
       "back": "@MainActor ensures code runs on main thread. Required for UI updates. ObservableObject often needs @MainActor. Async functions can be marked @MainActor for automatic main thread dispatch.",
-      "tags": ["concurrency"]
+      "tags": [
+        "concurrency"
+      ]
     },
     {
       "id": "swiftui-016",
       "front": "How do you handle sheets and alerts in SwiftUI?",
       "back": "Use .sheet(isPresented:) or .sheet(item:) modifiers. Alert: .alert(title:isPresented:actions:). Control via @State binding. item: variant provides data to presented view.",
-      "tags": ["presentation"]
+      "tags": [
+        "presentation"
+      ]
     },
     {
       "id": "swiftui-017",
       "front": "What's the Observation framework (iOS 17)?",
       "back": "@Observable macro replaces ObservableObject. No need for @Published. Views automatically track which properties they read. Simpler API, better performance. Use @State for observable in views.",
-      "tags": ["state-management", "ios-17"]
+      "tags": [
+        "state-management",
+        "ios-17"
+      ]
     },
     {
       "id": "swiftui-018",
       "front": "How do you animate in SwiftUI?",
       "back": "withAnimation {} block, .animation() modifier, or .transition(). Implicit: State change auto-animates. Explicit: Wrap in withAnimation. Custom: Animatable protocol for complex animations.",
-      "tags": ["animation"]
+      "tags": [
+        "animation"
+      ]
     },
     {
       "id": "swiftui-019",
       "front": "What is @FocusState and how do you use it?",
       "back": "Manages keyboard focus for text fields. Declare @FocusState var, use .focused($var, equals:value). Set to nil to dismiss keyboard. Works with enums for multiple fields.",
-      "tags": ["forms", "keyboard"]
+      "tags": [
+        "forms",
+        "keyboard"
+      ]
     },
     {
       "id": "swiftui-020",
       "front": "Explain SwiftUI's coordinate spaces",
       "back": ".local: View's own coordinate space. .global: Screen/window coordinates. .named(\"custom\"): Custom coordinate space via .coordinateSpace(). Use GeometryProxy.frame(in:) to convert.",
-      "tags": ["layout"]
+      "tags": [
+        "layout"
+      ]
     },
     {
       "id": "swiftui-021",
       "front": "How do you integrate UIKit views in SwiftUI?",
       "back": "UIViewRepresentable protocol. Implement makeUIView() and updateUIView(). Use Coordinator for delegates. UIViewControllerRepresentable for view controllers.",
-      "tags": ["interop"]
+      "tags": [
+        "interop"
+      ]
     },
     {
       "id": "swiftui-022",
       "front": "What are the new container APIs in iOS 17?",
       "back": "ContentUnavailableView: Empty states. containerRelativeFrame: Size relative to container. scrollTargetLayout/scrollTargetBehavior: Paging and snapping. safeAreaPadding: Safe area handling.",
-      "tags": ["ios-17", "layout"]
+      "tags": [
+        "ios-17",
+        "layout"
+      ]
     },
     {
       "id": "swiftui-023",
       "front": "How does @AppStorage work?",
       "back": "@AppStorage: Property wrapper reading/writing UserDefaults. Auto-updates view on change. Supports basic types. @SceneStorage: Per-scene state restoration. Use for simple preferences.",
-      "tags": ["persistence"]
+      "tags": [
+        "persistence"
+      ]
     },
     {
       "id": "swiftui-024",
       "front": "What's the difference between frame and fixedSize?",
       "back": "frame: Sets explicit size constraints. fixedSize: Prevents view from compressing below ideal size. fixedSize(horizontal:vertical:) for one axis. Use to prevent text truncation.",
-      "tags": ["layout"]
+      "tags": [
+        "layout"
+      ]
     },
     {
       "id": "swiftui-025",
       "front": "How do you handle deep links in SwiftUI?",
       "back": "onOpenURL modifier receives URL. Parse and update navigation state (@State path). iOS 16+: Update NavigationPath based on URL components. Handle in root view or App struct.",
-      "tags": ["navigation", "deep-linking"]
+      "tags": [
+        "navigation",
+        "deep-linking"
+      ]
+    },
+    {
+      "id": "swiftui_52087b03c6db",
+      "front": "How does SwiftUI manage View identity and lifecycle and why is understanding this crucial?",
+      "back": "SwiftUI uses a combination of structural and explicit identity. Views are re-evaluated when their inputs change, potentially leading to re-creation. `.id()` modifier can provide explicit identity for persistent state/animations.  Understanding this prevents unexpected view recreations, optimizes performance, and ensures correct animation behavior.",
+      "code_example": null,
+      "tags": [
+        "swiftui",
+        "lifecycle",
+        "identity",
+        "performance"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_cddc3f3f2aa5",
+      "front": "Compare and contrast `@State`, `@Binding`, `@ObservedObject`, `@StateObject`, and `@EnvironmentObject` in SwiftUI. When would you use each?",
+      "back": "`@State`:  For simple, UI-local, value-type data.  Changes trigger view updates. \n`@Binding`:  Creates two-way connection to `@State` or other source of truth. Used to share state.\n`@ObservedObject`: For observable reference types (classes) conforming to `ObservableObject`. View updates when `@Published` properties change.  Lifecycle managed externally.\n`@StateObject`: Same as `@ObservedObject` but *owns* the lifecycle of the observable object.  Created only once.\n`@EnvironmentObject`:  Observable object passed down the view hierarchy.  Used for app-wide state. Requires `.environmentObject()` modifier.\nExample: `@State` for a TextField's text. `@Binding` to pass that text to a child view. `@ObservedObject` for data fetched from a network. `@StateObject` to ensure that expensive network call only happens once. `@EnvironmentObject` for user authentication status.",
+      "code_example": null,
+      "tags": [
+        "swiftui",
+        "state management",
+        "observedobject",
+        "stateobject",
+        "environmentobject",
+        "binding",
+        "state"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_57b904137e80",
+      "front": "In SwiftUI, what are the key differences between `@Observable` and `ObservableObject` for managing app state, and when would you choose one over the other?",
+      "back": "`@Observable` (Swift 5.9+) offers a simpler, macro-based approach, directly tracking property changes within a class. It requires less boilerplate than `ObservableObject`.  `ObservableObject` requires conformance, `@Published` property wrappers, and manual setup.\n\nUse `@Observable` for new projects with Swift 5.9+.  Use `ObservableObject` for existing projects or when fine-grained control over observation is needed (e.g., custom `objectWillChange` emissions).  `@Observable` is generally more performant.",
+      "code_example": null,
+      "tags": [
+        "SwiftUI",
+        "State Management",
+        "@Observable",
+        "ObservableObject",
+        "Swift 5.9+"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_5db790af102a",
+      "front": "Custom ViewModifiers",
+      "back": "",
+      "code_example": null,
+      "tags": [
+        "Custom ViewModifiers"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_0c71a581d980",
+      "front": "Explain SwiftUI Preference Keys and their use cases.  Why are they important in SwiftUI?",
+      "back": "Preference Keys allow child views to communicate information (preferences) up the view hierarchy to ancestor views.  They're crucial for things like reading sizes or positions of views, triggering actions based on child view state (e.g., showing a popup when a subview becomes visible), or sharing data for layout calculations.  They avoid tight coupling and provide a declarative way to handle such interactions. Example: tracking the height of dynamic content to adjust a container's size.",
+      "code_example": null,
+      "tags": [
+        "swiftui",
+        "preferences",
+        "uikit",
+        "swiftui layout"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_fce609cc67b5",
+      "front": "Explain the SwiftUI Layout protocol, its purpose, and how it differs from using stacks and frames.",
+      "back": "The `Layout` protocol offers fine-grained control over view placement.  Instead of relying on built-in stack or frame behaviors, `Layout` lets you define custom layout algorithms.  It involves calculating sizes and positions of child views within a container.  Use when standard layouts are insufficient, e.g., circular layouts or custom grid systems. `SwiftUI 16.0+`",
+      "code_example": null,
+      "tags": [
+        "SwiftUI",
+        "Layout",
+        "Protocol",
+        "Custom Layouts"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_4bd31d70cc62",
+      "front": "Explain SwiftUI's animation system. How does SwiftUI handle animation behind the scenes?",
+      "back": "SwiftUI animations are declarative, meaning you describe the desired animation, and the system handles the implementation.  Under the hood, SwiftUI uses implicit and explicit animations. Implicit animations are triggered by state changes within a view. Explicit animations are created using `withAnimation` or `.animation(_:value:)` modifier, where you define the animation and the value that triggers it. SwiftUI then interpolates changes between the old and new states over a specified duration, using timing curves (e.g., easeIn, easeOut) to control the animation's pace. It leverages Core Animation for actual rendering.",
+      "code_example": null,
+      "tags": [
+        "swiftui",
+        "animation",
+        "coreanimation",
+        "implicit animation",
+        "explicit animation"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
     }
   ]
 }

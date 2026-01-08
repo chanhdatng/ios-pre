@@ -1,0 +1,122 @@
+{
+  "topic": "debugging",
+  "generated_at": "2026-01-08T03:55:15.486214+00:00",
+  "cards": [
+    {
+      "id": "debugging_0ea0235941aa",
+      "front": "Describe how to use LLDB to inspect variables and step through code.  Give specific commands and examples.",
+      "back": "Common LLDB commands:\n\n*   `po <variable>`: Print object description.\n*   `p <variable>`: Print variable's value.\n*   `bt`: Print backtrace.\n*   `continue` or `c`: Continue execution.\n*   `next` or `n`: Step over the next line.\n*   `step` or `s`: Step into the next function.\n*   `breakpoint set -name <method>`: Set breakpoint at method.\n*   `breakpoint set -file <file> -line <line_number>`: Set breakpoint at file/line.\n*   `breakpoint delete <breakpoint_id>`: Delete a breakpoint.\n*   `expression <variable> = <value>`: Modify variable value.\n*   `frame variable`: Show all variables in current frame.\nExample:\n`po myString` will print the description of `myString`.",
+      "code_example": null,
+      "tags": [
+        "debugging",
+        "lldb",
+        "xcode"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "debugging_aa5b0c0bdfb3",
+      "front": "Describe strategies for debugging memory issues in iOS apps beyond using Instruments. How would you identify retain cycles programmatically?",
+      "back": "Beyond Instruments (Leaks, Allocations), I'd use: 1) **Breakpoints:** Set breakpoints in `deinit` methods to see when objects are released (or not). 2) **Weak/Unowned References:** Verify proper usage in delegates/closures. 3) **Custom Memory Management:**  Inspect custom alloc/dealloc code.  4) **MLeaksFinder/FBMemoryProfiler:** Integrate 3rd party tools to detect memory leaks automatically. 5) **Snapshot debugging:** Capturing memory snapshots on device using MemoryGraph framework programmatically to triage later. To identify retain cycles programmatically, I'd utilize `CFGetRetainCount()` (though use cautiously, mostly for debugging) and analyze object graphs during runtime with debugger scripts or custom logging.",
+      "code_example": null,
+      "tags": [
+        "memory management",
+        "debugging",
+        "retain cycles",
+        "instruments"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.objc.io/issues/15-testing/dependency-injection/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "debugging_6a4d1a449a68",
+      "front": "Describe your process for analyzing a crash log. What key pieces of information do you look for and why?",
+      "back": "1. **Crash Type:** Identify the crash type (e.g., EXC_BAD_ACCESS, SIGSEGV, EXC_CRASH). This gives an initial clue.\n2. **Exception Code/Subcode:** Deciphers *why* the crash occurred (e.g., memory access issue).\n3. **Thread Crashed:** Pinpoints the thread where the crash originated. Often the main thread, but crucial for concurrency issues.\n4. **Stack Trace:**  Most important. Examine the functions called leading to the crash.  Start from the top (crashing frame) and go down. Look for familiar function names or framework calls.\n5. **Binary Images:** Helps identify the exact versions of libraries and frameworks in use, crucial for debugging versions, and knowing if a framework is yours or external.\n6. **Device and OS Version:** Essential for replicating the crash.  Crashes can be OS-specific.\n7. **Memory Footprint:** Significant memory usage before the crash? Could indicate a memory leak.\n8. **Reproducibility:** Can you reliably reproduce it? If not, gather more data.\nTools:  Xcode's Organizer, Crashlytics, Bugsnag, Sentry.\nExample: An `EXC_BAD_ACCESS` with code `KERN_INVALID_ADDRESS` likely means you're trying to access memory that hasn't been allocated or has been deallocated. The stack trace will show where this occurred.",
+      "code_example": null,
+      "tags": [
+        "debugging",
+        "crash logs",
+        "error handling"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "debugging_0c5380e23e69",
+      "front": "What is symbolication and why is it important in debugging iOS applications?  How does it relate to crash reports?",
+      "back": "Symbolication translates memory addresses in stack traces (like in crash reports) into human-readable function names, class names, and line numbers.\n\nWithout symbolication, crash reports are just a series of memory addresses, making debugging nearly impossible.\n\nIt's important because it allows developers to pinpoint the exact location in the code where a crash occurred, facilitating efficient bug fixing.",
+      "code_example": null,
+      "tags": [
+        "debugging",
+        "symbolication",
+        "crash reports",
+        "stack trace"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "debugging_75b31908b8e1",
+      "front": "Describe your experience debugging network issues in iOS apps. What tools & techniques do you use?",
+      "back": "I use a variety of tools like Charles Proxy, Wireshark, and built-in Xcode network debugging tools. Charles allows intercepting and inspecting network traffic (requests/responses, headers, body).  Wireshark is for deeper packet analysis.  Xcode's Network Inspector provides a high-level view of network activity within the app. For techniques, I use logging (URLSession's delegate methods), breakpoints, and custom request/response validation for error handling.  I might even build a 'fake server' for complex scenarios. Also important: understanding HTTP status codes, REST principles, and JSON format.",
+      "code_example": null,
+      "tags": [
+        "networking",
+        "debugging",
+        "tools",
+        "HTTP",
+        "URLSession",
+        "Charles Proxy",
+        "Wireshark",
+        "Xcode",
+        "testing",
+        "mocking"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "debugging_a0af6467c998",
+      "front": "Describe your experience debugging view-related issues (e.g., layout problems, rendering glitches). What tools/techniques do you use?",
+      "back": "I use Xcode's View Debugger extensively. I inspect the view hierarchy, constraints, and rendering properties (e.g., `clipsToBounds`, `opaque`).  I also use `UIColor.red.setFill()` temporarily on views to visually identify their frames. For complex layouts, I'll often use breakpoints and `po view.recursiveDescription` to understand the hierarchy's state at runtime.  Instruments (Core Animation) helps identify offscreen rendering.  I've also used custom assert macros during unit testing to provide descriptive information when debugging.",
+      "code_example": null,
+      "tags": [
+        "debugging",
+        "view debugging",
+        "layout",
+        "rendering",
+        "xcode",
+        "instruments"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    },
+    {
+      "id": "debugging_3561e6d6eeee",
+      "front": "Describe your approach to performance profiling in iOS. What tools do you use and what metrics are important to monitor?",
+      "back": "I primarily use Instruments for performance profiling. Key metrics include CPU usage, memory allocation (leaks, allocations, resident memory), disk I/O, and network usage. I start with the Time Profiler to identify CPU-intensive areas. Then, I dive deeper with alloc/leaks instruments. For UI performance, I use the Core Animation instrument to look for offscreen rendering, blending, and excessive view hierarchy complexity.  I also use os_signpost for custom instrumentation. I can use MetricKit in production.",
+      "code_example": null,
+      "tags": [
+        "performance",
+        "instruments",
+        "debugging",
+        "profiling"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/15-testing/xctest/"
+      ]
+    }
+  ]
+}

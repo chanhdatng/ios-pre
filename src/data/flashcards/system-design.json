@@ -7,91 +7,227 @@
       "id": "sys-001",
       "front": "Compare MVC, MVVM, and VIPER architectures",
       "back": "MVC: Simple, controller does too much. MVVM: View-ViewModel binding, good testability. VIPER: Full separation (View-Interactor-Presenter-Entity-Router), complex but scalable. Choose based on project size.",
-      "tags": ["architecture"]
+      "tags": [
+        "architecture"
+      ]
     },
     {
       "id": "sys-002",
       "front": "What is dependency injection and why use it?",
       "back": "Pass dependencies via init/property instead of creating internally. Benefits: Testability (inject mocks), flexibility, loose coupling. Types: Constructor, property, method injection.",
-      "tags": ["patterns", "testing"]
+      "tags": [
+        "patterns",
+        "testing"
+      ]
     },
     {
       "id": "sys-003",
       "front": "How would you design an offline-first app?",
       "back": "1) Local DB as source of truth (Core Data/Realm) 2) Queue operations when offline 3) Sync when online with conflict resolution 4) Show cached data immediately 5) Background sync 6) Optimistic UI updates.",
-      "tags": ["architecture", "offline"]
+      "tags": [
+        "architecture",
+        "offline"
+      ]
     },
     {
       "id": "sys-004",
       "front": "Explain the Coordinator pattern",
       "back": "Extracts navigation logic from view controllers. Coordinator creates/presents VCs and manages flow. Benefits: Reusable VCs, centralized navigation, easier deep linking. Parent-child coordinator hierarchy.",
-      "tags": ["architecture", "navigation"]
+      "tags": [
+        "architecture",
+        "navigation"
+      ]
     },
     {
       "id": "sys-005",
       "front": "How do you design a caching strategy?",
-      "back": "Layers: Memory (NSCache) → Disk (files/DB) → Network. Consider: TTL, max size, eviction policy (LRU), cache invalidation. URLCache for network, custom for business objects.",
-      "tags": ["performance", "caching"]
+      "back": "Layers: Memory (NSCache) \u2192 Disk (files/DB) \u2192 Network. Consider: TTL, max size, eviction policy (LRU), cache invalidation. URLCache for network, custom for business objects.",
+      "tags": [
+        "performance",
+        "caching"
+      ]
     },
     {
       "id": "sys-006",
       "front": "What is the Repository pattern?",
       "back": "Abstracts data source behind protocol. Repository decides: cache, local DB, or network. Benefits: Swap implementations, testability, clean domain layer. Combines with Unit of Work for transactions.",
-      "tags": ["architecture", "patterns"]
+      "tags": [
+        "architecture",
+        "patterns"
+      ]
     },
     {
       "id": "sys-007",
       "front": "How would you handle image loading and caching?",
       "back": "Use SDWebImage/Kingfisher or custom: 1) Check memory cache (NSCache) 2) Check disk cache 3) Download and decode off main thread 4) Cache at both layers 5) Handle cell reuse with cancel/reload.",
-      "tags": ["performance", "images"]
+      "tags": [
+        "performance",
+        "images"
+      ]
     },
     {
       "id": "sys-008",
       "front": "Explain modular architecture benefits",
       "back": "Split app into Swift packages/frameworks. Benefits: Build time (parallel), team scaling, code reuse, enforced boundaries. Types: Feature modules, core/shared, domain modules.",
-      "tags": ["architecture", "modularization"]
+      "tags": [
+        "architecture",
+        "modularization"
+      ]
     },
     {
       "id": "sys-009",
       "front": "How do you design for testability?",
       "back": "1) Dependency injection 2) Protocol-based dependencies 3) Pure functions where possible 4) Separate side effects 5) Small, focused classes 6) Avoid singletons or inject them.",
-      "tags": ["testing", "architecture"]
+      "tags": [
+        "testing",
+        "architecture"
+      ]
     },
     {
       "id": "sys-010",
       "front": "What is Clean Architecture?",
-      "back": "Layers: Entities (business) → Use Cases (app logic) → Interface Adapters (presenters/controllers) → Frameworks (UI/DB). Dependency rule: Inner layers don't know outer layers.",
-      "tags": ["architecture"]
+      "back": "Layers: Entities (business) \u2192 Use Cases (app logic) \u2192 Interface Adapters (presenters/controllers) \u2192 Frameworks (UI/DB). Dependency rule: Inner layers don't know outer layers.",
+      "tags": [
+        "architecture"
+      ]
     },
     {
       "id": "sys-011",
       "front": "How would you implement real-time features?",
       "back": "Options: WebSocket (Socket.IO, native URLSessionWebSocketTask), Server-Sent Events, Push Notifications, Polling. Consider: Battery impact, reconnection, message ordering, offline queue.",
-      "tags": ["networking", "real-time"]
+      "tags": [
+        "networking",
+        "real-time"
+      ]
     },
     {
       "id": "sys-012",
       "front": "Design a network layer architecture",
-      "back": "Protocol-based: NetworkService protocol → URLSession implementation. Request builder pattern. Response handling: Decode, error mapping. Features: Retry, auth refresh, request/response logging.",
-      "tags": ["networking", "architecture"]
+      "back": "Protocol-based: NetworkService protocol \u2192 URLSession implementation. Request builder pattern. Response handling: Decode, error mapping. Features: Retry, auth refresh, request/response logging.",
+      "tags": [
+        "networking",
+        "architecture"
+      ]
     },
     {
       "id": "sys-013",
       "front": "How do you handle app security?",
       "back": "1) Keychain for secrets 2) Certificate pinning 3) Jailbreak detection 4) Data encryption at rest 5) Secure coding (no hardcoded secrets) 6) Biometric auth 7) App Transport Security.",
-      "tags": ["security"]
+      "tags": [
+        "security"
+      ]
     },
     {
       "id": "sys-014",
       "front": "Explain feature flags implementation",
       "back": "Remote config (Firebase, LaunchDarkly) or local JSON. Check flag before showing feature. Benefits: Gradual rollout, A/B testing, kill switch. Cache flags, handle offline, default values.",
-      "tags": ["architecture", "deployment"]
+      "tags": [
+        "architecture",
+        "deployment"
+      ]
     },
     {
       "id": "sys-015",
       "front": "How would you design a chat application?",
       "back": "Components: WebSocket connection, message queue, local DB (Core Data), sync service. Features: Optimistic sending, delivery receipts, offline queue, pagination, media uploads. Consider: Threading, reactions.",
-      "tags": ["system-design"]
+      "tags": [
+        "system-design"
+      ]
+    },
+    {
+      "id": "architecture_4f894e7dad6a",
+      "front": "Explain Clean Architecture (VIPER) in iOS. What problem does it solve, and what are its core components? What are its advantages & disadvantages?",
+      "back": "VIPER is Clean Architecture applied to iOS. It addresses \"Massive View Controllers\" by dividing responsibilities into distinct layers: View, Interactor, Presenter, Entity, and Router. \n\n**Advantages:** Improved testability, maintainability, and code reusability due to separation of concerns.\n\n**Disadvantages:** Increased complexity and boilerplate code, which can be overkill for small projects. A steep learning curve for teams unfamiliar with the pattern.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "clean-architecture",
+        "viper",
+        "ios"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/"
+      ]
+    },
+    {
+      "id": "architecture_366e8556ad43",
+      "front": "Compare and contrast MVVM, MVC, and VIPER architectures, highlighting their strengths and weaknesses. When would you choose one over the others?",
+      "back": "MVC is simple but often leads to massive view controllers. MVVM improves testability by separating view logic into a ViewModel. VIPER, using Clean Architecture, offers the best separation of concerns and testability but introduces complexity. \n\nChoose MVC for smaller apps.  MVVM for medium-sized apps needing better testability. VIPER for large, complex apps requiring strict separation of concerns and high testability.  Consider team size and project complexity when deciding.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "MVVM",
+        "MVC",
+        "VIPER",
+        "design patterns"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/13-architecture/mvvm/"
+      ]
+    },
+    {
+      "id": "architecture_97260008c4c7",
+      "front": "Explain the core principles of VIPER architecture and how it addresses the 'Massive View Controller' problem. What are the benefits and drawbacks?",
+      "back": "VIPER (View, Interactor, Presenter, Entity, Router) separates concerns into distinct layers, promoting testability and maintainability.  It solves 'MVC hell' by offloading logic from the ViewController.\n\nBenefits: Clear separation of concerns, improved testability, reusability, scalability.\n\nDrawbacks: Increased complexity, boilerplate code, steeper learning curve. Overkill for simple apps.\nExample: In a user profile screen, the View displays data, the Interactor handles fetching user data, the Presenter formats the data for the View, the Entity is the user data model, and the Router handles navigation to other screens.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "viper",
+        "ios",
+        "design patterns"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/"
+      ]
+    },
+    {
+      "id": "architecture_25deab4acb8a",
+      "front": "Describe different Dependency Injection patterns in iOS and when you might choose one over another.",
+      "back": "Constructor Injection (initializer): Dependencies are passed into the initializer. Good for required dependencies.  Property Injection: Dependencies are set on properties after object creation. Good for optional dependencies or when constructor injection is not feasible. Method Injection: Dependencies are passed as arguments to a method.  Useful when the dependency varies with each call. Avoid DI frameworks that require code changes. Use protocols to decouple.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "dependency injection",
+        "design patterns"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/15-testing/dependency-injection/"
+      ]
+    },
+    {
+      "id": "architecture_be4bf94a271f",
+      "front": "Discuss different modularization strategies in iOS development, including benefits and trade-offs of each. How does VIPER support modularity?",
+      "back": "Strategies include: 1) Frameworks/Libraries: Reusable code packages, good for cross-project sharing. 2) Submodules (Git): Version-controlled dependencies, complex setup. 3) Local Swift Packages: Easier than frameworks, good for internal reuse. 4) Feature Flags: Toggle features without new deployments, good for A/B testing. 5) VIPER: Divides app into View, Interactor, Presenter, Entity, Router, promoting clear module boundaries and testability. \n\nTrade-offs: Increased complexity, build times, and initial setup vs. Improved maintainability, testability, reusability, and team collaboration.\n\nVIPER promotes modularity by defining clear responsibilities for each component, making it easy to isolate and test modules. Module interfaces (protocols) can be defined to expose module functionality to other parts of the application, promoting loose coupling.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "modularization",
+        "viper",
+        "swift"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/15-testing/dependency-injection/",
+        "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/13-architecture/mvvm/"
+      ]
+    },
+    {
+      "id": "architecture_60fc4a6f7540",
+      "front": "Explain protocol-oriented programming and its benefits in iOS architecture, especially compared to class-based inheritance.",
+      "back": "POP focuses on defining behavior through protocols, allowing structs/enums/classes to conform. Benefits: avoids fragile base class problem, enables value-type semantics (better performance, thread safety), promotes composition over inheritance, improves testability through protocol mocking.  Example: define `Animatable` protocol instead of subclassing `UIView`.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "protocol-oriented programming",
+        "pop",
+        "swift",
+        "inheritance",
+        "composition"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/13-architecture/viper/"
+      ]
     }
   ]
 }
