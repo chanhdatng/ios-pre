@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
+import Header from '../components/layout/Header.astro';
+import DataManager from '../components/settings/DataManager';
+---
+
+<BaseLayout title="Settings">
+  <Sidebar slot="sidebar" />
+  <Header title="Settings" subtitle="Manage your data and preferences" />
+
+  <div class="max-w-2xl space-y-6">
+    <!-- Data Management -->
+    <DataManager client:load />
+
+    <!-- GitHub Username -->
+    <div class="p-6 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+      <h3 class="text-body font-semibold mb-4">GitHub Integration</h3>
+      <p class="text-body-small text-[var(--color-text-secondary)] mb-4">
+        Your GitHub username is saved when you use the GitHub Activity widget.
+      </p>
+      <button
+        id="clear-github-btn"
+        class="px-4 py-2 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)] text-body-small"
+      >
+        Clear GitHub Username
+      </button>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="p-6 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)] border border-[var(--color-accent-red)]/30">
+      <h3 class="text-body font-semibold mb-4 text-[var(--color-accent-red)]">Danger Zone</h3>
+
+      <p class="text-body-small text-[var(--color-text-secondary)] mb-4">
+        Reset all progress. This cannot be undone.
+      </p>
+
+      <button
+        id="reset-btn"
+        class="px-4 py-2 bg-[var(--color-accent-red)]/10 text-[var(--color-accent-red)] rounded-[var(--radius-md)] hover:bg-[var(--color-accent-red)]/20 transition-colors"
+      >
+        Reset All Data
+      </button>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.getElementById('reset-btn')?.addEventListener('click', () => {
+    if (confirm('Are you sure? This will delete ALL your progress!')) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  });
+
+  document.getElementById('clear-github-btn')?.addEventListener('click', () => {
+    localStorage.removeItem('ios-prep-github-username');
+    alert('GitHub username cleared.');
+  });
+</script>

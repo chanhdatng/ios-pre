@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
+import Header from '../components/layout/Header.astro';
+import SpacedReview from '../components/interactive/SpacedReview';
+import QuizRunner from '../components/interactive/QuizRunner';
+
+// Load all flashcards
+import swiftFundamentals from '../data/flashcards/swift-fundamentals.json';
+import iosCore from '../data/flashcards/ios-core.json';
+import concurrency from '../data/flashcards/concurrency.json';
+import swiftui from '../data/flashcards/swiftui.json';
+import systemDesign from '../data/flashcards/system-design.json';
+import behavioral from '../data/flashcards/behavioral.json';
+
+// Load quiz data
+import swiftQuiz from '../data/quizzes/swift-fundamentals-quiz.json';
+import iosQuiz from '../data/quizzes/ios-core-quiz.json';
+import concurrencyQuiz from '../data/quizzes/concurrency-quiz.json';
+import swiftuiQuiz from '../data/quizzes/swiftui-quiz.json';
+
+// Combine all cards
+const allCards = [
+  ...swiftFundamentals.cards.map(c => ({ ...c, topic: 'Swift Fundamentals' })),
+  ...iosCore.cards.map(c => ({ ...c, topic: 'iOS Core' })),
+  ...concurrency.cards.map(c => ({ ...c, topic: 'Concurrency' })),
+  ...swiftui.cards.map(c => ({ ...c, topic: 'SwiftUI' })),
+  ...systemDesign.cards.map(c => ({ ...c, topic: 'System Design' })),
+  ...behavioral.cards.map(c => ({ ...c, topic: 'Behavioral' })),
+];
+
+// Combine all quiz questions
+const allQuestions = [
+  ...swiftQuiz.questions,
+  ...iosQuiz.questions,
+  ...concurrencyQuiz.questions,
+  ...swiftuiQuiz.questions,
+];
+---
+
+<BaseLayout title="Review">
+  <Sidebar slot="sidebar" />
+  <Header title="Spaced Review" subtitle="Review cards due today" />
+
+  <div class="space-y-6">
+    <!-- Tab Navigation -->
+    <div class="flex gap-2 border-b border-[var(--color-surface-secondary)]" id="review-tabs">
+      <button
+        class="tab-btn active px-4 py-2 text-body-small font-medium border-b-2 border-[var(--color-accent-orange)] text-[var(--color-accent-orange)]"
+        data-tab="flashcards"
+      >
+        Flashcards ({allCards.length})
+      </button>
+      <button
+        class="tab-btn px-4 py-2 text-body-small font-medium border-b-2 border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+        data-tab="quiz"
+      >
+        Quiz ({allQuestions.length})
+      </button>
+    </div>
+
+    <!-- Flashcards Tab -->
+    <div id="flashcards-content" class="tab-content">
+      <SpacedReview allCards={allCards} client:load />
+    </div>
+
+    <!-- Quiz Tab -->
+    <div id="quiz-content" class="tab-content hidden">
+      <QuizRunner questions={allQuestions} client:load />
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const flashcardsContent = document.getElementById('flashcards-content');
+  const quizContent = document.getElementById('quiz-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Update tab styles
+      tabs.forEach(t => {
+        t.classList.remove('active', 'border-[var(--color-accent-orange)]', 'text-[var(--color-accent-orange)]');
+        t.classList.add('border-transparent', 'text-[var(--color-text-secondary)]');
+      });
+      tab.classList.add('active', 'border-[var(--color-accent-orange)]', 'text-[var(--color-accent-orange)]');
+      tab.classList.remove('border-transparent', 'text-[var(--color-text-secondary)]');
+
+      // Show/hide content
+      const tabName = tab.getAttribute('data-tab');
+      if (tabName === 'flashcards') {
+        flashcardsContent?.classList.remove('hidden');
+        quizContent?.classList.add('hidden');
+      } else {
+        flashcardsContent?.classList.add('hidden');
+        quizContent?.classList.remove('hidden');
+      }
+    });
+  });
+</script>

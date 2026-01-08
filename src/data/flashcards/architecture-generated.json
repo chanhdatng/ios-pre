@@ -1,0 +1,98 @@
+{
+  "topic": "architecture",
+  "generated_at": "2026-01-07T12:45:54.004972+00:00",
+  "cards": [
+    {
+      "id": "architecture_4f894e7dad6a",
+      "front": "Explain Clean Architecture in iOS. What are its core layers and responsibilities? How does it promote testability and maintainability?",
+      "back": "Clean Architecture aims to create loosely coupled, testable, and maintainable code. It divides the app into concentric layers: \n\n1.  **Entities:** Core business objects.\n2.  **Use Cases (Interactors):** Business logic specific to the application.\n3.  **Interface Adapters:** Converts data between Use Cases and the outer layers (e.g., View Models).\n4.  **Frameworks & Drivers:** UI, device hardware, external APIs, databases. This layer is where frameworks like UIKit/SwiftUI and CoreData reside.\n\nDependencies point inward, meaning outer layers depend on inner layers, but not vice versa. This isolates business logic from UI and external frameworks, making it easier to test and change without affecting other parts of the system.\n\nTestability is improved by mocking dependencies in outer layers. Maintainability is enhanced because changes in one layer are less likely to affect other layers.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "clean architecture",
+        "SOLID",
+        "ios"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "architecture_366e8556ad43",
+      "front": "Compare and contrast MVVM, MVC, and VIPER architectures. When would you choose one over the other?",
+      "back": "MVC: Simple, good for small apps. Massive View Controller issue. MVVM: Separates view state & logic, testable. ViewModel holds data. VIPER: Clean architecture, testable, complex. Interactor, Presenter, Entity, Router. Use MVC for small projects, MVVM for medium, VIPER for large, complex apps with many developers & high testability needs.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "MVVM",
+        "MVC",
+        "VIPER",
+        "design patterns"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.swift.org/getting-started/"
+      ]
+    },
+    {
+      "id": "architecture_97260008c4c7",
+      "front": "Explain the core principles of The Composable Architecture (TCA). How does it simplify complex app development?",
+      "back": "TCA is built around State, Actions, and Effects (Environment/Dependencies).  State describes app data, Actions are how state changes, Effects handle side effects.  Reducer manages state transitions based on actions & effects.  This provides predictable state management, testability, and modularity. Simplifies complexity by enforcing unidirectional data flow, making debugging easier.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "TCA",
+        "state management",
+        "reducer",
+        "effects"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "architecture_25deab4acb8a",
+      "front": "Describe different Dependency Injection patterns you've used in iOS. What are the tradeoffs of each?",
+      "back": "Constructor Injection (init), Property Injection (var), and Method Injection (func). Constructor is safest, enforces dependencies up-front. Property Injection allows optional dependencies, can lead to runtime surprises. Method Injection is most flexible, good for dependencies needed only for specific actions, but can obscure dependencies.  Protocol-based DI promotes loose coupling and testability.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "dependency injection",
+        "design patterns"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.swift.org/getting-started/",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "architecture_be4bf94a271f",
+      "front": "Compare/Contrast different modularization strategies in iOS (frameworks, static libraries, SPM). Discuss pros/cons and when you might choose one over the other.",
+      "back": "Modularization strategies include frameworks, static libraries, and Swift Package Manager (SPM). \n\nFrameworks: Dynamically linked, bundles code, resources, headers. Pro: Reusable across apps, smaller app size (code shared). Con: Potential versioning issues, more complex linking. Use when sharing code between multiple apps or dynamic linking is needed.\n\nStatic Libraries: Statically linked, code becomes part of the app binary. Pro: Simpler deployment, no versioning issues. Con: Larger app size (code duplicated), not reusable across apps. Use for internal modules where simplicity and performance are key.\n\nSPM: Dependency management system, supports both frameworks and static libraries. Pro: Easy dependency management, cross-platform support. Con: Added build system complexity. Preferred approach for external dependencies, and increasingly for internal modules as well.\n\nSwift 6 introduces internal/public imports for finer-grained access control.",
+      "code_example": null,
+      "tags": [
+        "architecture",
+        "modularization",
+        "frameworks",
+        "static libraries",
+        "SPM",
+        "swift package manager"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    }
+  ]
+}

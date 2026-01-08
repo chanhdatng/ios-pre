@@ -1,0 +1,117 @@
+{
+  "topic": "ios-core",
+  "title": "iOS Core Concepts Quiz",
+  "description": "Test your knowledge of iOS fundamentals",
+  "questions": [
+    {
+      "id": "icq-001",
+      "question": "What is the correct order of app lifecycle states?",
+      "options": [
+        "Active → Background → Inactive → Suspended",
+        "Not Running → Inactive → Active → Background → Suspended",
+        "Launch → Running → Paused → Terminated",
+        "Foreground → Background → Terminated"
+      ],
+      "correctIndex": 1,
+      "explanation": "The lifecycle flows: Not Running → Inactive (transitional) → Active → Background → Suspended. Inactive is brief transition state."
+    },
+    {
+      "id": "icq-002",
+      "question": "Which method is called EVERY time a view controller's view appears?",
+      "options": ["viewDidLoad", "viewWillAppear", "loadView", "init"],
+      "correctIndex": 1,
+      "explanation": "viewWillAppear is called every time view is about to appear. viewDidLoad is called once when view loads into memory."
+    },
+    {
+      "id": "icq-003",
+      "question": "What happens when ARC reference count reaches zero?",
+      "options": [
+        "Object is marked for garbage collection",
+        "Object is immediately deallocated",
+        "Object moves to autorelease pool",
+        "Nothing until memory pressure"
+      ],
+      "correctIndex": 1,
+      "explanation": "ARC is deterministic. When strong reference count hits 0, deinit is called and object is immediately deallocated. No garbage collector."
+    },
+    {
+      "id": "icq-004",
+      "question": "Which causes a retain cycle?",
+      "options": [
+        "Struct referencing another struct",
+        "Class with weak delegate property",
+        "Class storing closure that captures self strongly",
+        "Using guard let to unwrap optional"
+      ],
+      "correctIndex": 2,
+      "explanation": "Retain cycle: Class holds closure → closure captures self strongly → neither can be deallocated. Fix with [weak self]."
+    },
+    {
+      "id": "icq-005",
+      "question": "What's the difference between frame and bounds?",
+      "options": [
+        "frame uses auto layout, bounds doesn't",
+        "frame is in superview coordinates, bounds is in own coordinates",
+        "They are identical",
+        "bounds includes safe area, frame doesn't"
+      ],
+      "correctIndex": 1,
+      "explanation": "frame = position/size in superview's coordinate system. bounds = position/size in own coordinate system (origin usually 0,0)."
+    },
+    {
+      "id": "icq-006",
+      "question": "Why does UITableView reuse cells?",
+      "options": [
+        "For animation purposes",
+        "Memory efficiency - only visible cells exist",
+        "To maintain scroll position",
+        "Required by iOS guidelines"
+      ],
+      "correctIndex": 1,
+      "explanation": "Cell reuse is a performance optimization. Only visible cells + small buffer exist in memory, allowing infinite scrolling with fixed memory."
+    },
+    {
+      "id": "icq-007",
+      "question": "Where should you store user passwords in iOS?",
+      "options": ["UserDefaults", "Keychain", "Core Data", "Plist file"],
+      "correctIndex": 1,
+      "explanation": "Keychain is the only secure storage for sensitive data. It's encrypted, persists across reinstalls, and designed for credentials."
+    },
+    {
+      "id": "icq-008",
+      "question": "What does the responder chain handle?",
+      "options": [
+        "Network requests",
+        "Events and actions propagation",
+        "View layout",
+        "Memory management"
+      ],
+      "correctIndex": 1,
+      "explanation": "Responder chain handles touch events, motion events, and actions. Events travel up from first responder through views, VC, window, to app."
+    },
+    {
+      "id": "icq-009",
+      "question": "Which is TRUE about NotificationCenter vs Delegation?",
+      "options": [
+        "Delegation is many-to-many, NotificationCenter is 1-to-1",
+        "NotificationCenter is type-safe, delegation isn't",
+        "Delegation is 1-to-1, NotificationCenter is many-to-many",
+        "They can't be used in the same app"
+      ],
+      "correctIndex": 2,
+      "explanation": "Delegation is 1-to-1 with explicit contract. NotificationCenter broadcasts to multiple observers, loosely coupled."
+    },
+    {
+      "id": "icq-010",
+      "question": "What is App Transport Security (ATS)?",
+      "options": [
+        "Encryption for UserDefaults",
+        "Security feature requiring HTTPS for network",
+        "Sandbox for app files",
+        "Code signing verification"
+      ],
+      "correctIndex": 1,
+      "explanation": "ATS enforces HTTPS, TLS 1.2+, and forward secrecy for network connections. Exceptions can be added but may cause App Store rejection."
+    }
+  ]
+}

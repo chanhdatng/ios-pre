@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Sidebar from '../../components/layout/Sidebar.astro';
+import Header from '../../components/layout/Header.astro';
+import FlashcardDeck from '../../components/interactive/FlashcardDeck';
+
+// Load Month 3 content - Behavioral prep
+import behavioral from '../../data/flashcards/behavioral.json';
+
+const behavioralCards = behavioral.cards.map(c => ({ ...c, topic: 'Behavioral' }));
+const basePath = import.meta.env.BASE_URL || '';
+---
+
+<BaseLayout title="Month 3">
+  <Sidebar slot="sidebar" />
+  <Header
+    title="Month 3: Mock Interviews & Final Prep"
+    subtitle="Weeks 9-12: Polish and practice"
+  />
+
+  <div class="space-y-8">
+    <!-- Overview Cards -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card p-5">
+        <h3 class="text-headline-3 mb-3">Behavioral Interview</h3>
+        <ul class="space-y-1.5 text-body-small text-[var(--color-text-secondary)]">
+          <li>• STAR Method</li>
+          <li>• Leadership Principles</li>
+          <li>• Conflict Resolution</li>
+          <li>• Project Stories</li>
+          <li>• Growth Mindset</li>
+        </ul>
+        <p class="mt-3 text-caption text-[var(--color-accent-orange)]">{behavioralCards.length} flashcards</p>
+      </div>
+
+      <div class="card p-5">
+        <h3 class="text-headline-3 mb-3">Final Prep Checklist</h3>
+        <ul class="space-y-1.5 text-body-small text-[var(--color-text-secondary)]">
+          <li>• Mock Technical Interviews</li>
+          <li>• Mock Behavioral Interviews</li>
+          <li>• System Design Practice</li>
+          <li>• LeetCode Problems</li>
+          <li>• Portfolio Review</li>
+        </ul>
+        <p class="mt-3 text-caption text-[var(--color-accent-blue)]">Track on LeetCode page →</p>
+      </div>
+    </div>
+
+    <!-- Behavioral Flashcards -->
+    <div>
+      <h2 class="text-headline-2 mb-4">Behavioral Questions</h2>
+      <FlashcardDeck cards={behavioralCards} client:load />
+    </div>
+
+    <!-- Tips Section -->
+    <div class="card p-5 bg-[var(--color-accent-orange)]/10 border-[var(--color-accent-orange)]/20">
+      <h3 class="text-headline-3 mb-3 text-[var(--color-accent-orange)]">Interview Tips</h3>
+      <ul class="space-y-2 text-body-small">
+        <li>✓ Practice explaining your code out loud</li>
+        <li>✓ Prepare 3-5 strong project stories using STAR</li>
+        <li>✓ Research the company's iOS tech stack</li>
+        <li>✓ Have questions ready for your interviewers</li>
+        <li>✓ Review your past projects and their architecture</li>
+      </ul>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="flex flex-wrap gap-4 justify-center pt-4">
+      <a href={`${basePath}/review`} class="text-[var(--color-accent-orange)] hover:underline text-body-small">
+        → Spaced Review
+      </a>
+      <a href={`${basePath}/leetcode`} class="text-[var(--color-accent-orange)] hover:underline text-body-small">
+        → LeetCode Tracker
+      </a>
+      <a href={`${basePath}/progress`} class="text-[var(--color-accent-orange)] hover:underline text-body-small">
+        → View Progress
+      </a>
+    </div>
+  </div>
+</BaseLayout>

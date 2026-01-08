@@ -1,0 +1,301 @@
+---
+title: "Swift Concurrency"
+month: 2
+week: 7
+topic: "concurrency"
+difficulty: "advanced"
+flashcardCount: 20
+hasQuiz: true
+order: 3
+resources:
+  - type: doc
+    title: "Concurrency - Swift Book"
+    url: "https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html"
+    author: "Apple"
+  - type: video
+    title: "Meet async/await in Swift"
+    url: "https://developer.apple.com/videos/play/wwdc2021/10132/"
+    author: "WWDC 2021"
+  - type: video
+    title: "Protect mutable state with Swift actors"
+    url: "https://developer.apple.com/videos/play/wwdc2021/10133/"
+    author: "WWDC 2021"
+---
+
+import { InterviewQuestion, ResourceLink } from '../../components/content';
+
+# Week 7: Swift Concurrency
+
+Modern Swift concurrency with async/await, actors, and structured concurrency.
+
+## async/await Basics
+
+Replace completion handlers with linear async code:
+
+```swift
+// Before: Completion handlers
+func fetchUser(completion: @escaping (User?) -> Void) {
+    URLSession.shared.dataTask(with: url) { data, _, _ in
+        let user = try? JSONDecoder().decode(User.self, from: data!)
+        completion(user)
+    }.resume()
+}
+
+// After: async/await
+func fetchUser() async throws -> User {
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return try JSONDecoder().decode(User.self, from: data)
+}
+
+// Usage
+Task {
+    let user = try await fetchUser()
+    print(user.name)
+}
+```
+
+Key concepts:
+- **async**: Function can suspend and resume
+- **await**: Marks suspension point
+- **throws**: Can throw errors (use try await)
+
+<InterviewQuestion
+  question="What does await actually do?"
+  answer="await marks a potential suspension point. The function CAN suspend here, allowing other code to run. When the awaited work completes, execution resumes. It's not blocking - the thread is freed."
+/>
+
+## Tasks
+
+Tasks are units of async work:
+
+```swift
+// Unstructured task - inherits context
+Task {
+    await doSomething()
+}
+
+// Detached task - no inherited context
+Task.detached {
+    await doSomethingIndependent()
+}
+
+// With priority
+Task(priority: .userInitiated) {
+    await fetchData()
+}
+```
+
+### Task Cancellation
+
+```swift
+let task = Task {
+    for i in 1...100 {
+        // Check for cancellation
+        try Task.checkCancellation()
+        // Or check manually
+        if Task.isCancelled { break }
+
+        await process(i)
+    }
+}
+
+// Later, cancel the task
+task.cancel()
+```
+
+<InterviewQuestion
+  question="How do you handle task cancellation in Swift?"
+  answer="Cancellation is cooperative. Check Task.isCancelled (returns bool) or call Task.checkCancellation() which throws CancellationError. task.cancel() signals cancellation but doesn't force stop."
+/>
+
+## Structured Concurrency
+
+Child tasks are bound to parent scope:
+
+### async let
+
+```swift
+func fetchDashboard() async throws -> Dashboard {
+    // Run concurrently
+    async let user = fetchUser()
+    async let posts = fetchPosts()
+    async let stats = fetchStats()
+
+    // Wait for all
+    return try await Dashboard(
+        user: user,
+        posts: posts,
+        stats: stats
+    )
+}
+```
+
+### TaskGroup
+
+```swift
+func fetchAllImages(urls: [URL]) async throws -> [UIImage] {
+    try await withThrowingTaskGroup(of: UIImage.self) { group in
+        for url in urls {
+            group.addTask {
+                try await downloadImage(url)
+            }
+        }
+
+        var images: [UIImage] = []
+        for try await image in group {
+            images.append(image)
+        }
+        return images
+    }
+}
+```
+
+**async let**: Fixed number of concurrent tasks (known at compile time)
+**TaskGroup**: Dynamic number of tasks (loop-based)
+
+## Actors
+
+Actors protect mutable state from data races:
+
+```swift
+actor BankAccount {
+    private var balance: Double = 0
+
+    func deposit(_ amount: Double) {
+        balance += amount
+    }
+
+    func withdraw(_ amount: Double) -> Bool {
+        guard balance >= amount else { return false }
+        balance -= amount
+        return true
+    }
+
+    func getBalance() -> Double {
+        balance
+    }
+}
+
+// Usage - must await from outside
+let account = BankAccount()
+await account.deposit(100)
+let balance = await account.getBalance()
+```
+
+Key points:
+- Only one task accesses actor at a time
+- External access requires `await`
+- Internal methods can call each other synchronously
+
+### Actor Reentrancy
+
+```swift
+actor Cache {
+    var data: [String: Data] = [:]
+
+    func getData(for key: String) async -> Data {
+        if let cached = data[key] {
+            return cached
+        }
+
+        // ⚠️ While awaiting, other tasks can modify data
+        let fetched = await fetchFromNetwork(key)
+
+        // Revalidate! Another task might have set it
+        if let cached = data[key] {
+            return cached
+        }
+
+        data[key] = fetched
+        return fetched
+    }
+}
+```
+
+<InterviewQuestion
+  question="What is actor reentrancy and why does it matter?"
+  answer="When an actor awaits, it releases exclusivity and other tasks can run on it. State may change during suspension. Always revalidate state after await points - don't assume it persists."
+/>
+
+## @MainActor
+
+Guarantees code runs on main thread:
+
+```swift
+@MainActor
+class ViewModel: ObservableObject {
+    @Published var items: [Item] = []
+
+    func loadItems() async {
+        let fetched = await fetchItems()  // Runs elsewhere
+        items = fetched  // Guaranteed main thread
+    }
+}
+
+// Or mark specific functions
+class Service {
+    @MainActor
+    func updateUI() {
+        // Guaranteed main thread
+    }
+}
+```
+
+## Sendable
+
+Types safe to share across concurrency domains:
+
+```swift
+// Struct with Sendable properties - auto-conforms
+struct User: Sendable {
+    let id: String
+    let name: String
+}
+
+// Class must be final with immutable properties
+final class Config: Sendable {
+    let apiKey: String
+    init(apiKey: String) { self.apiKey = apiKey }
+}
+
+// Closure marked @Sendable
+Task { @Sendable in
+    // Safe to pass across concurrency domains
+}
+```
+
+## Bridging to Callbacks
+
+Use continuations to bridge callback APIs:
+
+```swift
+func fetchLegacy() async throws -> Data {
+    try await withCheckedThrowingContinuation { continuation in
+        legacyFetch { result in
+            switch result {
+            case .success(let data):
+                continuation.resume(returning: data)
+            case .failure(let error):
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+}
+```
+
+⚠️ **Must call resume exactly once!**
+
+## Key Takeaways
+
+1. **async/await** replaces completion handlers with linear code
+2. **await marks suspension points** - function can pause and resume
+3. **Actors protect shared mutable state** - compile-time safety
+4. **@MainActor ensures main thread** for UI updates
+5. **Structured concurrency** - child tasks bound to parent scope
+6. **Sendable** marks types safe for concurrent access
+
+## Practice
+
+1. Convert a completion-handler API to async/await
+2. Build a cache actor with proper reentrancy handling
+3. Use TaskGroup to download multiple images concurrently

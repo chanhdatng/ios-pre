@@ -1,0 +1,192 @@
+{
+  "title": "12-Week iOS Interview Prep Plan",
+  "description": "Structured study plan for iOS developer interviews",
+  "months": [
+    {
+      "month": 1,
+      "title": "Swift & iOS Fundamentals",
+      "weeks": [
+        {
+          "week": 1,
+          "title": "Swift Language Basics",
+          "focus": "Core Swift concepts every iOS developer must know",
+          "items": [
+            { "id": "m1w1-value-types", "label": "Value vs Reference Types (struct vs class)" },
+            { "id": "m1w1-optionals", "label": "Optionals & Unwrapping Patterns" },
+            { "id": "m1w1-closures", "label": "Closures & Capture Lists" },
+            { "id": "m1w1-protocols", "label": "Protocols & Extensions" },
+            { "id": "m1w1-generics", "label": "Generics Basics" }
+          ],
+          "flashcardDeck": "swift-fundamentals",
+          "quiz": "swift-fundamentals-quiz"
+        },
+        {
+          "week": 2,
+          "title": "Memory Management",
+          "focus": "Understanding ARC and avoiding memory leaks",
+          "items": [
+            { "id": "m1w2-arc", "label": "How ARC Works" },
+            { "id": "m1w2-retain-cycles", "label": "Retain Cycles & Solutions" },
+            { "id": "m1w2-weak-unowned", "label": "weak vs unowned References" },
+            { "id": "m1w2-escaping", "label": "@escaping Closures" },
+            { "id": "m1w2-debugging", "label": "Memory Debugging with Instruments" }
+          ],
+          "flashcardDeck": "swift-fundamentals",
+          "quiz": "swift-fundamentals-quiz"
+        },
+        {
+          "week": 3,
+          "title": "iOS App Lifecycle",
+          "focus": "Understanding how iOS apps work",
+          "items": [
+            { "id": "m1w3-states", "label": "App States & Transitions" },
+            { "id": "m1w3-scene", "label": "Scene-based Lifecycle (iOS 13+)" },
+            { "id": "m1w3-vc-lifecycle", "label": "ViewController Lifecycle" },
+            { "id": "m1w3-background", "label": "Background Execution" },
+            { "id": "m1w3-notifications", "label": "Push Notifications Basics" }
+          ],
+          "flashcardDeck": "ios-core",
+          "quiz": "ios-core-quiz"
+        },
+        {
+          "week": 4,
+          "title": "UIKit Fundamentals",
+          "focus": "Core UIKit concepts and patterns",
+          "items": [
+            { "id": "m1w4-responder", "label": "Responder Chain & Events" },
+            { "id": "m1w4-autolayout", "label": "Auto Layout & Constraints" },
+            { "id": "m1w4-tableview", "label": "TableView & Cell Reuse" },
+            { "id": "m1w4-delegation", "label": "Delegation Pattern" },
+            { "id": "m1w4-coordinator", "label": "Coordinator Pattern" }
+          ],
+          "flashcardDeck": "ios-core",
+          "quiz": "ios-core-quiz"
+        }
+      ]
+    },
+    {
+      "month": 2,
+      "title": "Modern iOS Development",
+      "weeks": [
+        {
+          "week": 5,
+          "title": "SwiftUI Fundamentals",
+          "focus": "Building UIs with SwiftUI",
+          "items": [
+            { "id": "m2w5-declarative", "label": "Declarative UI Concepts" },
+            { "id": "m2w5-state", "label": "@State & @Binding" },
+            { "id": "m2w5-observable", "label": "@StateObject & @ObservedObject" },
+            { "id": "m2w5-environment", "label": "@Environment & @EnvironmentObject" },
+            { "id": "m2w5-navigation", "label": "NavigationStack & Navigation" }
+          ],
+          "flashcardDeck": "swiftui",
+          "quiz": "swiftui-quiz"
+        },
+        {
+          "week": 6,
+          "title": "SwiftUI Advanced",
+          "focus": "Advanced SwiftUI patterns",
+          "items": [
+            { "id": "m2w6-lifecycle", "label": "View Lifecycle & Performance" },
+            { "id": "m2w6-viewbuilder", "label": "@ViewBuilder & Custom Modifiers" },
+            { "id": "m2w6-preferences", "label": "PreferenceKey & GeometryReader" },
+            { "id": "m2w6-animations", "label": "Animations & Transitions" },
+            { "id": "m2w6-uikit", "label": "UIKit Integration" }
+          ],
+          "flashcardDeck": "swiftui",
+          "quiz": "swiftui-quiz"
+        },
+        {
+          "week": 7,
+          "title": "Swift Concurrency",
+          "focus": "Modern async/await patterns",
+          "items": [
+            { "id": "m2w7-async", "label": "async/await Basics" },
+            { "id": "m2w7-tasks", "label": "Task & Task Groups" },
+            { "id": "m2w7-actors", "label": "Actors & @MainActor" },
+            { "id": "m2w7-sendable", "label": "Sendable & Data Races" },
+            { "id": "m2w7-asyncsequence", "label": "AsyncSequence & AsyncStream" }
+          ],
+          "flashcardDeck": "concurrency",
+          "quiz": "concurrency-quiz"
+        },
+        {
+          "week": 8,
+          "title": "Networking & Data",
+          "focus": "Working with APIs and persistence",
+          "items": [
+            { "id": "m2w8-urlsession", "label": "URLSession & Async Networking" },
+            { "id": "m2w8-codable", "label": "Codable & JSON Parsing" },
+            { "id": "m2w8-coredata", "label": "Core Data Basics" },
+            { "id": "m2w8-keychain", "label": "Keychain & Security" },
+            { "id": "m2w8-caching", "label": "Caching Strategies" }
+          ],
+          "flashcardDeck": "ios-core",
+          "quiz": "ios-core-quiz"
+        }
+      ]
+    },
+    {
+      "month": 3,
+      "title": "Architecture & Interview Prep",
+      "weeks": [
+        {
+          "week": 9,
+          "title": "Architecture Patterns",
+          "focus": "iOS architecture and design",
+          "items": [
+            { "id": "m3w9-mvc", "label": "MVC vs MVVM vs VIPER" },
+            { "id": "m3w9-di", "label": "Dependency Injection" },
+            { "id": "m3w9-repository", "label": "Repository Pattern" },
+            { "id": "m3w9-clean", "label": "Clean Architecture" },
+            { "id": "m3w9-modular", "label": "Modular Architecture" }
+          ],
+          "flashcardDeck": "system-design",
+          "quiz": null
+        },
+        {
+          "week": 10,
+          "title": "System Design",
+          "focus": "Designing iOS systems",
+          "items": [
+            { "id": "m3w10-offline", "label": "Offline-First Design" },
+            { "id": "m3w10-sync", "label": "Data Synchronization" },
+            { "id": "m3w10-realtime", "label": "Real-time Features" },
+            { "id": "m3w10-images", "label": "Image Loading & Caching" },
+            { "id": "m3w10-testing", "label": "Testing Strategies" }
+          ],
+          "flashcardDeck": "system-design",
+          "quiz": null
+        },
+        {
+          "week": 11,
+          "title": "Behavioral Prep",
+          "focus": "Soft skills and STAR stories",
+          "items": [
+            { "id": "m3w11-star", "label": "STAR Method Practice" },
+            { "id": "m3w11-challenges", "label": "Technical Challenge Stories" },
+            { "id": "m3w11-conflict", "label": "Conflict Resolution Stories" },
+            { "id": "m3w11-leadership", "label": "Leadership & Initiative Stories" },
+            { "id": "m3w11-questions", "label": "Questions to Ask Interviewers" }
+          ],
+          "flashcardDeck": "behavioral",
+          "quiz": null
+        },
+        {
+          "week": 12,
+          "title": "Final Review",
+          "focus": "Polish and practice",
+          "items": [
+            { "id": "m3w12-weak", "label": "Review Weak Areas" },
+            { "id": "m3w12-mock", "label": "Mock Interviews" },
+            { "id": "m3w12-resume", "label": "Resume & Portfolio Review" },
+            { "id": "m3w12-recent", "label": "Recent iOS Updates (WWDC)" },
+            { "id": "m3w12-confidence", "label": "Confidence Building" }
+          ],
+          "flashcardDeck": null,
+          "quiz": null
+        }
+      ]
+    }
+  ]
+}

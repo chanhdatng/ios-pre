@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
+import Header from '../components/layout/Header.astro';
+import ProgressDashboard from '../components/tracking/ProgressDashboard';
+
+// Define 12-week curriculum
+const weeks = [
+  {
+    month: 1,
+    week: 1,
+    title: "Swift Basics",
+    items: [
+      { id: "value-types", label: "Value vs Reference Types" },
+      { id: "optionals", label: "Optionals & Unwrapping" },
+      { id: "closures", label: "Closures" },
+      { id: "protocols", label: "Protocols" },
+    ]
+  },
+  {
+    month: 1,
+    week: 2,
+    title: "Swift Advanced",
+    items: [
+      { id: "generics", label: "Generics" },
+      { id: "error-handling", label: "Error Handling" },
+      { id: "property-wrappers", label: "Property Wrappers" },
+      { id: "result-builders", label: "Result Builders" },
+    ]
+  },
+  {
+    month: 1,
+    week: 3,
+    title: "iOS Core",
+    items: [
+      { id: "app-lifecycle", label: "App Lifecycle" },
+      { id: "vc-lifecycle", label: "ViewController Lifecycle" },
+      { id: "arc", label: "Memory Management (ARC)" },
+      { id: "delegation", label: "Delegation Pattern" },
+    ]
+  },
+  {
+    month: 1,
+    week: 4,
+    title: "iOS Fundamentals",
+    items: [
+      { id: "notification-center", label: "Notification Center" },
+      { id: "persistence", label: "Data Persistence" },
+      { id: "keychain", label: "Keychain" },
+      { id: "user-defaults", label: "UserDefaults" },
+    ]
+  },
+  {
+    month: 2,
+    week: 1,
+    title: "SwiftUI Basics",
+    items: [
+      { id: "swiftui-views", label: "View Basics" },
+      { id: "state-binding", label: "@State & @Binding" },
+      { id: "observable", label: "@Observable" },
+      { id: "environment", label: "Environment" },
+    ]
+  },
+  {
+    month: 2,
+    week: 2,
+    title: "SwiftUI Advanced",
+    items: [
+      { id: "navigation", label: "Navigation" },
+      { id: "animations", label: "Animations" },
+      { id: "gestures", label: "Gestures" },
+      { id: "custom-views", label: "Custom Views" },
+    ]
+  },
+  {
+    month: 2,
+    week: 3,
+    title: "Concurrency",
+    items: [
+      { id: "async-await", label: "async/await" },
+      { id: "actors", label: "Actors" },
+      { id: "task-groups", label: "Task Groups" },
+      { id: "sendable", label: "Sendable" },
+    ]
+  },
+  {
+    month: 2,
+    week: 4,
+    title: "Networking & Data",
+    items: [
+      { id: "urlsession", label: "URLSession" },
+      { id: "codable", label: "Codable" },
+      { id: "combine", label: "Combine Basics" },
+      { id: "swiftdata", label: "SwiftData" },
+    ]
+  },
+  {
+    month: 3,
+    week: 1,
+    title: "Architecture",
+    items: [
+      { id: "mvvm", label: "MVVM" },
+      { id: "clean-arch", label: "Clean Architecture" },
+      { id: "di", label: "Dependency Injection" },
+      { id: "modularization", label: "Modularization" },
+    ]
+  },
+  {
+    month: 3,
+    week: 2,
+    title: "Testing",
+    items: [
+      { id: "unit-testing", label: "Unit Testing" },
+      { id: "ui-testing", label: "UI Testing" },
+      { id: "mocking", label: "Mocking" },
+      { id: "tdd", label: "TDD" },
+    ]
+  },
+  {
+    month: 3,
+    week: 3,
+    title: "System Design",
+    items: [
+      { id: "app-architecture", label: "App Architecture" },
+      { id: "offline-first", label: "Offline-First" },
+      { id: "caching", label: "Caching" },
+      { id: "real-time", label: "Real-time Features" },
+    ]
+  },
+  {
+    month: 3,
+    week: 4,
+    title: "Behavioral & Final",
+    items: [
+      { id: "star-method", label: "STAR Method" },
+      { id: "leadership", label: "Leadership Questions" },
+      { id: "mock-interviews", label: "Mock Interviews" },
+      { id: "portfolio", label: "Portfolio Review" },
+    ]
+  },
+];
+---
+
+<BaseLayout title="Progress">
+  <Sidebar slot="sidebar" />
+  <Header title="Progress Tracker" subtitle="Track your 12-week journey" />
+
+  <ProgressDashboard weeks={weeks} client:load />
+</BaseLayout>

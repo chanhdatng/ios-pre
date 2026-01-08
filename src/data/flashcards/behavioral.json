@@ -1,0 +1,127 @@
+{
+  "topic": "behavioral",
+  "title": "Behavioral Interview Prep",
+  "description": "STAR method stories and soft skills questions",
+  "cards": [
+    {
+      "id": "beh-001",
+      "front": "What is the STAR method?",
+      "back": "Situation: Set the context. Task: Describe your responsibility. Action: Explain what YOU did (use 'I'). Result: Share outcomes with metrics. Keep 2-3 min, focus on Action (60%).",
+      "tags": ["framework"]
+    },
+    {
+      "id": "beh-002",
+      "front": "Tell me about a challenging bug you fixed",
+      "back": "Structure: Describe the bug's impact → Your debugging process → Tools/techniques used → Root cause found → Fix implemented → Prevention measures added. Mention: Logs, profiler, breakpoints.",
+      "tags": ["technical-story"]
+    },
+    {
+      "id": "beh-003",
+      "front": "Describe a time you disagreed with a technical decision",
+      "back": "Show: 1) You understood the other perspective 2) Presented data/evidence for your view 3) Remained professional 4) Accepted outcome gracefully OR influenced change 5) What you learned.",
+      "tags": ["conflict"]
+    },
+    {
+      "id": "beh-004",
+      "front": "How do you handle tight deadlines?",
+      "back": "Approach: 1) Prioritize ruthlessly (MVP) 2) Communicate early if at risk 3) Break into smaller deliverables 4) Ask for help/delegate 5) Manage scope. Example: Feature cut to meet launch.",
+      "tags": ["time-management"]
+    },
+    {
+      "id": "beh-005",
+      "front": "Tell me about a project you're proud of",
+      "back": "Include: Technical challenges overcome, your specific contributions, impact/metrics, what made it meaningful. Show passion but stay concise. Connect to company's work if possible.",
+      "tags": ["achievement"]
+    },
+    {
+      "id": "beh-006",
+      "front": "How do you approach learning new technologies?",
+      "back": "Process: 1) Official docs/tutorials 2) Build small project 3) Read source code 4) Contribute or teach others. Examples: Recent tech learned, side projects, blog posts, conference talks.",
+      "tags": ["growth"]
+    },
+    {
+      "id": "beh-007",
+      "front": "Describe a time you mentored someone",
+      "back": "Cover: Who and context → Your teaching approach → Challenges faced → Their growth/outcome → What you learned. Even informal help counts: Code reviews, pair programming, onboarding.",
+      "tags": ["leadership"]
+    },
+    {
+      "id": "beh-008",
+      "front": "How do you handle code review feedback?",
+      "back": "Good answer: Welcome feedback, ask clarifying questions, discuss tradeoffs respectfully, don't take personally, learn from patterns. Mention: Times you changed approach based on review.",
+      "tags": ["collaboration"]
+    },
+    {
+      "id": "beh-009",
+      "front": "Tell me about a failure and what you learned",
+      "back": "Be genuine: Real failure with real impact → Your responsibility (no blame) → What went wrong → Concrete changes made → How it made you better. Shows self-awareness and growth.",
+      "tags": ["growth", "failure"]
+    },
+    {
+      "id": "beh-010",
+      "front": "How do you prioritize when everything is urgent?",
+      "back": "Framework: 1) Clarify actual urgency with stakeholders 2) Impact vs effort matrix 3) Dependencies first 4) Communicate tradeoffs 5) Document decisions. Example story of tough prioritization.",
+      "tags": ["time-management"]
+    },
+    {
+      "id": "beh-011",
+      "front": "Describe working with a difficult team member",
+      "back": "Focus on: Understanding their perspective, finding common ground, adapting your communication, maintaining professionalism, positive outcome. Never badmouth, show empathy.",
+      "tags": ["conflict", "collaboration"]
+    },
+    {
+      "id": "beh-012",
+      "front": "Why are you interested in this company?",
+      "back": "Research: Product you admire, technical challenges, team/culture, growth opportunity. Be specific: 'I've used X feature and love how...' Connect your skills to their needs.",
+      "tags": ["motivation"]
+    },
+    {
+      "id": "beh-013",
+      "front": "Where do you see yourself in 5 years?",
+      "back": "Show: Ambition + realism + alignment with company. Options: Senior/Staff engineer, tech lead, architect, domain expert. Mention: Skills to develop, impact to make.",
+      "tags": ["career"]
+    },
+    {
+      "id": "beh-014",
+      "front": "How do you stay current with iOS development?",
+      "back": "Sources: WWDC, Swift Evolution, iOS dev blogs (NSHipster, SwiftLee), Twitter/Mastodon, podcasts, conferences. Practice: Side projects, open source, beta testing new APIs.",
+      "tags": ["growth"]
+    },
+    {
+      "id": "beh-015",
+      "front": "Describe a time you improved a process",
+      "back": "Example areas: CI/CD setup, code review guidelines, documentation, testing practices, onboarding. Show: Identified problem → Proposed solution → Got buy-in → Implemented → Measured impact.",
+      "tags": ["initiative"]
+    },
+    {
+      "id": "beh-016",
+      "front": "How do you handle ambiguous requirements?",
+      "back": "Approach: 1) Ask clarifying questions 2) Document assumptions 3) Build MVP for feedback 4) Iterate based on input. Show you're proactive, not paralyzed by ambiguity.",
+      "tags": ["problem-solving"]
+    },
+    {
+      "id": "beh-017",
+      "front": "Tell me about working with cross-functional teams",
+      "back": "Examples: Designers, PMs, backend, QA. Show: Clear communication, understanding their constraints, finding compromises, shared documentation, successful collaboration outcome.",
+      "tags": ["collaboration"]
+    },
+    {
+      "id": "beh-018",
+      "front": "How do you ensure code quality?",
+      "back": "Practices: Unit tests, code review, CI/CD, linting, documentation, pair programming. Mention: Coverage targets, review guidelines you follow, quality metrics you track.",
+      "tags": ["quality"]
+    },
+    {
+      "id": "beh-019",
+      "front": "Describe leading a technical initiative",
+      "back": "Cover: Problem identified → Built case for solving it → Planned approach → Coordinated team → Handled obstacles → Delivered results. Leadership doesn't require title.",
+      "tags": ["leadership"]
+    },
+    {
+      "id": "beh-020",
+      "front": "What questions do you have for us?",
+      "back": "Good questions: Team structure, technical challenges, how success is measured, growth opportunities, engineering culture, recent projects. Shows genuine interest and research.",
+      "tags": ["interview-tips"]
+    }
+  ]
+}

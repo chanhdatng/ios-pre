@@ -1,0 +1,88 @@
+{
+  "topic": "concurrency",
+  "generated_at": "2026-01-07T12:45:54.004964+00:00",
+  "cards": [
+    {
+      "id": "concurrency_ef63c6d3be70",
+      "front": "Explain Structured Concurrency in Swift. What benefits does it provide over unstructured concurrency?",
+      "back": "Structured concurrency, introduced in Swift 5.5+, enables safer and more predictable concurrent code.  It ties the lifetime of child tasks to the scope they're created in, ensuring they complete before the parent scope exits (or are cancelled). This avoids detached tasks, simplifies error handling via propagation, and improves code readability. Benefits: automatic task management, cancellation propagation, compiler assistance for data races, and improved debugging.  Unstructured concurrency (e.g., `Task { ... }`) offers more flexibility but requires manual management, increasing the risk of errors.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "structured concurrency",
+        "swift",
+        "async/await"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "concurrency_0a59c109c99a",
+      "front": "Explain Actors and Actor isolation, including the benefits and trade-offs. How does it compare to other concurrency models?",
+      "back": "Actors encapsulate state and ensure exclusive access via a serial executor, preventing data races. Key benefits include safety and simplified reasoning about concurrent code. Trade-offs involve potential performance overhead due to message passing. Compared to locks, Actors provide higher-level abstraction reducing complexity. DispatchQueues are lower-level, requiring manual synchronization. Actor isolation ensures that access to the actor's state is only allowed from within the actor's context. Swift 5.5+",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "actors",
+        "actor isolation",
+        "swift"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "concurrency_c4f511d6cdf5",
+      "front": "What is the `Sendable` protocol and how does Swift 6 enhance its role in concurrency?",
+      "back": "`Sendable` indicates a type whose values can be safely passed between concurrent execution contexts. Swift 6 enhances concurrency by performing more sophisticated static analysis, reducing false positive warnings related to data races. It leverages isolation regions, allowing the compiler to prove code can safely run concurrently, reducing the need for manual `Sendable` conformance when safety can be statically verified.  This simplifies adopting concurrency.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "Sendable",
+        "Swift 6",
+        "data races",
+        "isolation regions"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "concurrency_adf2fcd2570c",
+      "front": "Explain the problem that `withThrowingTaskGroup` and `withTaskGroup` had prior to Swift 5.9, and how `withThrowingDiscardingTaskGroup` solves it. Why is this a concern?",
+      "back": "Prior to Swift 5.9, tasks created in a `withTaskGroup` or `withThrowingTaskGroup` were only destroyed when `next()` was called. In server-like scenarios where tasks are continuously added without iterating with `next()`, child tasks aren't destroyed. This can lead to memory leaks.\n\n`withThrowingDiscardingTaskGroup` automatically discards and destroys each task as soon as it completes, preventing memory leaks in long-running task groups.  This is a concern for server apps which should handle connections smoothly.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "task groups",
+        "swift 5.9",
+        "memory management"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    },
+    {
+      "id": "concurrency_b2a458c2caac",
+      "front": "Compare and contrast `AsyncSequence` and `AsyncStream`. When would you choose one over the other? (SE-0314)",
+      "back": "`AsyncSequence` is a type that allows you to iterate over a series of values asynchronously. It's a protocol, meaning types conforming to it must provide an `AsyncIterator`.  `AsyncStream` is a concrete type that implements `AsyncSequence`. \n\nUse `AsyncStream` when you need manual control over the production of asynchronous values (e.g., bridging callbacks or delegate methods). Use `AsyncSequence` (or create your own custom type conforming to it) when you have an existing source of asynchronous values that can be represented as a sequence. `AsyncStream` provides back pressure.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "AsyncSequence",
+        "AsyncStream",
+        "Swift Concurrency"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    }
+  ]
+}

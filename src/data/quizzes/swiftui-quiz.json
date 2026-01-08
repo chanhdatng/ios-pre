@@ -1,0 +1,127 @@
+{
+  "topic": "swiftui",
+  "title": "SwiftUI Quiz",
+  "description": "Test your SwiftUI knowledge",
+  "questions": [
+    {
+      "id": "suiq-001",
+      "question": "What's the difference between @State and @Binding?",
+      "options": [
+        "@State is for classes, @Binding is for structs",
+        "@State owns the value, @Binding references external state",
+        "They are interchangeable",
+        "@Binding is deprecated in favor of @State"
+      ],
+      "correctIndex": 1,
+      "explanation": "@State is source of truth (owns data). @Binding creates two-way connection to state owned elsewhere. Parent uses @State, passes $value as Binding."
+    },
+    {
+      "id": "suiq-002",
+      "question": "When should you use @StateObject vs @ObservedObject?",
+      "options": [
+        "Use @StateObject for UIKit, @ObservedObject for SwiftUI",
+        "@StateObject creates/owns instance, @ObservedObject references external",
+        "Always use @ObservedObject",
+        "They are deprecated, use @Observable"
+      ],
+      "correctIndex": 1,
+      "explanation": "@StateObject: View creates and owns the object (survives view recreation). @ObservedObject: Object is passed in from outside. Wrong choice causes object recreation bugs."
+    },
+    {
+      "id": "suiq-003",
+      "question": "What is the SwiftUI view lifecycle?",
+      "options": [
+        "init → viewDidLoad → viewWillAppear → viewDidAppear",
+        "init → body → onAppear → [state updates] → onDisappear",
+        "create → mount → update → unmount",
+        "load → display → hide → deallocate"
+      ],
+      "correctIndex": 1,
+      "explanation": "SwiftUI: init → body computed → onAppear → body recomputed on state change → onDisappear. Views are structs, recreated often."
+    },
+    {
+      "id": "suiq-004",
+      "question": "What does the 'task' modifier do compared to 'onAppear'?",
+      "options": [
+        "task is synchronous, onAppear is async",
+        "task provides async context and auto-cancels, onAppear is sync",
+        "They are identical",
+        "task is for UIKit integration"
+      ],
+      "correctIndex": 1,
+      "explanation": "task modifier provides async context, automatically cancels when view disappears. onAppear is synchronous. Use task for async work like fetching."
+    },
+    {
+      "id": "suiq-005",
+      "question": "How do you pass data UP the view hierarchy in SwiftUI?",
+      "options": [
+        "@EnvironmentObject",
+        "@Binding",
+        "PreferenceKey",
+        "@State"
+      ],
+      "correctIndex": 2,
+      "explanation": "PreferenceKey passes data from child to parent. Set with preference(), read with onPreferenceChange(). Common for custom navigation bars."
+    },
+    {
+      "id": "suiq-006",
+      "question": "What is @MainActor used for in SwiftUI?",
+      "options": [
+        "Creating main navigation",
+        "Ensuring code runs on main thread for UI updates",
+        "Defining the main view",
+        "Performance optimization"
+      ],
+      "correctIndex": 1,
+      "explanation": "@MainActor guarantees code runs on main thread. Required for UI updates. ObservableObject classes often need @MainActor for their published properties."
+    },
+    {
+      "id": "suiq-007",
+      "question": "What's the modern navigation API in iOS 16+?",
+      "options": [
+        "NavigationView with NavigationLink",
+        "NavigationStack with NavigationPath",
+        "UINavigationController wrapper",
+        "Router pattern with @Environment"
+      ],
+      "correctIndex": 1,
+      "explanation": "NavigationStack with NavigationPath is the modern API. Value-based navigation, programmatic control. NavigationView is deprecated."
+    },
+    {
+      "id": "suiq-008",
+      "question": "How does @ViewBuilder work?",
+      "options": [
+        "It's a macro for view compilation",
+        "Function builder enabling multiple views in closure",
+        "Creates view from JSON",
+        "Caches view for performance"
+      ],
+      "correctIndex": 1,
+      "explanation": "@ViewBuilder is a result builder that allows multiple views, if/else, switch in closures. body property has implicit @ViewBuilder."
+    },
+    {
+      "id": "suiq-009",
+      "question": "Which has better performance for long lists?",
+      "options": [
+        "VStack with ForEach",
+        "LazyVStack with ForEach",
+        "List",
+        "ScrollView with VStack"
+      ],
+      "correctIndex": 2,
+      "explanation": "List has built-in cell reuse like UITableView. LazyVStack creates lazily but doesn't reuse. For long scrolling content, List is most performant."
+    },
+    {
+      "id": "suiq-010",
+      "question": "What is the @Observable macro (iOS 17)?",
+      "options": [
+        "A debugging tool",
+        "Replacement for ObservableObject with simpler API",
+        "Network observation",
+        "KVO wrapper"
+      ],
+      "correctIndex": 1,
+      "explanation": "@Observable replaces ObservableObject. No @Published needed, automatic tracking of which properties views read. Better performance, simpler API."
+    }
+  ]
+}

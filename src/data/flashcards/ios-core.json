@@ -1,0 +1,157 @@
+{
+  "topic": "ios-core",
+  "title": "iOS Core Concepts",
+  "description": "App lifecycle, ARC, delegation, and iOS fundamentals",
+  "cards": [
+    {
+      "id": "ios-001",
+      "front": "What are the UIApplication lifecycle states?",
+      "back": "Not Running → Inactive → Active → Background → Suspended. Inactive is transitional state between active and background.",
+      "tags": ["lifecycle"]
+    },
+    {
+      "id": "ios-002",
+      "front": "What's the difference between viewDidLoad and viewWillAppear?",
+      "back": "viewDidLoad: Called once when view loaded into memory. viewWillAppear: Called every time view is about to become visible. Use viewDidLoad for one-time setup, viewWillAppear for refresh logic.",
+      "tags": ["lifecycle", "uikit"]
+    },
+    {
+      "id": "ios-003",
+      "front": "Explain the delegation pattern in iOS",
+      "back": "One object delegates responsibility to another via a protocol. Delegate is usually weak to avoid retain cycles. Example: UITableViewDelegate handles cell selection while UITableView handles display.",
+      "tags": ["patterns", "delegation"]
+    },
+    {
+      "id": "ios-004",
+      "front": "What causes a retain cycle and how do you fix it?",
+      "back": "Two objects holding strong references to each other. Fix: Make one reference weak or unowned. Common case: closure capturing self strongly in a class property.",
+      "tags": ["memory", "arc"]
+    },
+    {
+      "id": "ios-005",
+      "front": "When does deinit get called?",
+      "back": "When ARC count reaches 0 and object is about to be deallocated. Only classes have deinit (not structs). Use for cleanup: invalidate timers, remove observers, close connections.",
+      "tags": ["memory", "arc"]
+    },
+    {
+      "id": "ios-006",
+      "front": "What's the difference between frame and bounds?",
+      "back": "Frame: Position and size in superview's coordinate system. Bounds: Position and size in own coordinate system. bounds.origin is usually (0,0) unless scrolled.",
+      "tags": ["uikit", "layout"]
+    },
+    {
+      "id": "ios-007",
+      "front": "Explain Auto Layout priority and compression resistance",
+      "back": "Content Hugging: Resistance to growing larger than intrinsic size. Compression Resistance: Resistance to shrinking smaller. Higher priority wins when constraints conflict.",
+      "tags": ["uikit", "layout"]
+    },
+    {
+      "id": "ios-008",
+      "front": "What is the responder chain?",
+      "back": "Chain of UIResponder objects that handle events. Order: First Responder → View → Superview → ... → ViewController → Window → Application. Unhandled events travel up the chain.",
+      "tags": ["uikit", "events"]
+    },
+    {
+      "id": "ios-009",
+      "front": "How does UITableView cell reuse work?",
+      "back": "Cells are dequeued and reused via dequeueReusableCell(withIdentifier:). Only visible cells + buffer exist in memory. Must reset cell state in prepareForReuse() or cellForRowAt.",
+      "tags": ["uikit", "performance"]
+    },
+    {
+      "id": "ios-010",
+      "front": "What's the difference between NotificationCenter and delegation?",
+      "back": "Delegation: 1-to-1, type-safe, explicit contract. NotificationCenter: Many-to-many broadcast, loosely coupled, any object can observe. Use delegation for direct relationships, notifications for app-wide events.",
+      "tags": ["patterns"]
+    },
+    {
+      "id": "ios-011",
+      "front": "What is KVO and when would you use it?",
+      "back": "Key-Value Observing: Observe changes to object properties. Use observe(_:options:changeHandler:) in Swift. Good for observing framework objects. Prefer Combine/reactive for own code.",
+      "tags": ["patterns", "observation"]
+    },
+    {
+      "id": "ios-012",
+      "front": "Explain UserDefaults limitations and best practices",
+      "back": "Limitations: Not encrypted, synced to disk periodically, not for large data. Best for: Small settings, preferences. Don't store: Sensitive data, large objects, frequently changing data.",
+      "tags": ["persistence"]
+    },
+    {
+      "id": "ios-013",
+      "front": "What's the difference between Codable, Encodable, and Decodable?",
+      "back": "Codable = Encodable & Decodable. Encodable: Can serialize to external format (JSON). Decodable: Can deserialize from external format. Use Codable when you need both.",
+      "tags": ["serialization"]
+    },
+    {
+      "id": "ios-014",
+      "front": "How do you handle background app refresh?",
+      "back": "Enable Background Modes capability, implement application(_:performFetchWithCompletionHandler:). System wakes app periodically. Call completion handler with fetch result. Limited execution time (~30s).",
+      "tags": ["lifecycle", "background"]
+    },
+    {
+      "id": "ios-015",
+      "front": "What is Core Data and when should you use it?",
+      "back": "Apple's object graph and persistence framework. Use for: Complex object relationships, large datasets, offline sync, undo support. Overkill for: Simple key-value storage, small data.",
+      "tags": ["persistence", "core-data"]
+    },
+    {
+      "id": "ios-016",
+      "front": "Explain NSManagedObjectContext and its concurrency types",
+      "back": "Context where Core Data operations happen. Types: mainQueueConcurrencyType (UI), privateQueueConcurrencyType (background). Use perform/performAndWait for thread safety.",
+      "tags": ["core-data", "concurrency"]
+    },
+    {
+      "id": "ios-017",
+      "front": "What's the difference between synchronous and asynchronous URLSession tasks?",
+      "back": "URLSession is always async. dataTask returns immediately, calls completion on background queue. Use async/await with data(for:) in modern code. Never block main thread waiting for network.",
+      "tags": ["networking"]
+    },
+    {
+      "id": "ios-018",
+      "front": "How do you handle deep linking in iOS?",
+      "back": "URL Schemes: Custom URLs (myapp://). Universal Links: Standard https URLs associated with app domain. Handle in scene(_:openURLContexts:) or application(_:open:options:).",
+      "tags": ["navigation", "deep-linking"]
+    },
+    {
+      "id": "ios-019",
+      "front": "What is App Transport Security (ATS)?",
+      "back": "iOS security feature requiring HTTPS for network connections. Enforces TLS 1.2+, forward secrecy. Can add exceptions in Info.plist but App Store may reject. Best practice: Use HTTPS everywhere.",
+      "tags": ["security", "networking"]
+    },
+    {
+      "id": "ios-020",
+      "front": "Explain the Keychain and when to use it",
+      "back": "Secure storage for sensitive data (passwords, tokens, keys). Persists across app reinstalls. Use SecItemAdd/Update/Delete/CopyMatching APIs or wrapper libraries. Required for credentials.",
+      "tags": ["security", "persistence"]
+    },
+    {
+      "id": "ios-021",
+      "front": "What are the different ways to pass data between view controllers?",
+      "back": "Forward: Property injection, initializer. Backward: Delegation, closures, NotificationCenter. Shared: Singleton, dependency injection container. Prefer explicit passing over global state.",
+      "tags": ["architecture", "navigation"]
+    },
+    {
+      "id": "ios-022",
+      "front": "How does UICollectionViewCompositionalLayout work?",
+      "back": "Modern layout API with three levels: Item → Group → Section. Each level defines size (fractional, absolute, estimated). Supports orthogonal scrolling, section headers, decorations.",
+      "tags": ["uikit", "layout"]
+    },
+    {
+      "id": "ios-023",
+      "front": "What is Diffable Data Source?",
+      "back": "Type-safe data source for UITableView/UICollectionView. Uses snapshots instead of reloadData. Automatically calculates and animates differences. Requires Hashable items.",
+      "tags": ["uikit", "performance"]
+    },
+    {
+      "id": "ios-024",
+      "front": "Explain scene-based lifecycle (iOS 13+)",
+      "back": "UISceneDelegate handles per-window lifecycle instead of UIApplicationDelegate. Supports multiple windows on iPad. SceneDelegate: foreground/background. AppDelegate: app launch, push notifications.",
+      "tags": ["lifecycle"]
+    },
+    {
+      "id": "ios-025",
+      "front": "What is the purpose of Info.plist?",
+      "back": "Configuration file declaring app metadata: bundle ID, version, required device capabilities, permissions (camera, location), URL schemes, supported orientations, ATS exceptions.",
+      "tags": ["configuration"]
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "topic": "concurrency",
+  "title": "Swift Concurrency Quiz",
+  "description": "Test your async/await and concurrency knowledge",
+  "questions": [
+    {
+      "id": "cq-001",
+      "question": "What does 'await' mark in Swift concurrency?",
+      "options": [
+        "A blocking operation",
+        "A potential suspension point",
+        "A mandatory pause",
+        "An error boundary"
+      ],
+      "correctIndex": 1,
+      "explanation": "await marks where function CAN suspend and other code may run. It's not guaranteed to suspend, just a potential suspension point."
+    },
+    {
+      "id": "cq-002",
+      "question": "What's the difference between Task and Task.detached?",
+      "options": [
+        "Task is sync, Task.detached is async",
+        "Task inherits actor context, Task.detached runs independently",
+        "Task.detached is deprecated",
+        "No difference, just syntax preference"
+      ],
+      "correctIndex": 1,
+      "explanation": "Task inherits actor context and priority from caller. Task.detached runs with no inherited context. Prefer Task for most use cases."
+    },
+    {
+      "id": "cq-003",
+      "question": "What problem do actors solve?",
+      "options": [
+        "Memory leaks",
+        "Data races with shared mutable state",
+        "Network timeouts",
+        "UI responsiveness"
+      ],
+      "correctIndex": 1,
+      "explanation": "Actors ensure only one task accesses their state at a time, preventing data races at compile time. Perfect for shared mutable state."
+    },
+    {
+      "id": "cq-004",
+      "question": "What is actor reentrancy?",
+      "options": [
+        "Actor can be subclassed",
+        "Other tasks can run on actor while it awaits",
+        "Actor can call itself",
+        "Multiple actors sharing state"
+      ],
+      "correctIndex": 1,
+      "explanation": "When an actor awaits, it releases exclusivity. Other tasks can execute on it. State may change during suspension - always revalidate after await."
+    },
+    {
+      "id": "cq-005",
+      "question": "What is Sendable in Swift?",
+      "options": [
+        "Protocol for network serialization",
+        "Type safe to share across concurrency domains",
+        "A way to send notifications",
+        "Protocol for copying values"
+      ],
+      "correctIndex": 1,
+      "explanation": "Sendable marks types safe to pass between concurrency domains. Value types usually auto-conform. @Sendable marks safe closures."
+    },
+    {
+      "id": "cq-006",
+      "question": "How do you bridge callback-based code to async/await?",
+      "options": [
+        "Use DispatchQueue.async",
+        "withCheckedContinuation or withUnsafeContinuation",
+        "Wrap in Task {}",
+        "Use @escaping closure"
+      ],
+      "correctIndex": 1,
+      "explanation": "Continuations bridge callbacks to async/await. withCheckedContinuation is safe (validates single resume). Must call resume exactly once."
+    },
+    {
+      "id": "cq-007",
+      "question": "What is structured concurrency?",
+      "options": [
+        "Using Grand Central Dispatch",
+        "Child tasks scoped to parent with automatic cancellation",
+        "Threading with priority",
+        "Synchronized blocks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Structured concurrency: Child tasks bound to parent scope. Parent waits for children. Cancellation propagates down. Prevents orphaned tasks."
+    },
+    {
+      "id": "cq-008",
+      "question": "When should you use async let vs TaskGroup?",
+      "options": [
+        "async let for errors, TaskGroup for success",
+        "async let for fixed count, TaskGroup for dynamic count",
+        "They're interchangeable",
+        "TaskGroup is deprecated"
+      ],
+      "correctIndex": 1,
+      "explanation": "async let: Fixed number of concurrent tasks (variables known at compile time). TaskGroup: Dynamic number, add tasks in loop, collect results."
+    },
+    {
+      "id": "cq-009",
+      "question": "How do you handle task cancellation?",
+      "options": [
+        "Tasks can't be cancelled",
+        "Check Task.isCancelled or call Task.checkCancellation()",
+        "Use try-catch",
+        "Override cancel() method"
+      ],
+      "correctIndex": 1,
+      "explanation": "Check Task.isCancelled (returns bool) or Task.checkCancellation() (throws CancellationError). Cancellation is cooperative - must check manually."
+    },
+    {
+      "id": "cq-010",
+      "question": "What is AsyncSequence used for?",
+      "options": [
+        "Sorting arrays asynchronously",
+        "Iterating over values that arrive over time",
+        "Creating async functions",
+        "Managing thread pools"
+      ],
+      "correctIndex": 1,
+      "explanation": "AsyncSequence is async version of Sequence. Use for-await-in to iterate. Elements arrive over time. Examples: URLSession.bytes, notifications."
+    }
+  ]
+}

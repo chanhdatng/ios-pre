@@ -1,0 +1,95 @@
+{
+  "topic": "swift",
+  "generated_at": "2026-01-07T12:45:54.004953+00:00",
+  "cards": [
+    {
+      "id": "swift_32865dacda56",
+      "front": "Explain advanced use cases of generics, including variadic generics and how they interact with protocols and type erasure, with examples.",
+      "back": "Variadic generics (future) allow functions to accept a variable number of type parameters, removing limits like SwiftUI's old 10-view restriction.  Type erasure hides the underlying type, often to abstract concrete implementations behind protocols. Example:  `AnyView` erases the specific `View` type. This allows views with different types to be used interchangeably.  Using `any Protocol` indicates an existential type, implying dynamic dispatch and potential performance impact compared to generics using static dispatch.  Variadic generics improve this further, but this is still a work in progress in Swift. ",
+      "code_example": null,
+      "tags": [
+        "generics",
+        "type erasure",
+        "protocols",
+        "AnyView",
+        "variadic generics",
+        "SwiftUI",
+        "existential types"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
+      ]
+    },
+    {
+      "id": "swift_69325e446d81",
+      "front": "Explain how property wrappers work under the hood. How does Swift handle the wrapped value and projected value?",
+      "back": "Property wrappers use the `_propertyName` naming convention to store the wrapped value.  Accessing `propertyName` triggers the wrapper's `wrappedValue` getter/setter. The `$` prefix accesses the projected value via `projectedValue`.  Example: `@MyWrapper var x: Int` creates `_x` for storage, `x` for wrapped access, `$x` for projected access.  Swift 5.1+",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "property wrappers",
+        "metaprogramming"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
+    },
+    {
+      "id": "swift_5efaf49e1e55",
+      "front": "Explain Result Builders and their benefits. Provide a practical example beyond SwiftUI.",
+      "back": "Result Builders (previously Function Builders) allow you to create a DSL for building up data structures in a declarative way.  They provide a mechanism to accumulate partial results of computations. Benefits include improved readability, reduced boilerplate, and type safety when constructing complex objects.\n\nExample:\n```swift\n@resultBuilder\nstruct StringBuilder {\n    static func buildBlock(_ parts: String...) -> String {\n        parts.joined()\n    }\n\n    static func buildOptional(_ component: String?) -> String {\n        component ?? \"\"\n    }\n\n    static func buildEither(first component: String) -> String {\n        component\n    }\n\n    static func buildEither(second component: String) -> String {\n        component\n    }\n}\n\n@StringBuilder\nfunc createMessage(includeGreeting: Bool, name: String?) -> String {\n    if includeGreeting { \"Hello, \" }\n    name\n    if let name = name { \"!\" }\n}\n\nlet message = createMessage(includeGreeting: true, name: \"World\") // \"Hello, World!\"\n```",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "result builders",
+        "dsl",
+        "metaprogramming"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "swift_76ae4455ed48",
+      "front": "Explain Swift Macros, including their purpose, key characteristics, and limitations. Provide a practical example of when to use one.",
+      "back": "Swift Macros enable compile-time code transformation. They're type-safe, run as external programs during compilation, and are built using SwiftSyntax.\n\nTypes:\n- ExpressionMacro (single expression)\n- AccessorMacro (getters/setters)\n- MemberAttributeMacro (attributes to members)\n- ConformanceMacro (protocol conformance)\n\nUse Cases: reduce boilerplate, generate code, enforce constraints.\n\nExample: `@AllPublished` macro adding `@Published` to all properties of an `ObservableObject`. They should be deterministic, producing consistent output from the same input, enabling incremental builds. Requires a macro definition and external module.",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "macros",
+        "compilation",
+        "SwiftSyntax",
+        "metaprogramming"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    },
+    {
+      "id": "swift_5b8fc7f45dfe",
+      "front": "Explain Swift's Automatic Reference Counting (ARC).  How does it work behind the scenes, and what are its limitations?",
+      "back": "ARC automatically manages memory by tracking object references. When an object has no strong references, it's deallocated.  Internally, ARC inserts retain/release calls at compile time. Limitations include its inability to handle retain cycles (resolved with `weak` and `unowned` references), and performance overhead from retain/release operations.  ARC does not handle memory leaks due to unmanaged resources e.g. open file handles.",
+      "code_example": null,
+      "tags": [
+        "memory management",
+        "arc",
+        "swift",
+        "retain cycle",
+        "weak",
+        "unowned"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    }
+  ]
+}

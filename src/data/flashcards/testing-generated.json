@@ -1,0 +1,94 @@
+{
+  "topic": "testing",
+  "generated_at": "2026-01-07T12:45:54.004975+00:00",
+  "cards": [
+    {
+      "id": "testing_394cb39087e3",
+      "front": "What are some best practices for unit testing in Swift and why are they important?",
+      "back": "Key practices: 1) **AAA (Arrange-Act-Assert)**: Clear structure for readability. 2) **Test Doubles (Mocks, Stubs, Spies)**: Isolate the unit, control dependencies, verify interactions. 3) **Test-Driven Development (TDD)**: Write tests before implementation. 4) **Meaningful names**: Clearly describe test's purpose. 5) **Keep tests focused**: Test only one thing per test. 6) **Edge cases, boundaries, and failure modes**: Thoroughly test potential problem areas. 7) **Code Coverage**: Aim for high coverage, but prioritize critical areas. 8) **Avoid logic in tests**: Keep tests simple. These practices improve code quality, reduce bugs, and enable easier refactoring.",
+      "code_example": null,
+      "tags": [
+        "testing",
+        "unit testing",
+        "best practices",
+        "swift"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.swift.org/contributing/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "testing_99d655367931",
+      "front": "Discuss UI Testing strategies in iOS. What are their limitations? How do they compare to other testing types?",
+      "back": "UI Testing focuses on end-to-end flows, simulating user interactions. Strategies include record/replay (fragile), programmatic interaction via accessibility identifiers (more robust), and page object patterns for maintainability.  Limitations: slower than unit/integration tests, susceptible to UI changes, and require careful synchronization.  Compared to unit/integration tests, UI tests verify the entire application flow, while others test specific components.",
+      "code_example": null,
+      "tags": [
+        "testing",
+        "ui testing",
+        "ios",
+        "xcuitest"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.swift.org/contributing/",
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "testing_76bda1e74f8b",
+      "front": "What is snapshot testing, and when is it most beneficial in iOS development?",
+      "back": "Snapshot testing (aka approval testing) compares the rendered output of a UI component or view against a previously recorded \"snapshot\".  It's beneficial for catching unintended UI changes.  Especially useful for complex or dynamically generated views, ensuring UI consistency across different data sets or device configurations.  Example: verifying the layout of a custom `UITableViewCell` with various content scenarios or the rendering of a complex chart. Unlike UI testing, it does not check accessibility or other interaction elements.",
+      "code_example": null,
+      "tags": [
+        "testing",
+        "snapshot testing",
+        "UI testing",
+        "iOS"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.swift.org/contributing/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "testing_cb7a1cf32d96",
+      "front": "Explain different test double patterns (mocks, stubs, spies, fakes) and when you would use each in iOS development. Provide examples.",
+      "back": "Test doubles are used to replace dependencies in tests. Mocks verify interactions; use when testing message passing. Stubs provide canned responses; use when isolating the system under test. Spies record interactions for later verification; useful for observing side effects. Fakes are simplified implementations; use when real dependencies are too complex or slow. Example: Mock URLSession to verify a network request is made. Stub a database call to return predefined data.",
+      "code_example": null,
+      "tags": [
+        "testing",
+        "test doubles",
+        "mocks",
+        "stubs",
+        "spies",
+        "fakes"
+      ],
+      "sources": [
+        "https://www.swift.org/contributing/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    },
+    {
+      "id": "testing_01f7c12dabda",
+      "front": "How do you test asynchronous code in Swift, and what are some challenges you might encounter?",
+      "back": "Testing async code involves ensuring the correctness of operations that don't complete immediately.  Common techniques include using `XCTestExpectation` (less common now) and `async/await` with `Task` in tests.  Challenges include race conditions, timeouts, and ensuring proper error handling. I might use `fulfillment(of:timeout:)` with expectations or `await` results in a `Task` to assert the outcome. For improved stability and control, Swift's `Clock` protocol (SE-0374) and `AsyncStream` enhancements (`makeStream(of:)`) can be mocked for deterministic testing. Introduced in swift 6.2, `expect(processExitsWith:)` to test process failure.",
+      "code_example": null,
+      "tags": [
+        "testing",
+        "async",
+        "swift",
+        "concurrency",
+        "XCTest"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    }
+  ]
+}

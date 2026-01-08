@@ -1,0 +1,127 @@
+{
+  "topic": "concurrency",
+  "title": "Swift Concurrency",
+  "description": "async/await, actors, tasks, and modern concurrency",
+  "cards": [
+    {
+      "id": "conc-001",
+      "front": "What is async/await in Swift?",
+      "back": "Language feature for asynchronous code. async marks function that can suspend. await marks suspension point. Compiler ensures thread safety. Replaces completion handlers with linear code flow.",
+      "tags": ["async-await"]
+    },
+    {
+      "id": "conc-002",
+      "front": "What's the difference between Task and Task.detached?",
+      "back": "Task: Inherits actor context and priority from caller. Task.detached: Runs independently, no inherited context. Prefer Task for most cases. Detached for truly independent work.",
+      "tags": ["tasks"]
+    },
+    {
+      "id": "conc-003",
+      "front": "Explain actors in Swift",
+      "back": "Reference type with isolated state. Only one task accesses actor at a time. Use await to access from outside. Prevents data races at compile time. Perfect for shared mutable state.",
+      "tags": ["actors"]
+    },
+    {
+      "id": "conc-004",
+      "front": "What is @MainActor?",
+      "back": "Global actor for main thread. Guarantees code runs on main thread. Use for UI code. Can mark class, function, or property. Async calls to @MainActor auto-dispatch to main thread.",
+      "tags": ["actors", "main-thread"]
+    },
+    {
+      "id": "conc-005",
+      "front": "How do you handle cancellation in Swift concurrency?",
+      "back": "Check Task.isCancelled or call Task.checkCancellation() (throws). Propagates through async calls. task.cancel() signals cancellation. AsyncSequence ends on cancellation.",
+      "tags": ["tasks", "cancellation"]
+    },
+    {
+      "id": "conc-006",
+      "front": "What is a continuation and when do you use it?",
+      "back": "Bridges callback-based code to async/await. withCheckedContinuation (safe) or withUnsafeContinuation (fast). Must call resume exactly once. Use to wrap legacy async APIs.",
+      "tags": ["async-await", "interop"]
+    },
+    {
+      "id": "conc-007",
+      "front": "Explain structured concurrency",
+      "back": "Child tasks are scoped to parent. Parent waits for children. Cancellation propagates down. async let and TaskGroup provide structure. Prevents orphaned tasks and resource leaks.",
+      "tags": ["structured-concurrency"]
+    },
+    {
+      "id": "conc-008",
+      "front": "What's the difference between async let and TaskGroup?",
+      "back": "async let: Fixed number of concurrent tasks, results bound to variables. TaskGroup: Dynamic number of tasks, add tasks in loop, collect results. Use async let for known count.",
+      "tags": ["structured-concurrency"]
+    },
+    {
+      "id": "conc-009",
+      "front": "What is Sendable?",
+      "back": "Protocol marking types safe to share across concurrency domains. Value types usually auto-conform. Classes must be final with immutable properties or use locks. @Sendable for closures.",
+      "tags": ["sendable", "thread-safety"]
+    },
+    {
+      "id": "conc-010",
+      "front": "How does AsyncSequence work?",
+      "back": "Async version of Sequence. Use for-await-in to iterate. Elements arrive over time. Built-in: URLSession.bytes, NotificationCenter.notifications. Create with AsyncStream.",
+      "tags": ["async-sequence"]
+    },
+    {
+      "id": "conc-011",
+      "front": "What is AsyncStream?",
+      "back": "Create custom AsyncSequence from callbacks. AsyncStream.Continuation yields values. yield(_:) adds element, finish() ends stream. Bridges delegate patterns to async/await.",
+      "tags": ["async-sequence"]
+    },
+    {
+      "id": "conc-012",
+      "front": "Explain task priority in Swift",
+      "back": "Priorities: userInitiated > high > medium > low > utility > background. Set via Task(priority:). Higher priority tasks scheduled first. Priority can be elevated (not lowered) by system.",
+      "tags": ["tasks"]
+    },
+    {
+      "id": "conc-013",
+      "front": "What is actor reentrancy?",
+      "back": "When actor awaits, other tasks can execute on it. State may change during suspension. Always revalidate state after await. Don't assume state persists across await points.",
+      "tags": ["actors"]
+    },
+    {
+      "id": "conc-014",
+      "front": "How do you use nonisolated in actors?",
+      "back": "Marks method/property as not requiring actor isolation. Can be called synchronously from outside. Must only access immutable state or use other nonisolated members. Good for constants.",
+      "tags": ["actors"]
+    },
+    {
+      "id": "conc-015",
+      "front": "What's the difference between GCD and Swift Concurrency?",
+      "back": "GCD: Manual queue management, completion handlers, no compile-time safety. Swift Concurrency: Automatic scheduling, async/await, compiler-enforced safety, structured cancellation.",
+      "tags": ["comparison"]
+    },
+    {
+      "id": "conc-016",
+      "front": "How do you handle errors in async functions?",
+      "back": "Mark async throws, use try await at call site. Errors propagate like sync code. Task catches unhandled errors (access via task.result). TaskGroup can use throwing variant.",
+      "tags": ["error-handling"]
+    },
+    {
+      "id": "conc-017",
+      "front": "What is @TaskLocal?",
+      "back": "Thread-local-like storage for tasks. Value bound for task scope, inherited by child tasks. Use for request IDs, logging context. Set via TaskLocal.withValue { }.",
+      "tags": ["tasks"]
+    },
+    {
+      "id": "conc-018",
+      "front": "Explain global actors",
+      "back": "@globalActor creates singleton actor for isolation. @MainActor is built-in global actor. Create custom: @globalActor actor MyActor { static let shared = MyActor() }. Share isolation domain.",
+      "tags": ["actors"]
+    },
+    {
+      "id": "conc-019",
+      "front": "How do you test async code?",
+      "back": "XCTest supports async: func testExample() async throws { }. Use await directly in test. For tasks, await task.value. Mock actors for isolation testing.",
+      "tags": ["testing"]
+    },
+    {
+      "id": "conc-020",
+      "front": "What are the common Swift Concurrency pitfalls?",
+      "back": "1) Actor reentrancy bugs 2) Forgetting @MainActor for UI 3) Blocking threads with sync calls 4) Not handling cancellation 5) Sendable violations 6) Retain cycles in Task closures.",
+      "tags": ["best-practices"]
+    }
+  ]
+}

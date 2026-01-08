@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
+import Header from '../components/layout/Header.astro';
+import DashboardStats from '../components/tracking/DashboardStats';
+
+// Load flashcard counts for quick overview
+import swiftFundamentals from '../data/flashcards/swift-fundamentals.json';
+import iosCore from '../data/flashcards/ios-core.json';
+import concurrency from '../data/flashcards/concurrency.json';
+import swiftui from '../data/flashcards/swiftui.json';
+import systemDesign from '../data/flashcards/system-design.json';
+import behavioral from '../data/flashcards/behavioral.json';
+
+const totalCards = swiftFundamentals.cards.length + iosCore.cards.length +
+  concurrency.cards.length + swiftui.cards.length +
+  systemDesign.cards.length + behavioral.cards.length;
+
+const basePath = import.meta.env.BASE_URL || '';
+
+const topics = [
+  { name: 'Swift', count: swiftFundamentals.cards.length, href: `${basePath}/month-1` },
+  { name: 'iOS Core', count: iosCore.cards.length, href: `${basePath}/month-1` },
+  { name: 'Concurrency', count: concurrency.cards.length, href: `${basePath}/month-2` },
+  { name: 'SwiftUI', count: swiftui.cards.length, href: `${basePath}/month-2` },
+  { name: 'System Design', count: systemDesign.cards.length, href: `${basePath}/month-2` },
+  { name: 'Behavioral', count: behavioral.cards.length, href: `${basePath}/month-3` },
+];
+---
+
+<BaseLayout title="Dashboard">
+  <Sidebar slot="sidebar" />
+
+  <Header title="Dashboard" subtitle="Your iOS Interview Prep Progress" />
+
+  <!-- Stats from stores -->
+  <DashboardStats client:load />
+
+  <!-- Topics Overview -->
+  <section class="card p-6 mb-6">
+    <h2 class="text-headline-3 mb-4">Topics Overview</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {topics.map(topic => (
+        <a href={topic.href} class="p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)] hover:bg-[var(--color-accent-orange)]/10 transition-colors">
+          <p class="text-body font-medium">{topic.name}</p>
+          <p class="text-caption text-[var(--color-text-secondary)]">{topic.count} cards</p>
+        </a>
+      ))}
+    </div>
+    <p class="text-caption text-[var(--color-text-tertiary)] mt-4">Total: {totalCards} flashcards</p>
+  </section>
+
+  <!-- Quick Actions -->
+  <section class="card p-6">
+    <h2 class="text-headline-3 mb-4">Quick Actions</h2>
+    <div class="flex flex-wrap gap-4">
+      <a href={`${basePath}/review`} class="btn-primary">Start Review Session</a>
+      <a href={`${basePath}/progress`} class="btn-secondary">View Progress</a>
+      <a href={`${basePath}/leetcode`} class="btn-secondary">LeetCode Tracker</a>
+    </div>
+  </section>
+</BaseLayout>

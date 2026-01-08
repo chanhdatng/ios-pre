@@ -1,0 +1,97 @@
+{
+  "topic": "system-design",
+  "title": "iOS System Design",
+  "description": "Architecture patterns, frameworks, and design principles",
+  "cards": [
+    {
+      "id": "sys-001",
+      "front": "Compare MVC, MVVM, and VIPER architectures",
+      "back": "MVC: Simple, controller does too much. MVVM: View-ViewModel binding, good testability. VIPER: Full separation (View-Interactor-Presenter-Entity-Router), complex but scalable. Choose based on project size.",
+      "tags": ["architecture"]
+    },
+    {
+      "id": "sys-002",
+      "front": "What is dependency injection and why use it?",
+      "back": "Pass dependencies via init/property instead of creating internally. Benefits: Testability (inject mocks), flexibility, loose coupling. Types: Constructor, property, method injection.",
+      "tags": ["patterns", "testing"]
+    },
+    {
+      "id": "sys-003",
+      "front": "How would you design an offline-first app?",
+      "back": "1) Local DB as source of truth (Core Data/Realm) 2) Queue operations when offline 3) Sync when online with conflict resolution 4) Show cached data immediately 5) Background sync 6) Optimistic UI updates.",
+      "tags": ["architecture", "offline"]
+    },
+    {
+      "id": "sys-004",
+      "front": "Explain the Coordinator pattern",
+      "back": "Extracts navigation logic from view controllers. Coordinator creates/presents VCs and manages flow. Benefits: Reusable VCs, centralized navigation, easier deep linking. Parent-child coordinator hierarchy.",
+      "tags": ["architecture", "navigation"]
+    },
+    {
+      "id": "sys-005",
+      "front": "How do you design a caching strategy?",
+      "back": "Layers: Memory (NSCache) → Disk (files/DB) → Network. Consider: TTL, max size, eviction policy (LRU), cache invalidation. URLCache for network, custom for business objects.",
+      "tags": ["performance", "caching"]
+    },
+    {
+      "id": "sys-006",
+      "front": "What is the Repository pattern?",
+      "back": "Abstracts data source behind protocol. Repository decides: cache, local DB, or network. Benefits: Swap implementations, testability, clean domain layer. Combines with Unit of Work for transactions.",
+      "tags": ["architecture", "patterns"]
+    },
+    {
+      "id": "sys-007",
+      "front": "How would you handle image loading and caching?",
+      "back": "Use SDWebImage/Kingfisher or custom: 1) Check memory cache (NSCache) 2) Check disk cache 3) Download and decode off main thread 4) Cache at both layers 5) Handle cell reuse with cancel/reload.",
+      "tags": ["performance", "images"]
+    },
+    {
+      "id": "sys-008",
+      "front": "Explain modular architecture benefits",
+      "back": "Split app into Swift packages/frameworks. Benefits: Build time (parallel), team scaling, code reuse, enforced boundaries. Types: Feature modules, core/shared, domain modules.",
+      "tags": ["architecture", "modularization"]
+    },
+    {
+      "id": "sys-009",
+      "front": "How do you design for testability?",
+      "back": "1) Dependency injection 2) Protocol-based dependencies 3) Pure functions where possible 4) Separate side effects 5) Small, focused classes 6) Avoid singletons or inject them.",
+      "tags": ["testing", "architecture"]
+    },
+    {
+      "id": "sys-010",
+      "front": "What is Clean Architecture?",
+      "back": "Layers: Entities (business) → Use Cases (app logic) → Interface Adapters (presenters/controllers) → Frameworks (UI/DB). Dependency rule: Inner layers don't know outer layers.",
+      "tags": ["architecture"]
+    },
+    {
+      "id": "sys-011",
+      "front": "How would you implement real-time features?",
+      "back": "Options: WebSocket (Socket.IO, native URLSessionWebSocketTask), Server-Sent Events, Push Notifications, Polling. Consider: Battery impact, reconnection, message ordering, offline queue.",
+      "tags": ["networking", "real-time"]
+    },
+    {
+      "id": "sys-012",
+      "front": "Design a network layer architecture",
+      "back": "Protocol-based: NetworkService protocol → URLSession implementation. Request builder pattern. Response handling: Decode, error mapping. Features: Retry, auth refresh, request/response logging.",
+      "tags": ["networking", "architecture"]
+    },
+    {
+      "id": "sys-013",
+      "front": "How do you handle app security?",
+      "back": "1) Keychain for secrets 2) Certificate pinning 3) Jailbreak detection 4) Data encryption at rest 5) Secure coding (no hardcoded secrets) 6) Biometric auth 7) App Transport Security.",
+      "tags": ["security"]
+    },
+    {
+      "id": "sys-014",
+      "front": "Explain feature flags implementation",
+      "back": "Remote config (Firebase, LaunchDarkly) or local JSON. Check flag before showing feature. Benefits: Gradual rollout, A/B testing, kill switch. Cache flags, handle offline, default values.",
+      "tags": ["architecture", "deployment"]
+    },
+    {
+      "id": "sys-015",
+      "front": "How would you design a chat application?",
+      "back": "Components: WebSocket connection, message queue, local DB (Core Data), sync service. Features: Optimistic sending, delivery receipts, offline queue, pagination, media uploads. Consider: Threading, reactions.",
+      "tags": ["system-design"]
+    }
+  ]
+}

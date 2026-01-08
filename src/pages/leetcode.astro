@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
+import Header from '../components/layout/Header.astro';
+import LeetCodeTracker from '../components/tracking/LeetCodeTracker';
+import GitHubActivity from '../components/tracking/GitHubActivity';
+---
+
+<BaseLayout title="LeetCode & GitHub">
+  <Sidebar slot="sidebar" />
+  <Header
+    title="Coding Practice"
+    subtitle="Track your LeetCode progress and GitHub activity"
+  />
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <!-- LeetCode Tracker -->
+    <div>
+      <h2 class="text-headline-2 mb-4">LeetCode Progress</h2>
+      <LeetCodeTracker client:load />
+    </div>
+
+    <!-- GitHub Activity -->
+    <div>
+      <h2 class="text-headline-2 mb-4">GitHub Repos</h2>
+      <GitHubActivity client:load />
+    </div>
+  </div>
+
+  <!-- Tips Section -->
+  <div class="mt-8 p-6 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+    <h3 class="text-body font-semibold mb-4">Interview Algorithm Patterns</h3>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]">
+        <p class="font-medium text-body">Two Pointers</p>
+        <p class="text-caption">Array traversal, palindrome</p>
+      </div>
+      <div class="p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]">
+        <p class="font-medium text-body">Sliding Window</p>
+        <p class="text-caption">Subarray problems</p>
+      </div>
+      <div class="p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]">
+        <p class="font-medium text-body">Binary Search</p>
+        <p class="text-caption">Sorted arrays, search</p>
+      </div>
+      <div class="p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]">
+        <p class="font-medium text-body">DFS/BFS</p>
+        <p class="text-caption">Trees, graphs, matrices</p>
+      </div>
+      <div class="p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]">
+        <p class="font-medium text-body">Dynamic Programming</p>
+        <p class="text-caption">Optimization problems</p>
+      </div>
+      <div class="p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]">
+        <p class="font-medium text-body">Hash Map</p>
+        <p class="text-caption">Frequency, lookup</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

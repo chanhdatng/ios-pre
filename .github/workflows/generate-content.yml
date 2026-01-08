@@ -1,0 +1,124 @@
+name: Generate iOS Interview Content
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight UTC
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Specific topic (swift, concurrency, swiftui, etc.)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - swift
+          - concurrency
+          - swiftui
+          - architecture
+          - testing
+          - performance
+      limit:
+        description: 'Max cards per topic'
+        required: false
+        default: '10'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install Swift (for code verification)
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '5.9'
+
+      - name: Install Python dependencies
+        run: pip install -e .
+
+      - name: Restore ChromaDB cache
+        uses: actions/cache@v4
+        with:
+          path: data/chroma
+          key: chroma-${{ hashFiles('data/scraped/documents.json') }}
+          restore-keys: chroma-
+
+      - name: Run scrape
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: python -m pipeline.main scrape
+
+      - name: Run embed
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: python -m pipeline.main embed
+
+      - name: Run generate
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          TOPIC_ARG=""
+          if [ -n "${{ github.event.inputs.topic }}" ]; then
+            TOPIC_ARG="--topic ${{ github.event.inputs.topic }}"
+          fi
+          python -m pipeline.main generate $TOPIC_ARG --limit ${{ github.event.inputs.limit || '10' }}
+
+      - name: Run verify
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: python -m pipeline.main verify
+
+      - name: Run export
+        run: python -m pipeline.main export
+
+      - name: Upload quality report
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report-${{ github.run_number }}
+          path: data/generated/quality_report.json
+
+      - name: Upload generated flashcards
+        uses: actions/upload-artifact@v4
+        with:
+          name: flashcards-${{ github.run_number }}
+          path: data/generated/flashcards_verified.json
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update generated flashcards'
+          title: '[Auto] Update iOS Interview Flashcards'
+          body: |
+            ## Auto-generated Content Update
+
+            This PR contains newly generated flashcards from the content pipeline.
+
+            **Run:** #${{ github.run_number }}
+            **Topic:** ${{ github.event.inputs.topic || 'all' }}
+            **Limit:** ${{ github.event.inputs.limit || '10' }} per topic
+
+            ### Quality Report
+            See attached artifact for full details.
+
+            ### Review Checklist
+            - [ ] Spot-check 5-10 random flashcards for accuracy
+            - [ ] Verify code examples compile
+            - [ ] Check source links are valid
+          branch: auto/content-update-${{ github.run_number }}
+          delete-branch: true
+          labels: |
+            automated
+            content-update

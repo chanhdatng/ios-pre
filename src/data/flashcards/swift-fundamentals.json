@@ -1,0 +1,97 @@
+{
+  "topic": "swift-fundamentals",
+  "title": "Swift Language Fundamentals",
+  "description": "Core Swift concepts for iOS interviews",
+  "cards": [
+    {
+      "id": "swift-001",
+      "front": "What's the difference between struct and class in Swift?",
+      "back": "Struct: Value type, copied on assignment, stored on stack, no inheritance. Class: Reference type, passed by reference, stored on heap, supports inheritance.",
+      "tags": ["value-types", "reference-types"]
+    },
+    {
+      "id": "swift-002",
+      "front": "Explain copy-on-write (CoW) in Swift",
+      "back": "Swift collections (Array, Dictionary, Set) use CoW for optimization. Data is only copied when mutated, not when assigned. Multiple variables share the same underlying storage until one modifies it.",
+      "tags": ["value-types", "performance"]
+    },
+    {
+      "id": "swift-003",
+      "front": "What are the different ways to unwrap an optional?",
+      "back": "if let (conditional), guard let (early exit), ?? (nil coalescing), ! (force unwrap - avoid), ?. (optional chaining)",
+      "tags": ["optionals"]
+    },
+    {
+      "id": "swift-004",
+      "front": "When should you use [weak self] vs [unowned self]?",
+      "back": "[weak self]: When self might be nil when closure executes (creates optional). [unowned self]: When certain self will exist (non-optional, crashes if nil). Use when closure and self have same lifecycle.",
+      "tags": ["closures", "memory"]
+    },
+    {
+      "id": "swift-005",
+      "front": "What is @escaping and when do you use it?",
+      "back": "@escaping marks a closure that can outlive the function call. Required when: stored in a property, called asynchronously, passed to another @escaping closure.",
+      "tags": ["closures"]
+    },
+    {
+      "id": "swift-006",
+      "front": "Explain associated types in protocols",
+      "back": "associatedtype is a placeholder type in a protocol. Conforming types specify the concrete type. Example: protocol Container { associatedtype Item; func add(_ item: Item) }",
+      "tags": ["protocols", "generics"]
+    },
+    {
+      "id": "swift-007",
+      "front": "What's the difference between 'any' and 'some' keywords?",
+      "back": "some: Opaque type, compiler knows concrete type, better performance. any: Existential type, runtime type erasure, more flexible but slower. Prefer some when possible (Swift 5.7+).",
+      "tags": ["protocols", "swift-5.7"]
+    },
+    {
+      "id": "swift-008",
+      "front": "How does ARC work in Swift?",
+      "back": "Automatic Reference Counting tracks strong references to class instances. When count reaches 0, instance is deallocated. Not garbage collection - deterministic, no runtime overhead.",
+      "tags": ["memory", "arc"]
+    },
+    {
+      "id": "swift-009",
+      "front": "What is a retain cycle and how do closures cause them?",
+      "back": "A retain cycle occurs when two objects hold strong references to each other. Closures capture self strongly by default, so if a class stores a closure that references self, it creates a cycle. Fix with [weak self].",
+      "tags": ["closures", "memory"]
+    },
+    {
+      "id": "swift-010",
+      "front": "What's the difference between throws and rethrows?",
+      "back": "throws: Function can throw errors. rethrows: Function only throws if its closure parameter throws. rethrows allows calling without try if closure doesn't throw.",
+      "tags": ["error-handling"]
+    },
+    {
+      "id": "swift-011",
+      "front": "Explain the difference between map, flatMap, and compactMap",
+      "back": "map: Transforms each element. flatMap: Transforms and flattens nested collections. compactMap: Transforms and removes nil values from result.",
+      "tags": ["functional", "collections"]
+    },
+    {
+      "id": "swift-012",
+      "front": "What is Protocol-Oriented Programming (POP)?",
+      "back": "Design pattern using protocols and extensions instead of inheritance. Benefits: composition over inheritance, value type support, protocol extensions provide default implementations, better testability.",
+      "tags": ["protocols", "architecture"]
+    },
+    {
+      "id": "swift-013",
+      "front": "What are property wrappers?",
+      "back": "@propertyWrapper struct that encapsulates getter/setter logic. Examples: @State, @Published, @AppStorage. Reduces boilerplate by extracting common property patterns.",
+      "tags": ["swift-5.1"]
+    },
+    {
+      "id": "swift-014",
+      "front": "What is type erasure and why is it used?",
+      "back": "Technique to hide concrete types behind a wrapper (e.g., AnyPublisher, AnySequence). Used when protocol has associated types but you need to store/return it without specifying concrete type.",
+      "tags": ["protocols", "generics"]
+    },
+    {
+      "id": "swift-015",
+      "front": "What are the access control levels in Swift?",
+      "back": "open (most permissive), public, internal (default), fileprivate, private (most restrictive). open allows subclassing outside module, public doesn't.",
+      "tags": ["access-control"]
+    }
+  ]
+}

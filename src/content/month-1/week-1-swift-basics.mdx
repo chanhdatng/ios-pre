@@ -1,0 +1,171 @@
+---
+title: "Swift Language Basics"
+month: 1
+week: 1
+topic: "swift-fundamentals"
+difficulty: "beginner"
+flashcardCount: 15
+hasQuiz: true
+order: 1
+resources:
+  - type: doc
+    title: "The Swift Programming Language"
+    url: "https://docs.swift.org/swift-book/"
+    author: "Apple"
+  - type: video
+    title: "Swift Fundamentals"
+    url: "https://developer.apple.com/videos/play/wwdc2020/10170/"
+    author: "WWDC 2020"
+  - type: blog
+    title: "Swift by Sundell"
+    url: "https://www.swiftbysundell.com"
+    author: "John Sundell"
+---
+
+import { InterviewQuestion, ResourceLink } from '../../components/content';
+
+# Week 1: Swift Language Basics
+
+This week focuses on core Swift concepts that form the foundation of iOS development. Master these fundamentals before moving forward.
+
+## Value Types vs Reference Types
+
+Swift has two categories of types:
+
+**Value Types (struct, enum):**
+- Copied when assigned or passed
+- Stored on stack (usually)
+- No inheritance
+- Preferred for data models
+
+**Reference Types (class):**
+- Shared reference when assigned
+- Stored on heap
+- Support inheritance
+- Use for identity/shared state
+
+```swift
+struct Point {
+    var x: Double
+    var y: Double
+}
+
+var p1 = Point(x: 0, y: 0)
+var p2 = p1  // Creates a copy
+p2.x = 10    // Only p2 changes
+```
+
+<InterviewQuestion
+  question="When would you use a class over a struct?"
+  answer="Use class when you need inheritance, reference semantics (shared state), or interop with Objective-C. Use struct by default for data models."
+/>
+
+## Optionals
+
+Optionals represent values that might be absent. Swift uses `?` for optional types.
+
+### Unwrapping Patterns
+
+```swift
+let name: String? = "Swift"
+
+// 1. if let (conditional binding)
+if let unwrapped = name {
+    print(unwrapped)
+}
+
+// 2. guard let (early exit)
+guard let unwrapped = name else { return }
+
+// 3. nil coalescing
+let result = name ?? "default"
+
+// 4. optional chaining
+let count = name?.count
+
+// 5. force unwrap (avoid!)
+let forced = name!
+```
+
+<InterviewQuestion
+  question="What's the difference between if let and guard let?"
+  answer="if let creates scope with unwrapped value inside braces. guard let requires early exit if nil, but unwrapped value is available in remaining scope."
+/>
+
+## Closures
+
+Closures are self-contained blocks of functionality that can capture values.
+
+```swift
+// Basic closure syntax
+let greet = { (name: String) -> String in
+    return "Hello, \(name)!"
+}
+
+// Trailing closure
+numbers.map { $0 * 2 }
+
+// Capture list for avoiding retain cycles
+class ViewModel {
+    var onUpdate: (() -> Void)?
+
+    func setup() {
+        onUpdate = { [weak self] in
+            self?.refresh()
+        }
+    }
+}
+```
+
+### @escaping Closures
+
+Mark closure as `@escaping` when it can be called after the function returns:
+
+```swift
+func fetchData(completion: @escaping (Data) -> Void) {
+    DispatchQueue.global().async {
+        // Called later, after fetchData returns
+        completion(data)
+    }
+}
+```
+
+<InterviewQuestion
+  question="When do you use [weak self] vs [unowned self]?"
+  answer="Use [weak self] when self might be nil when closure executes (creates optional). Use [unowned self] when certain self will exist throughout closure's lifetime (crashes if nil)."
+/>
+
+## Protocols & Extensions
+
+Protocols define a blueprint of methods and properties. Extensions add functionality to existing types.
+
+```swift
+protocol Identifiable {
+    var id: String { get }
+}
+
+extension Identifiable {
+    // Default implementation
+    func display() {
+        print("ID: \(id)")
+    }
+}
+
+struct User: Identifiable {
+    let id: String
+    let name: String
+}
+```
+
+## Key Takeaways
+
+1. **Prefer structs** for data models unless you need class features
+2. **Use guard** for early exit and cleaner code flow
+3. **Always use [weak self]** in closures stored by the class
+4. **Protocol extensions** enable Protocol-Oriented Programming
+
+## Practice
+
+1. Review the flashcard deck for this week
+2. Take the Swift Fundamentals quiz
+3. Build a simple model layer using structs and protocols

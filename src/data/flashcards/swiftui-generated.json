@@ -1,0 +1,76 @@
+{
+  "topic": "swiftui",
+  "generated_at": "2026-01-07T12:45:54.004968+00:00",
+  "cards": [
+    {
+      "id": "swiftui_52087b03c6db",
+      "front": "Explain the SwiftUI View lifecycle and how view identity affects it.",
+      "back": "SwiftUI views are data-dependent, meaning their lifecycle revolves around state changes. When state changes, SwiftUI re-evaluates the view's body and potentially re-renders. \n\nView identity, determined by the `id` property (or automatically by SwiftUI), is crucial. If the identity changes, SwiftUI considers it a completely new view and re-creates it, losing any internal state. Keeping identity stable across updates is key for preserving state and animations.  Use `.id()` modifier when needed to control identity.",
+      "code_example": null,
+      "tags": [
+        "swiftui",
+        "lifecycle",
+        "view",
+        "identity",
+        "state"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_cddc3f3f2aa5",
+      "front": "State management patterns",
+      "back": "",
+      "code_example": null,
+      "tags": [
+        "State management patterns"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_57b904137e80",
+      "front": "In SwiftUI, what are the key differences between `@Observable` and `ObservableObject` for managing app state? When would you choose one over the other?",
+      "back": "`@Observable` (Swift 5.9+) is a newer, more lightweight protocol for making a class observable. It automatically synthesizes `objectWillChange` publishers.  `ObservableObject` requires manual conformance and explicit `objectWillChange` publishing. Use `@Observable` for simpler state management, especially with SwiftData. `ObservableObject` is preferable for legacy codebases or when fine-grained control over observation is needed. `@State` and `@Environment` properties automatically observe both.",
+      "code_example": null,
+      "tags": [
+        "SwiftUI",
+        "State Management",
+        "@Observable",
+        "ObservableObject"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_5db790af102a",
+      "front": "Explain the benefits of using Custom ViewModifiers in SwiftUI. Provide an example of a modifier that changes text color and font.",
+      "back": "Custom ViewModifiers promote code reuse, improve readability, and encapsulate styling logic. They allow you to apply the same set of modifiers to multiple views consistently.\n\nExample:\n```swift\nstruct TitleModifier: ViewModifier {\n  func body(content: Content) -> some View {\n    content\n      .font(.largeTitle)\n      .foregroundColor(.red)\n  }\n}\n\nextension View {\n    func titleStyle() -> some View {\n        modifier(TitleModifier())\n    }\n}\n\nText(\"Hello, world!\").titleStyle()\n```",
+      "code_example": null,
+      "tags": [
+        "SwiftUI",
+        "ViewModifier",
+        "Code Reuse",
+        "Styling"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    },
+    {
+      "id": "swiftui_0c71a581d980",
+      "front": "Preference Keys",
+      "back": "",
+      "code_example": null,
+      "tags": [
+        "Preference Keys"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds"
+      ]
+    }
+  ]
+}

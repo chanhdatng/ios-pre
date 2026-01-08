@@ -1,0 +1,211 @@
+---
+title: "Memory Management & ARC"
+month: 1
+week: 2
+topic: "memory-management"
+difficulty: "intermediate"
+flashcardCount: 15
+hasQuiz: true
+order: 2
+resources:
+  - type: doc
+    title: "Automatic Reference Counting"
+    url: "https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html"
+    author: "Apple"
+  - type: video
+    title: "Discover and diagnose memory issues"
+    url: "https://developer.apple.com/videos/play/wwdc2021/10180/"
+    author: "WWDC 2021"
+---
+
+import { InterviewQuestion, ResourceLink } from '../../components/content';
+
+# Week 2: Memory Management & ARC
+
+Understanding memory management is crucial for building performant iOS apps that don't leak memory.
+
+## How ARC Works
+
+**Automatic Reference Counting (ARC)** tracks strong references to class instances. When the count reaches 0, the object is deallocated.
+
+```swift
+class Person {
+    let name: String
+
+    init(name: String) {
+        self.name = name
+        print("\(name) initialized")
+    }
+
+    deinit {
+        print("\(name) deinitialized")
+    }
+}
+
+var person1: Person? = Person(name: "John")  // count: 1
+var person2 = person1                         // count: 2
+person1 = nil                                 // count: 1
+person2 = nil                                 // count: 0 → deinit called
+```
+
+Key points:
+- **Not garbage collection** - deterministic, no runtime overhead
+- **Only applies to classes** - structs are value types
+- **deinit called immediately** when count hits 0
+
+<InterviewQuestion
+  question="How is ARC different from garbage collection?"
+  answer="ARC is deterministic - objects are deallocated immediately when reference count hits 0. Garbage collection runs periodically, pausing execution. ARC has no runtime overhead for tracking."
+/>
+
+## Retain Cycles
+
+A **retain cycle** occurs when two objects hold strong references to each other, preventing deallocation.
+
+```swift
+// ❌ Retain Cycle
+class Person {
+    var apartment: Apartment?
+}
+
+class Apartment {
+    var tenant: Person?  // Strong reference
+}
+
+var john: Person? = Person()
+var apt: Apartment? = Apartment()
+john?.apartment = apt
+apt?.tenant = john
+
+// Even after setting both to nil, memory is leaked
+john = nil
+apt = nil  // Neither object is deallocated!
+```
+
+### Breaking Cycles with weak/unowned
+
+```swift
+// ✅ Fixed with weak
+class Apartment {
+    weak var tenant: Person?  // Weak reference
+}
+```
+
+**weak:**
+- Creates optional reference
+- Becomes nil when referenced object deallocates
+- Use when reference might be nil during lifetime
+
+**unowned:**
+- Non-optional reference
+- **Crashes if accessed after deallocation**
+- Use only when certain object lives longer
+
+<InterviewQuestion
+  question="When should you use weak vs unowned?"
+  answer="Use weak when the referenced object might be deallocated while the reference exists (becomes nil safely). Use unowned when certain the referenced object will outlive the reference holder."
+/>
+
+## Closures and Retain Cycles
+
+Closures capture `self` strongly by default. When a class stores a closure that references self, it creates a retain cycle.
+
+```swift
+// ❌ Retain Cycle
+class ViewModel {
+    var name = "Test"
+    var onUpdate: (() -> Void)?
+
+    func setup() {
+        onUpdate = {
+            print(self.name)  // self captured strongly
+        }
+    }
+}
+
+// ✅ Fixed with capture list
+func setup() {
+    onUpdate = { [weak self] in
+        guard let self = self else { return }
+        print(self.name)
+    }
+}
+```
+
+### Common Patterns
+
+```swift
+// Pattern 1: guard let
+onUpdate = { [weak self] in
+    guard let self = self else { return }
+    self.doSomething()
+}
+
+// Pattern 2: Optional chaining
+onUpdate = { [weak self] in
+    self?.doSomething()
+}
+
+// Pattern 3: unowned (when safe)
+onUpdate = { [unowned self] in
+    self.doSomething()  // Crashes if self is nil
+}
+```
+
+## @escaping and Memory
+
+`@escaping` closures outlive the function call and have different capture semantics:
+
+```swift
+class DataManager {
+    var completion: ((Data) -> Void)?
+
+    func fetch(completion: @escaping (Data) -> Void) {
+        self.completion = completion  // Stored - escaping
+
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            // Called later - escaping
+            completion(data!)
+        }.resume()
+    }
+}
+
+// Usage - need [weak self]
+manager.fetch { [weak self] data in
+    self?.process(data)
+}
+```
+
+## Debugging Memory Issues
+
+### Using Instruments
+
+1. **Leaks Instrument**: Detects objects that can't be reached
+2. **Allocations Instrument**: Track memory growth over time
+3. **Memory Graph Debugger**: Visual representation of retain cycles
+
+### In Xcode
+
+1. Debug Memory Graph (button in debug bar)
+2. Look for retain cycles (circular references)
+3. Check for unexpected strong references
+
+<InterviewQuestion
+  question="How do you debug a memory leak in iOS?"
+  answer="Use Xcode's Memory Graph Debugger to visualize retain cycles, Instruments' Leaks tool to detect leaked objects, and Allocations to track memory growth. Look for strong reference cycles."
+/>
+
+## Key Takeaways
+
+1. **ARC is deterministic** - no garbage collection pauses
+2. **Retain cycles prevent deallocation** - break with weak/unowned
+3. **Always use [weak self] in escaping closures**
+4. **Use Memory Graph Debugger** to find retain cycles
+5. **deinit is your friend** - add logging to verify deallocation
+
+## Practice
+
+1. Review flashcards on memory management
+2. Create a class with a closure property and intentionally create a retain cycle
+3. Fix the cycle and verify with deinit logging
+4. Practice using Memory Graph Debugger

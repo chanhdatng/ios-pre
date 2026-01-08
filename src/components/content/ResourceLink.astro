@@ -1,0 +1,34 @@
+---
+import { ExternalLink, Video, BookOpen, Code } from 'lucide-react';
+
+interface Props {
+  type: 'video' | 'doc' | 'blog' | 'github';
+  title: string;
+  url: string;
+  author?: string;
+}
+
+const { type, title, url, author } = Astro.props;
+
+const iconMap = {
+  video: Video,
+  doc: BookOpen,
+  blog: ExternalLink,
+  github: Code,
+};
+
+const Icon = iconMap[type];
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="flex items-center gap-[var(--spacing-sm)] p-[var(--spacing-sm)] rounded-[var(--radius-md)] border border-[var(--color-surface-secondary)] hover:bg-[var(--color-surface-secondary)] transition-colors"
+>
+  <Icon className="w-5 h-5 text-[var(--color-text-secondary)]" />
+  <div>
+    <p class="text-body font-medium">{title}</p>
+    {author && <p class="text-caption">{author}</p>}
+  </div>
+</a>

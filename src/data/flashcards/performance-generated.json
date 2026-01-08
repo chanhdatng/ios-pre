@@ -1,0 +1,96 @@
+{
+  "topic": "performance",
+  "generated_at": "2026-01-07T12:45:54.005016+00:00",
+  "cards": [
+    {
+      "id": "performance_bf65b1996663",
+      "front": "How would you use Instruments to profile a slow scrolling `UITableView`?",
+      "back": "1. **Profile in Release:**  Debug builds are unoptimized, skewing results. \n2. **Choose 'Time Profiler':** Reveals where your app spends its time. \n3. **Record:** Start the app and trigger the slow scrolling.\n4. **Analyze the Call Tree:**  Look for heavy methods in `UITableViewDataSource` (e.g., `cellForRowAt`). Expand call stacks to find culprit code.\n5. **Investigate `Core Animation`:** If scrolling *looks* slow but CPU usage is low, check `Core Animation`.  Highlight flashes may indicate excessive drawing or layout.\n6. **Allocations:**  Excessive object allocations/deallocations during scroll degrade perf.\n7. **Example:**  If `cellForRowAt` shows high CPU, check for image decoding on the main thread.  Move it to a background queue (GCD, `Operation`) and cache results.",
+      "code_example": null,
+      "tags": [
+        "performance",
+        "instruments",
+        "profiling",
+        "uitableview",
+        "ios"
+      ],
+      "sources": [
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/245/build-your-first-swiftui-app-with-swift-playgrounds",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "performance_8e4addee9ecb",
+      "front": "Explain common memory optimization techniques in iOS, focusing on practical Swift examples. How do these techniques contribute to a smoother user experience?",
+      "back": "Common techniques include: 1) Using value types (structs, enums) where appropriate to avoid unnecessary reference counting. 2) Avoiding strong reference cycles using `weak` and `unowned`. 3) Using `autoreleasepool` for large, temporary object allocations. 4) Optimizing image loading using `URLCache` or framework like Kingfisher. 5) Efficient data structures (e.g., using `Set` instead of `Array` for membership checks). Benefits: Reduced memory footprint, fewer crashes, faster app launch, and improved UI responsiveness.",
+      "code_example": null,
+      "tags": [
+        "memory management",
+        "performance",
+        "optimization",
+        "ARC",
+        "Swift"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    },
+    {
+      "id": "performance_3727e7d481bd",
+      "front": "How do you approach optimizing iOS app launch time?",
+      "back": "Analyze using Instruments (Time Profiler, System Trace). Prioritize: lazy loading, moving non-essential tasks to background threads (DispatchQueues, async/await), optimizing data serialization/deserialization (consider alternatives to JSON), and reducing startup code in `application(_:didFinishLaunchingWithOptions:)`.  Ensure appropriate use of SwiftUI's `@Observable` and split large views into subviews.",
+      "code_example": null,
+      "tags": [
+        "performance",
+        "launch time",
+        "optimization",
+        "instruments",
+        "concurrency",
+        "swiftui"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    },
+    {
+      "id": "performance_213cf6d733df",
+      "front": "How does inefficient CloudKit usage impact battery life? Describe strategies to optimize CloudKit for better battery performance.",
+      "back": "Inefficient CloudKit leads to excessive network requests & data processing, draining the battery.  \n\nOptimization strategies:\n1. **Batching:** Group multiple operations into a single request.\n2. **Predicates:** Filter data server-side to reduce transferred data. Use the right indexex.\n3. **Subscriptions:** Use push notifications for changes, avoiding constant polling.\n4. **Background Tasks:**  Schedule syncs during off-peak usage. Use `BGTaskScheduler` or `DispatchWorkItem`.\n5. **Data Size:** Minimize size of stored data and assets. Compress images/videos.\n6. **Record Zones:** organize your data.\n7. **Error Handling:** Properly handle network errors, avoid retry loops.\n8. **Rate Limiting:** respect and manage rate limits.",
+      "code_example": null,
+      "tags": [
+        "performance",
+        "battery",
+        "cloudkit"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
+      ]
+    },
+    {
+      "id": "performance_ffa2502f7bb2",
+      "front": "How can you optimize network requests in a data-intensive iOS app using CloudKit, and why is it beneficial?",
+      "back": "Use `CKFetchRecordChangesOperation` for efficient data synchronization.  It only fetches changes since the last sync, reducing bandwidth and improving battery life. Batch requests when possible to reduce round trips. Utilize `NSPredicate` for filtering to retrieve only necessary data. Consider caching frequently accessed data locally to minimize network dependency. Prioritize fetching the most relevant data first to improve initial load times. Finally, monitor CloudKit usage with metrics. If using @Observable, split things out into separate SwiftUI views instead.",
+      "code_example": null,
+      "tags": [
+        "performance",
+        "networking",
+        "cloudkit",
+        "swiftui"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6"
+      ]
+    }
+  ]
+}

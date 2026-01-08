@@ -1,0 +1,255 @@
+---
+title: "SwiftUI Fundamentals"
+month: 2
+week: 5
+topic: "swiftui"
+difficulty: "intermediate"
+flashcardCount: 25
+hasQuiz: true
+order: 1
+resources:
+  - type: doc
+    title: "SwiftUI Documentation"
+    url: "https://developer.apple.com/documentation/swiftui"
+    author: "Apple"
+  - type: video
+    title: "Introduction to SwiftUI"
+    url: "https://developer.apple.com/videos/play/wwdc2020/10119/"
+    author: "WWDC 2020"
+  - type: blog
+    title: "Hacking with Swift - SwiftUI"
+    url: "https://www.hackingwithswift.com/quick-start/swiftui"
+    author: "Paul Hudson"
+---
+
+import { InterviewQuestion, ResourceLink } from '../../components/content';
+
+# Week 5: SwiftUI Fundamentals
+
+SwiftUI is Apple's declarative UI framework. This week covers state management and core concepts.
+
+## Declarative vs Imperative
+
+**Imperative (UIKit):** Tell the system HOW to update
+```swift
+// UIKit
+label.text = "Hello"
+label.textColor = .blue
+button.isHidden = false
+```
+
+**Declarative (SwiftUI):** Describe WHAT the UI should be
+```swift
+// SwiftUI
+Text("Hello")
+    .foregroundColor(.blue)
+Button("Tap me") { action() }
+```
+
+SwiftUI automatically updates the UI when state changes. You describe the desired state, not the transitions.
+
+## State Management
+
+### @State - Local Value State
+
+Owns simple value state local to a view.
+
+```swift
+struct CounterView: View {
+    @State private var count = 0
+
+    var body: some View {
+        VStack {
+            Text("Count: \(count)")
+            Button("Increment") {
+                count += 1
+            }
+        }
+    }
+}
+```
+
+- Use for **simple, private, value types**
+- View owns the state
+- Always mark `private`
+
+### @Binding - Two-Way Reference
+
+Creates a two-way connection to state owned elsewhere.
+
+```swift
+struct ToggleRow: View {
+    @Binding var isOn: Bool  // References external state
+    let title: String
+
+    var body: some View {
+        Toggle(title, isOn: $isOn)
+    }
+}
+
+struct SettingsView: View {
+    @State private var notificationsOn = false
+
+    var body: some View {
+        ToggleRow(isOn: $notificationsOn, title: "Notifications")
+    }
+}
+```
+
+- Use `$` prefix to pass binding
+- Child can read and write parent's state
+
+<InterviewQuestion
+  question="What's the difference between @State and @Binding?"
+  answer="@State owns and stores the value (source of truth). @Binding references state owned elsewhere, creating a two-way connection. Parent uses @State, child uses @Binding."
+/>
+
+### @StateObject vs @ObservedObject
+
+For reference type state (ObservableObject):
+
+```swift
+class UserViewModel: ObservableObject {
+    @Published var name = ""
+    @Published var isLoggedIn = false
+}
+
+// View that CREATES the object
+struct ParentView: View {
+    @StateObject private var viewModel = UserViewModel()
+
+    var body: some View {
+        ChildView(viewModel: viewModel)
+    }
+}
+
+// View that RECEIVES the object
+struct ChildView: View {
+    @ObservedObject var viewModel: UserViewModel
+
+    var body: some View {
+        Text(viewModel.name)
+    }
+}
+```
+
+**@StateObject:**
+- Creates and owns the instance
+- Survives view recreation
+
+**@ObservedObject:**
+- References external instance
+- Object may be recreated if parent recreates
+
+<InterviewQuestion
+  question="When should you use @StateObject vs @ObservedObject?"
+  answer="Use @StateObject in the view that creates/owns the object (first appearance). Use @ObservedObject when the object is passed in from outside. Wrong choice causes object recreation bugs."
+/>
+
+### @EnvironmentObject
+
+Inject objects into the view hierarchy without explicit passing.
+
+```swift
+class AppState: ObservableObject {
+    @Published var isLoggedIn = false
+}
+
+@main
+struct MyApp: App {
+    @StateObject private var appState = AppState()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appState)
+        }
+    }
+}
+
+// Any descendant view can access:
+struct ProfileView: View {
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
+        if appState.isLoggedIn {
+            Text("Welcome!")
+        }
+    }
+}
+```
+
+Use for app-wide state (auth, settings, theme).
+
+## View Lifecycle
+
+```swift
+struct MyView: View {
+    var body: some View {
+        Text("Hello")
+            .onAppear {
+                // Called every time view appears
+                print("Appeared")
+            }
+            .onDisappear {
+                print("Disappeared")
+            }
+            .task {
+                // Async context, auto-cancelled
+                await fetchData()
+            }
+    }
+}
+```
+
+- **body**: Computed property, called on state change
+- **onAppear**: Every time view becomes visible
+- **task**: Async work with automatic cancellation
+
+<InterviewQuestion
+  question="What's the difference between onAppear and task modifier?"
+  answer="onAppear is synchronous, called every time view appears. task provides async context and automatically cancels when view disappears. Use task for async work like data fetching."
+/>
+
+## Navigation (iOS 16+)
+
+```swift
+struct ContentView: View {
+    @State private var path = NavigationPath()
+
+    var body: some View {
+        NavigationStack(path: $path) {
+            List {
+                NavigationLink("Go to Detail", value: "detail")
+            }
+            .navigationDestination(for: String.self) { value in
+                DetailView(id: value)
+            }
+        }
+    }
+
+    // Programmatic navigation
+    func navigateToDetail() {
+        path.append("detail")
+    }
+}
+```
+
+Key concepts:
+- **NavigationStack**: Modern container (replaces NavigationView)
+- **NavigationPath**: Type-erased path for programmatic navigation
+- **navigationDestination**: Define views for navigation values
+
+## Key Takeaways
+
+1. **@State for local values, @StateObject for objects you create**
+2. **@Binding and @ObservedObject for passed-in state**
+3. **@EnvironmentObject for app-wide dependency injection**
+4. **Use task modifier for async work** (auto-cancels)
+5. **NavigationStack with NavigationPath** for modern navigation
+
+## Practice
+
+1. Build a settings screen with toggles using @State and @Binding
+2. Create an ObservableObject and share it via @EnvironmentObject
+3. Implement programmatic navigation with NavigationPath

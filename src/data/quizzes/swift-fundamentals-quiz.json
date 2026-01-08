@@ -1,0 +1,102 @@
+{
+  "topic": "swift-fundamentals",
+  "title": "Swift Fundamentals Quiz",
+  "description": "Test your knowledge of core Swift concepts",
+  "questions": [
+    {
+      "id": "sfq-001",
+      "question": "Which of the following is a VALUE type in Swift?",
+      "options": ["Class", "Struct", "Closure", "Function reference"],
+      "correctIndex": 1,
+      "explanation": "Structs are value types, copied on assignment. Classes are reference types. Closures are reference types too."
+    },
+    {
+      "id": "sfq-002",
+      "question": "What happens when you assign a struct to a new variable?",
+      "options": ["Both variables point to same memory", "The struct is copied", "A reference is created", "Compilation error"],
+      "correctIndex": 1,
+      "explanation": "Structs are value types. Assigning creates an independent copy. Changes to one don't affect the other."
+    },
+    {
+      "id": "sfq-003",
+      "question": "Which keyword creates an optional that crashes if nil when force unwrapped?",
+      "options": ["?", "!", "??", "guard"],
+      "correctIndex": 1,
+      "explanation": "! is force unwrap. Using it on nil causes runtime crash. Prefer safe unwrapping with if let, guard let, or ??."
+    },
+    {
+      "id": "sfq-004",
+      "question": "When should you use [weak self] in a closure?",
+      "options": [
+        "Always for safety",
+        "When closure is stored and captures self",
+        "Only in UIKit code",
+        "Never, use [unowned self] instead"
+      ],
+      "correctIndex": 1,
+      "explanation": "[weak self] prevents retain cycles when a class stores a closure that captures self. Creates optional self."
+    },
+    {
+      "id": "sfq-005",
+      "question": "What does @escaping mean on a closure parameter?",
+      "options": [
+        "Closure runs immediately",
+        "Closure can be stored/called after function returns",
+        "Closure is optional",
+        "Closure doesn't capture variables"
+      ],
+      "correctIndex": 1,
+      "explanation": "@escaping means the closure outlives the function call - stored in property, called async, or passed to another @escaping closure."
+    },
+    {
+      "id": "sfq-006",
+      "question": "Which access level allows subclassing outside the module?",
+      "options": ["public", "open", "internal", "fileprivate"],
+      "correctIndex": 1,
+      "explanation": "open allows subclassing and overriding outside the module. public allows access but not subclassing. open is the most permissive."
+    },
+    {
+      "id": "sfq-007",
+      "question": "What is the purpose of 'guard let'?",
+      "options": [
+        "Create optional binding that can be nil",
+        "Early exit if condition fails, unwrapped value available after",
+        "Create a weak reference",
+        "Mark code as debug-only"
+      ],
+      "correctIndex": 1,
+      "explanation": "guard let provides early exit pattern. If unwrapping fails, must exit scope. Unwrapped value is available in remaining scope."
+    },
+    {
+      "id": "sfq-008",
+      "question": "What does compactMap do on an array?",
+      "options": [
+        "Transforms and flattens nested arrays",
+        "Transforms elements and removes nil results",
+        "Compresses array size",
+        "Sorts and removes duplicates"
+      ],
+      "correctIndex": 1,
+      "explanation": "compactMap transforms each element and removes nil values from the result. Perfect for safely unwrapping optionals in collections."
+    },
+    {
+      "id": "sfq-009",
+      "question": "Which Swift feature provides default implementations for protocol methods?",
+      "options": ["Protocol inheritance", "Protocol extensions", "Associated types", "Generic constraints"],
+      "correctIndex": 1,
+      "explanation": "Protocol extensions can provide default implementations. Conforming types get these for free but can override."
+    },
+    {
+      "id": "sfq-010",
+      "question": "What is the difference between 'some' and 'any' keywords?",
+      "options": [
+        "some is for classes, any is for structs",
+        "some is compile-time concrete type, any is runtime type erasure",
+        "They are interchangeable aliases",
+        "some is for optionals, any is for generics"
+      ],
+      "correctIndex": 1,
+      "explanation": "some (opaque type) - compiler knows concrete type, better performance. any (existential) - runtime type erasure, more flexible but slower."
+    }
+  ]
+}

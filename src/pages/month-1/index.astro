@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Sidebar from '../../components/layout/Sidebar.astro';
+import Header from '../../components/layout/Header.astro';
+import FlashcardDeck from '../../components/interactive/FlashcardDeck';
+import QuizRunner from '../../components/interactive/QuizRunner';
+
+// Load Month 1 content
+import swiftFundamentals from '../../data/flashcards/swift-fundamentals.json';
+import iosCore from '../../data/flashcards/ios-core.json';
+import swiftQuiz from '../../data/quizzes/swift-fundamentals-quiz.json';
+import iosQuiz from '../../data/quizzes/ios-core-quiz.json';
+
+const swiftCards = swiftFundamentals.cards.map(c => ({ ...c, topic: 'Swift Fundamentals' }));
+const iosCards = iosCore.cards.map(c => ({ ...c, topic: 'iOS Core' }));
+const allQuestions = [...swiftQuiz.questions, ...iosQuiz.questions];
+const basePath = import.meta.env.BASE_URL || '';
+---
+
+<BaseLayout title="Month 1">
+  <Sidebar slot="sidebar" />
+  <Header
+    title="Month 1: Swift Mastery & iOS Deep Dive"
+    subtitle="Weeks 1-4: Foundation building"
+  />
+
+  <div class="space-y-8">
+    <!-- Overview Cards -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card p-5">
+        <h3 class="text-headline-3 mb-3">Week 1-2: Swift Fundamentals</h3>
+        <ul class="space-y-1.5 text-body-small text-[var(--color-text-secondary)]">
+          <li>• Value Types vs Reference Types</li>
+          <li>• Optionals and Unwrapping</li>
+          <li>• Closures & Capture Lists</li>
+          <li>• Protocols and POP</li>
+          <li>• Generics</li>
+          <li>• Error Handling</li>
+        </ul>
+        <p class="mt-3 text-caption text-[var(--color-accent-orange)]">{swiftCards.length} flashcards</p>
+      </div>
+
+      <div class="card p-5">
+        <h3 class="text-headline-3 mb-3">Week 3-4: iOS Core</h3>
+        <ul class="space-y-1.5 text-body-small text-[var(--color-text-secondary)]">
+          <li>• Application Lifecycle</li>
+          <li>• UIViewController Lifecycle</li>
+          <li>• Memory Management (ARC)</li>
+          <li>• Delegation Pattern</li>
+          <li>• Notification Center</li>
+          <li>• Data Persistence</li>
+        </ul>
+        <p class="mt-3 text-caption text-[var(--color-accent-orange)]">{iosCards.length} flashcards</p>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="flex gap-2 border-b border-[var(--color-surface-secondary)]">
+      <button
+        class="tab-btn active px-4 py-2 text-body-small font-medium border-b-2 border-[var(--color-accent-orange)] text-[var(--color-accent-orange)]"
+        data-tab="swift"
+      >
+        Swift ({swiftCards.length})
+      </button>
+      <button
+        class="tab-btn px-4 py-2 text-body-small font-medium border-b-2 border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+        data-tab="ios"
+      >
+        iOS Core ({iosCards.length})
+      </button>
+      <button
+        class="tab-btn px-4 py-2 text-body-small font-medium border-b-2 border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+        data-tab="quiz"
+      >
+        Quiz ({allQuestions.length})
+      </button>
+    </div>
+
+    <!-- Swift Flashcards -->
+    <div id="swift-content" class="tab-content">
+      <FlashcardDeck cards={swiftCards} client:load />
+    </div>
+
+    <!-- iOS Core Flashcards -->
+    <div id="ios-content" class="tab-content hidden">
+      <FlashcardDeck cards={iosCards} client:load />
+    </div>
+
+    <!-- Quiz -->
+    <div id="quiz-content" class="tab-content hidden">
+      <QuizRunner questions={allQuestions} client:load />
+    </div>
+
+    <!-- Quick Link -->
+    <div class="text-center pt-4">
+      <a href={`${basePath}/review`} class="text-[var(--color-accent-orange)] hover:underline text-body-small">
+        → Go to Spaced Review for optimized learning
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const swiftContent = document.getElementById('swift-content');
+  const iosContent = document.getElementById('ios-content');
+  const quizContent = document.getElementById('quiz-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Update tab styles
+      tabs.forEach(t => {
+        t.classList.remove('active', 'border-[var(--color-accent-orange)]', 'text-[var(--color-accent-orange)]');
+        t.classList.add('border-transparent', 'text-[var(--color-text-secondary)]');
+      });
+      tab.classList.add('active', 'border-[var(--color-accent-orange)]', 'text-[var(--color-accent-orange)]');
+      tab.classList.remove('border-transparent', 'text-[var(--color-text-secondary)]');
+
+      // Show/hide content
+      const tabName = tab.getAttribute('data-tab');
+      swiftContent?.classList.add('hidden');
+      iosContent?.classList.add('hidden');
+      quizContent?.classList.add('hidden');
+
+      if (tabName === 'swift') swiftContent?.classList.remove('hidden');
+      if (tabName === 'ios') iosContent?.classList.remove('hidden');
+      if (tabName === 'quiz') quizContent?.classList.remove('hidden');
+    });
+  });
+</script>

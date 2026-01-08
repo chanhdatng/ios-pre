@@ -1,0 +1,27 @@
+---
+interface Props {
+  videoId: string;
+  title?: string;
+  startTime?: number;
+}
+
+const { videoId, title = 'Video', startTime } = Astro.props;
+
+const embedUrl = startTime
+  ? `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}`
+  : `https://www.youtube-nocookie.com/embed/${videoId}`;
+---
+
+<div class="my-6">
+  {title && <p class="text-body-small font-medium text-[var(--color-text-secondary)] mb-2">{title}</p>}
+  <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-[var(--radius-md)]">
+    <iframe
+      src={embedUrl}
+      title={title}
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+      class="absolute top-0 left-0 w-full h-full"
+      loading="lazy"
+    ></iframe>
+  </div>
+</div>
