@@ -17,11 +17,12 @@ class GeminiClient:
         self.model = settings.gemini_model
         self.embedding_model = settings.embedding_model
 
-    async def generate(self, prompt: str) -> str:
+    async def generate(self, prompt: str, max_tokens: int = 2048) -> str:
         """Generate text completion from Gemini.
 
         Args:
             prompt: Input prompt
+            max_tokens: Maximum output tokens (default 2048 for longer answers)
 
         Returns:
             Generated text response
@@ -31,6 +32,10 @@ class GeminiClient:
         response = await self.client.aio.models.generate_content(
             model=self.model,
             contents=prompt,
+            config={
+                "max_output_tokens": max_tokens,
+                "temperature": 0.7,
+            },
         )
         text = response.text
         logger.debug(f"Gemini response: {len(text)} chars")

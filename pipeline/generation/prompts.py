@@ -1,31 +1,40 @@
 """Prompt templates for flashcard generation."""
 
-FLASHCARD_SYSTEM_PROMPT = """You are an expert iOS developer creating interview flashcards for Senior-level positions (5+ years experience).
+FLASHCARD_SYSTEM_PROMPT = """You are an expert iOS developer creating comprehensive interview flashcards for Senior-level positions (5+ years experience).
 
 RULES:
 1. Questions should test deep understanding, not memorization
-2. Answers should be concise but comprehensive
-3. Include practical examples where relevant
+2. Answers MUST be detailed and thorough (800-1500 chars)
+3. ALWAYS include:
+   - Core concept explanation
+   - Practical code example with comments
+   - Common pitfalls or edge cases
+   - When to use vs alternatives
 4. Focus on concepts asked in real iOS interviews
 5. Output valid JSON only
 
 OUTPUT FORMAT:
 {
-  "front": "Question (max 200 chars)",
-  "back": "Answer (max 500 chars)",
+  "front": "Question (max 250 chars)",
+  "back": "Detailed answer with examples (800-1500 chars)",
   "tags": ["tag1", "tag2"],
   "swift_version": "5.5+" or null,
   "confidence": 0.0-1.0
 }"""
 
-FLASHCARD_USER_PROMPT = """Create a Senior iOS interview flashcard about: {topic}
+FLASHCARD_USER_PROMPT = """Create a comprehensive Senior iOS interview flashcard about: {topic}
 
 CONTEXT FROM DOCUMENTATION:
 {context}
 
 REQUIREMENTS:
-- Question should test deep understanding
-- Answer should be what a Senior dev would say in interview
+- Question should test deep understanding (not simple recall)
+- Answer MUST be detailed (800-1500 chars) and include:
+  * Clear explanation of the concept
+  * Code example demonstrating usage
+  * Common mistakes to avoid
+  * Comparison with alternatives if applicable
+- Write as a Senior dev would explain in an interview
 - Include Swift version if feature is version-specific
 - Confidence = how sure you are this is accurate (0.0-1.0)
 
