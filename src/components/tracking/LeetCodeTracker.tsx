@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLeetCodeStore, type LeetCodeProblem } from '../../lib/stores/leetcode-store';
+import { useDebounce } from '../../lib/hooks/useDebounce';
 import { useToast } from '../ui/Toast';
-import { Plus, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Search, X, ChevronDown } from 'lucide-react';
 
 const PATTERNS = [
   'Two Pointers',
@@ -26,6 +27,12 @@ const difficultyColors = {
   hard: 'text-[var(--color-accent-red)]',
 };
 
+const difficultyBgColors = {
+  easy: 'bg-[var(--color-accent-green)]',
+  medium: 'bg-[var(--color-accent-orange)]',
+  hard: 'bg-[var(--color-accent-red)]',
+};
+
 export default function LeetCodeTracker() {
   const {
     problems,
@@ -44,6 +51,59 @@ export default function LeetCodeTracker() {
     pattern: 'Two Pointers',
     notes: '',
   });
+
+  // Filter state (local, ephemeral)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+  const [selectedPatterns, setSelectedPatterns] = useState<string[]>([]);
+  const [isPatternFilterOpen, setIsPatternFilterOpen] = useState(false);
+
+  const debouncedQuery = useDebounce(searchQuery, 300);
+
+  // Filter logic
+  const filteredProblems = useMemo(() => {
+    let result = problems;
+
+    // Search filter
+    if (debouncedQuery.trim()) {
+      const q = debouncedQuery.toLowerCase();
+      result = result.filter(
+        (p) => p.title.toLowerCase().includes(q) || p.id.toLowerCase().includes(q)
+      );
+    }
+
+    // Difficulty filter (OR within)
+    if (selectedDifficulties.length > 0) {
+      result = result.filter((p) => selectedDifficulties.includes(p.difficulty));
+    }
+
+    // Pattern filter (OR within)
+    if (selectedPatterns.length > 0) {
+      result = result.filter((p) => selectedPatterns.includes(p.pattern));
+    }
+
+    return result;
+  }, [problems, debouncedQuery, selectedDifficulties, selectedPatterns]);
+
+  const hasFilters = searchQuery || selectedDifficulties.length > 0 || selectedPatterns.length > 0;
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedDifficulties([]);
+    setSelectedPatterns([]);
+  };
+
+  const toggleDifficulty = (diff: string) => {
+    setSelectedDifficulties((prev) =>
+      prev.includes(diff) ? prev.filter((d) => d !== diff) : [...prev, diff]
+    );
+  };
+
+  const togglePattern = (pattern: string) => {
+    setSelectedPatterns((prev) =>
+      prev.includes(pattern) ? prev.filter((p) => p !== pattern) : [...prev, pattern]
+    );
+  };
 
   const manualStats = getStatsByDifficulty();
   const patternStats = getStatsByPattern();
@@ -139,6 +199,105 @@ export default function LeetCodeTracker() {
           </button>
         </div>
 
+        {/* Search Input */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-tertiary)]" aria-hidden="true" />
+          <input
+            type="text"
+            placeholder="Search by title or ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search problems by title or ID"
+            className="w-full pl-10 pr-10 py-3 bg-[var(--color-surface-primary)] border border-[var(--color-surface-primary)] rounded-[var(--radius-md)] text-body focus:outline-none focus:border-[var(--color-accent-blue)]"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Difficulty Filter Chips */}
+        <div className="flex flex-wrap gap-2 mb-3" role="group" aria-label="Filter by difficulty">
+          {(['easy', 'medium', 'hard'] as const).map((diff) => (
+            <button
+              key={diff}
+              onClick={() => toggleDifficulty(diff)}
+              aria-pressed={selectedDifficulties.includes(diff)}
+              className={`px-3 py-1.5 rounded-full text-body-small font-medium transition-colors ${
+                selectedDifficulties.includes(diff)
+                  ? `${difficultyBgColors[diff]} text-white`
+                  : 'bg-[var(--color-surface-primary)] hover:opacity-80'
+              }`}
+            >
+              {diff.charAt(0).toUpperCase() + diff.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Pattern Filter - Collapsible */}
+        <div className="mb-4">
+          <button
+            onClick={() => setIsPatternFilterOpen(!isPatternFilterOpen)}
+            aria-expanded={isPatternFilterOpen}
+            aria-controls="pattern-filter-panel"
+            className="flex items-center gap-2 text-body-small font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+          >
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${isPatternFilterOpen ? 'rotate-180' : ''}`}
+              aria-hidden="true"
+            />
+            Filter by Pattern{' '}
+            {selectedPatterns.length > 0 && (
+              <span className="px-1.5 py-0.5 bg-[var(--color-accent-orange)] text-white rounded text-caption">
+                {selectedPatterns.length}
+              </span>
+            )}
+          </button>
+          {isPatternFilterOpen && (
+            <div
+              id="pattern-filter-panel"
+              role="group"
+              aria-label="Filter by pattern"
+              className="flex flex-wrap gap-2 mt-2 p-3 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]"
+            >
+              {PATTERNS.map((pattern) => (
+                <button
+                  key={pattern}
+                  onClick={() => togglePattern(pattern)}
+                  aria-pressed={selectedPatterns.includes(pattern)}
+                  className={`px-2 py-1 rounded text-body-small transition-colors ${
+                    selectedPatterns.includes(pattern)
+                      ? 'bg-[var(--color-accent-orange)] text-white'
+                      : 'bg-[var(--color-surface-secondary)] hover:opacity-80'
+                  }`}
+                >
+                  {pattern}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Filter Summary */}
+        <div className="flex items-center justify-between text-body-small mb-4">
+          <span className="text-[var(--color-text-secondary)]">
+            {filteredProblems.length} of {problems.length} problems
+          </span>
+          {hasFilters && (
+            <button
+              onClick={clearFilters}
+              className="text-[var(--color-accent-blue)] hover:underline"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+
         {isAdding && (
           <div className="mb-4 p-4 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)] space-y-3">
             <input
@@ -200,12 +359,14 @@ export default function LeetCodeTracker() {
         )}
 
         <div className="space-y-2 max-h-64 overflow-y-auto">
-          {problems.length === 0 ? (
+          {filteredProblems.length === 0 ? (
             <p className="text-center text-caption py-8">
-              No problems logged yet. Start adding your solved problems!
+              {problems.length === 0
+                ? 'No problems logged yet. Start adding your solved problems!'
+                : 'No problems match your filters.'}
             </p>
           ) : (
-            problems.map((p) => (
+            filteredProblems.map((p) => (
               <div
                 key={p.id}
                 className="flex items-center justify-between p-3 bg-[var(--color-surface-primary)] rounded-[var(--radius-md)]"
@@ -221,7 +382,8 @@ export default function LeetCodeTracker() {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                   <p className="text-caption">
-                    <span className={difficultyColors[p.difficulty]}>{p.difficulty}</span> • {p.pattern}
+                    <span className={difficultyColors[p.difficulty]}>{p.difficulty}</span> •{' '}
+                    {p.pattern}
                   </p>
                 </div>
                 <button
