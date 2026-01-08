@@ -1,48 +1,16 @@
 {
   "topic": "architecture",
-  "generated_at": "2026-01-08T03:55:15.486178+00:00",
+  "generated_at": "2026-01-08T04:59:58.553481+00:00",
   "cards": [
     {
-      "id": "architecture_4f894e7dad6a",
-      "front": "Explain Clean Architecture (VIPER) in iOS. What problem does it solve, and what are its core components? What are its advantages & disadvantages?",
-      "back": "VIPER is Clean Architecture applied to iOS. It addresses \"Massive View Controllers\" by dividing responsibilities into distinct layers: View, Interactor, Presenter, Entity, and Router. \n\n**Advantages:** Improved testability, maintainability, and code reusability due to separation of concerns.\n\n**Disadvantages:** Increased complexity and boilerplate code, which can be overkill for small projects. A steep learning curve for teams unfamiliar with the pattern.",
-      "code_example": null,
-      "tags": [
-        "architecture",
-        "clean-architecture",
-        "viper",
-        "ios"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/"
-      ]
-    },
-    {
-      "id": "architecture_366e8556ad43",
-      "front": "Compare and contrast MVVM, MVC, and VIPER architectures, highlighting their strengths and weaknesses. When would you choose one over the others?",
-      "back": "MVC is simple but often leads to massive view controllers. MVVM improves testability by separating view logic into a ViewModel. VIPER, using Clean Architecture, offers the best separation of concerns and testability but introduces complexity. \n\nChoose MVC for smaller apps.  MVVM for medium-sized apps needing better testability. VIPER for large, complex apps requiring strict separation of concerns and high testability.  Consider team size and project complexity when deciding.",
-      "code_example": null,
-      "tags": [
-        "architecture",
-        "MVVM",
-        "MVC",
-        "VIPER",
-        "design patterns"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.objc.io/issues/13-architecture/mvvm/"
-      ]
-    },
-    {
       "id": "architecture_97260008c4c7",
-      "front": "Explain the core principles of VIPER architecture and how it addresses the 'Massive View Controller' problem. What are the benefits and drawbacks?",
-      "back": "VIPER (View, Interactor, Presenter, Entity, Router) separates concerns into distinct layers, promoting testability and maintainability.  It solves 'MVC hell' by offloading logic from the ViewController.\n\nBenefits: Clear separation of concerns, improved testability, reusability, scalability.\n\nDrawbacks: Increased complexity, boilerplate code, steeper learning curve. Overkill for simple apps.\nExample: In a user profile screen, the View displays data, the Interactor handles fetching user data, the Presenter formats the data for the View, the Entity is the user data model, and the Router handles navigation to other screens.",
+      "front": "Explain the core principles of VIPER architecture and how it addresses the 'Massive View Controller' problem. Provide a practical example of how data flows between the components.",
+      "back": "VIPER (View, Interactor, Presenter, Entity, Router) is a Clean Architecture implementation for iOS aiming to improve testability, maintainability, and separation of concerns, thus solving the Massive View Controller issue.  It divides an app into distinct layers with specific responsibilities.\n\n*   **View:** Displays data and informs the Presenter about user actions. It's passive and should contain minimal logic.\n*   **Interactor:** Contains the business logic of the app. It receives requests from the Presenter, performs the necessary operations (e.g., data fetching, processing), and returns the results to the Presenter.\n*   **Presenter:**  Formats data received from the Interactor for display in the View and handles user interactions by calling methods on the Interactor.  It's a mediator between the View and Interactor.\n*   **Entity:** Represents the data model of the app. It's typically a simple data object.\n*   **Router:** Responsible for navigation logic. It decides which screen to display next and how to transition between them.  The Presenter tells the Router *what* to navigate to, and the Router handles *how*.\n\n**Data Flow:**\n\n1.  User interacts with the **View**.\n2.  **View** notifies the **Presenter** about the interaction.\n3.  **Presenter** receives the event and asks **Interactor** for data.\n4.  **Interactor** retrieves data from **Entity** (or data source) and performs business logic.\n5.  **Interactor** passes the result back to the **Presenter**.\n6.  **Presenter** formats the data and updates the **View**.\n7. If navigation is required, **Presenter** instructs the **Router** to navigate.\n\n**Example (Simplified):**\n\n```swift\n// Entity\nstruct User {\n    let name: String\n}\n\n// Interactor\nclass UserInteractor {\n    func fetchUser(completion: (User) -> Void) {\n        // Simulate fetching user data\n        let user = User(name: \"John Doe\")\n        completion(user)\n    }\n}\n\n// Presenter\nclass UserPresenter {\n    weak var view: UserViewInterface?\n    let interactor = UserInteractor()\n\n    func viewDidLoad() {\n        interactor.fetchUser { [weak self] user in\n            self?.view?.displayUserName(name: user.name)\n        }\n    }\n}\n\n// View Interface\nprotocol UserViewInterface: AnyObject {\n    func displayUserName(name: String)\n}\n\n// View (ViewController)\nclass UserViewController: UIViewController, UserViewInterface {\n    @IBOutlet weak var nameLabel: UILabel!\n    var presenter: UserPresenter!\n\n    override func viewDidLoad() {\n        super.viewDidLoad()\n        presenter = UserPresenter()\n        presenter.view = self\n        presenter.viewDidLoad()\n    }\n\n    func displayUserName(name: String) {\n        nameLabel.text = name\n    }\n}\n```\n\n**Common Pitfalls:**\n\n*   Over-engineering simple features with VIPER can increase complexity unnecessarily.\n*   Strict adherence can lead to boilerplate code.\n*   Communication between layers relies on protocols, which can become cumbersome if not managed well.\n\n**Alternatives:**\n\n*   **MVC (Model-View-Controller):** Simpler for smaller projects, but prone to Massive View Controllers.\n*   **MVVM (Model-View-ViewModel):** A popular alternative that uses data binding to separate the View and Model, but can still lead to ViewModel bloat.\n*   **The Composable Architecture (TCA):** A more modern approach that uses unidirectional data flow and focuses on state management, composition, and testability. TCA shares goals with VIPER but approaches them differently.\n\nVIPER is best suited for complex applications with significant business logic and a need for high testability. Assess project complexity before adopting VIPER. Consider MVVM or TCA for simpler projects.",
       "code_example": null,
       "tags": [
         "architecture",
-        "viper",
-        "ios",
+        "VIPER",
+        "iOS",
         "design patterns"
       ],
       "sources": [
@@ -51,13 +19,15 @@
     },
     {
       "id": "architecture_25deab4acb8a",
-      "front": "Describe different Dependency Injection patterns in iOS and when you might choose one over another.",
-      "back": "Constructor Injection (initializer): Dependencies are passed into the initializer. Good for required dependencies.  Property Injection: Dependencies are set on properties after object creation. Good for optional dependencies or when constructor injection is not feasible. Method Injection: Dependencies are passed as arguments to a method.  Useful when the dependency varies with each call. Avoid DI frameworks that require code changes. Use protocols to decouple.",
+      "front": "Explain Dependency Injection (DI) and its advantages in iOS development. Describe different DI patterns and provide code examples. Discuss common pitfalls and when to use DI vs. alternatives.",
+      "back": "DI is a design pattern where a component's dependencies are provided to it, rather than the component creating them itself. This promotes loose coupling, testability, and reusability. Advantages include easier unit testing (mocking dependencies), increased code modularity, and improved maintainability. \n\n**DI Patterns:**\n1.  **Constructor Injection:** Dependencies are passed via the initializer.\n```swift\nclass MyViewController: UIViewController {\n    private let service: DataService\n\n    init(service: DataService) {\n        self.service = service\n        super.init(nibName: nil, bundle: nil)\n    }\n\n    required init?(coder: NSCoder) {\n        fatalError(\"init(coder:) has not been implemented\")\n    }\n\n    override func viewDidLoad() {\n        super.viewDidLoad()\n        service.fetchData { data in\n            // Update UI\n        }\n    }\n}\n\nprotocol DataService {\n    func fetchData(completion: @escaping ([String]) -> Void)\n}\n\nclass RealDataService: DataService {\n    func fetchData(completion: @escaping ([String]) -> Void) {\n        // Network call to fetch real data\n        completion([\"Data1\", \"Data2\"])\n    }\n}\n\n// Usage:\nlet realService = RealDataService()\nlet viewController = MyViewController(service: realService)\n```\n\n2.  **Property Injection:** Dependencies are set directly on properties after initialization.\n```swift\nclass MyViewController: UIViewController {\n    var service: DataService!\n\n    override func viewDidLoad() {\n        super.viewDidLoad()\n        service.fetchData { data in\n            // Update UI\n        }\n    }\n}\n\n// Usage:\nlet viewController = MyViewController()\nviewController.service = RealDataService()\n```\n\n3.  **Method Injection:** Dependencies are passed as arguments to a method.\n```swift\nclass MyViewController: UIViewController {\n    func configure(with service: DataService) {\n        service.fetchData { data in\n            // Update UI\n        }\n    }\n}\n\n// Usage:\nlet viewController = MyViewController()\nviewController.configure(with: RealDataService())\n```\n\n**Common Pitfalls:**\n*   **Over-reliance on DI frameworks:** Can lead to unnecessary complexity. Simple DI can often be achieved without external libraries.\n*   **Forced DI:** Applying DI to classes where it doesn't provide significant benefit can increase boilerplate.\n*   **Circular dependencies:** Ensure that dependencies are not mutually dependent, leading to initialization issues.\n*   **Property injection without strong defaults:** If a property-injected dependency is not set, it can lead to runtime crashes. Consider providing a default implementation or using optionals.\n\n**When to use DI:**\n*   When you need to easily swap implementations for testing or different environments.\n*   When you want to reduce coupling between components.\n*   When you want to improve code reusability.\n\n**Alternatives:**\n*   **Service Locator:**  A central registry that provides access to dependencies.  Less explicit than DI and can make dependencies harder to track.\n*   **Singleton:**  Provides a single instance of a class.  Can make testing difficult due to global state.\n*   **Factories:**  Create instances of objects. Useful when object creation is complex, but doesn't address dependency management directly.\n\nConstructor injection is generally preferred as it makes dependencies explicit and ensures they are available from the start. Property injection can be useful for optional dependencies. Method injection is suitable when a dependency is only needed for a specific operation.",
       "code_example": null,
       "tags": [
         "architecture",
         "dependency injection",
-        "design patterns"
+        "design patterns",
+        "SOLID",
+        "testing"
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/dependency-injection/"
@@ -65,33 +35,29 @@
     },
     {
       "id": "architecture_be4bf94a271f",
-      "front": "Discuss different modularization strategies in iOS development, including benefits and trade-offs of each. How does VIPER support modularity?",
-      "back": "Strategies include: 1) Frameworks/Libraries: Reusable code packages, good for cross-project sharing. 2) Submodules (Git): Version-controlled dependencies, complex setup. 3) Local Swift Packages: Easier than frameworks, good for internal reuse. 4) Feature Flags: Toggle features without new deployments, good for A/B testing. 5) VIPER: Divides app into View, Interactor, Presenter, Entity, Router, promoting clear module boundaries and testability. \n\nTrade-offs: Increased complexity, build times, and initial setup vs. Improved maintainability, testability, reusability, and team collaboration.\n\nVIPER promotes modularity by defining clear responsibilities for each component, making it easy to isolate and test modules. Module interfaces (protocols) can be defined to expose module functionality to other parts of the application, promoting loose coupling.",
+      "front": "Discuss different modularization strategies in iOS development, including benefits, drawbacks, and when you might choose one over another. Give practical examples.",
+      "back": "Modularization breaks down an app into independent, reusable modules. Benefits include improved build times, code reusability, separation of concerns, and independent testing. Drawbacks are increased complexity in project setup and communication between modules.\n\nStrategies:\n\n1. **Frameworks/Static Libraries:** Create separate Xcode projects for each module, building them into frameworks or static libraries.  This provides strong encapsulation and allows for binary reuse.\n\n   *Example:* Create a `NetworkKit.framework` for networking logic. Other modules import it.\n\n   *Code:* Create a new Framework target in Xcode, move relevant source files, and adjust build settings.  In other modules, link the framework.\n\n   *Pitfalls:* Can increase app size if not managed carefully (especially with static libraries), complex dependency management, symbol collisions.\n\n2. **Swift Packages:** A modern approach for distributing Swift code. Packages define their dependencies and can be easily integrated using Swift Package Manager (SPM).\n\n   *Example:*  A `UIComponents` package containing custom UI elements.\n\n   *Code:* Create a `Package.swift` file defining the package's name, dependencies, and targets.  Import the package in your Xcode project via SPM.\n\n   *Pitfalls:*  Relatively newer, sometimes has limitations in integrating with older build systems or Objective-C code. Can be less flexible than frameworks for complex setups.\n\n3. **Subprojects:** Include multiple Xcode projects within a single workspace. Modules are targets within these subprojects. Good for logically grouping related features.\n\n   *Example:* An app with separate subprojects for `Authentication` and `Profile` features.\n\n   *Code:* Add existing Xcode projects to your workspace. Create dependencies between targets in different subprojects.\n\n   *Pitfalls:*  Can lead to circular dependencies if not carefully managed.  Build settings and configurations need careful synchronization.\n\n4. **Directory-based modularization:** Organizing code into directories representing modules within the same Xcode target.  Relies on access control (e.g., `internal`, `fileprivate`) to enforce encapsulation.\n\n   *Example:*  Directories `Analytics`, `Networking`, `UI`, each containing related files.\n\n   *Code:*  Simply create directories and move files.  Use access control modifiers to restrict visibility between modules.\n\n   *Pitfalls:*  Weakest form of encapsulation.  Easy to accidentally break module boundaries.  Relies heavily on developer discipline.\n\n5. **Target Membership based modularization:** Add/remove files from target membership to define module boundaries.\n\n   *Example:* Different build schemes to create lite and full versions of the app, using target membership to define module boundaries.\n\n   *Code:* Select a file and, in the File Inspector, change its target membership. Use build schemes to control target membership.\n\n   *Pitfalls:* Can quickly become unmanageable if the project grows. Relies heavily on developer discipline.\n\nWhen to choose which:\n\n*   **Frameworks/Static Libraries/Swift Packages:** Best for reusable components across multiple apps or teams. Strong encapsulation and versioning.\n*   **Subprojects:**  For large, complex apps with distinct features developed by different teams.\n*   **Directory-based modularization:**  Good starting point for smaller projects, or when migrating to a modular architecture. Simpler setup, but weaker encapsulation.\n*   **Target membership based modularization:** Best if you want to create different versions of the app, for example a lite version and a full version.\n\nCommon Pitfalls: Circular dependencies.  Poorly defined module boundaries.  Over-modularization (creating too many small modules, increasing complexity).\n\nSwift 5.5+",
       "code_example": null,
       "tags": [
         "architecture",
         "modularization",
-        "viper",
-        "swift"
+        "ios",
+        "frameworks",
+        "swift packages"
       ],
       "sources": [
-        "https://www.objc.io/issues/15-testing/dependency-injection/",
         "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/15-testing/dependency-injection/",
         "https://www.objc.io/issues/13-architecture/mvvm/"
       ]
     },
     {
       "id": "architecture_60fc4a6f7540",
-      "front": "Explain protocol-oriented programming and its benefits in iOS architecture, especially compared to class-based inheritance.",
-      "back": "POP focuses on defining behavior through protocols, allowing structs/enums/classes to conform. Benefits: avoids fragile base class problem, enables value-type semantics (better performance, thread safety), promotes composition over inheritance, improves testability through protocol mocking.  Example: define `Animatable` protocol instead of subclassing `UIView`.",
+      "front": "Protocol-oriented design",
+      "back": "",
       "code_example": null,
       "tags": [
-        "architecture",
-        "protocol-oriented programming",
-        "pop",
-        "swift",
-        "inheritance",
-        "composition"
+        "Protocol-oriented design"
       ],
       "sources": [
         "https://www.objc.io/issues/13-architecture/viper/"

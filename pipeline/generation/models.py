@@ -10,7 +10,7 @@ class Flashcard(BaseModel):
 
     id: str
     front: str = Field(max_length=500)
-    back: str = Field(max_length=4000)  # Allow detailed answers
+    back: str = Field(max_length=8000)  # Allow very detailed answers from Pro model
     code_example: str | None = None
     difficulty: str = "senior"
     topic: str

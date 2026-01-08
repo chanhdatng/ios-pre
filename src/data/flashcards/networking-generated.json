@@ -1,21 +1,18 @@
 {
   "topic": "networking",
-  "generated_at": "2026-01-08T03:55:15.486195+00:00",
+  "generated_at": "2026-01-08T04:59:58.553493+00:00",
   "cards": [
     {
       "id": "networking_af7f793e90df",
-      "front": "Describe advanced `URLSession` usage beyond basic data tasks. How do you handle cancellation, background processing, and large file transfers efficiently?",
-      "back": "For cancellation, I use `URLSessionTask`'s `cancel()` method. For background processing, I either process data in the background with GCD after receiving it on the main run loop, or use a custom `Operation` subclass with its own run loop (like AFNetworking does). For large files, I use `NSInputStream` for asynchronous, line-by-line processing without loading the entire file into memory. Also using background session configurations is very useful, and is supported by URLSession",
+      "front": "Explain advanced `URLSession` usage, including background sessions, delegate-based APIs, and considerations for large file transfers. Give a specific example using background configuration.",
+      "back": "`URLSession` offers powerful networking capabilities beyond basic data fetching. Advanced usage includes background sessions, delegate-based interaction, and optimized handling of large files.\n\n**Background Sessions:** Allow tasks to continue even when the app is suspended or terminated. Use `URLSessionConfiguration.background(withIdentifier:)`.\n\n```swift\nlet identifier = \"com.example.backgroundTransfer\"\nlet backgroundConfig = URLSessionConfiguration.background(withIdentifier: identifier)\nlet session = URLSession(configuration: backgroundConfig, delegate: self, delegateQueue: nil)\n\nlet url = URL(string: \"https://example.com/largefile.zip\")!\nlet downloadTask = session.downloadTask(with: url)\ndownloadTask.resume()\n\n// Delegate methods (URLSessionDelegate, URLSessionTaskDelegate, URLSessionDownloadDelegate)\nfunc urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {\n    // Handle downloaded file at 'location'\n    print(\"Downloaded file to: \\(location)\")\n}\n\nfunc urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {\n    if let error = error {\n        print(\"Task completed with error: \\(error)\")\n    } else {\n        print(\"Task completed successfully\")\n    }\n}\n```\n\n**Delegate-Based APIs:** Provide fine-grained control and progress updates.  Implement `URLSessionDelegate`, `URLSessionTaskDelegate`, and protocol-specific delegates like `URLSessionDownloadDelegate` for download tasks.\n\n**Large File Transfers:** Use `URLSessionDownloadTask` and `URLSessionUploadTask` for efficient handling. For extremely large files, consider `NSInputStream` for streaming data.\n\n**Common Pitfalls:**\n*   Forgetting to handle errors in delegate methods.\n*   Not invalidating background sessions after completion.\n*   Incorrectly handling background session restoration after app relaunch (`application(_:handleEventsForBackgroundURLSession:completionHandler:)`).\n*   Blocking the main thread in delegate methods (dispatch to background queues).\n\n**Alternatives:**\n*   For simple requests, `async/await` with `URLSession.data(from: )` simplifies code, but lacks delegate-based progress reporting.\n*   Third-party libraries like Alamofire offer higher-level abstractions but may hide underlying `URLSession` complexity.\n\n**When to Use:**\n*   Background sessions: For tasks that must complete even when the app isn't in the foreground.\n*   Delegate-based APIs: For precise control, progress updates, and custom error handling.\n*   Large file transfers: When dealing with large files that require efficient downloading or uploading.\n",
       "code_example": null,
       "tags": [
         "networking",
         "URLSession",
-        "cancellation",
         "background",
-        "large files",
-        "NSInputStream",
-        "Operation",
-        "GCD"
+        "delegate",
+        "large files"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/common-background-practices/",
@@ -25,49 +22,46 @@
     },
     {
       "id": "networking_88601ef8bf23",
-      "front": "Explain the key differences between HTTP/2 and HTTP/3 and the advantages of HTTP/3.",
-      "back": "HTTP/2 introduced multiplexing (multiple requests over a single connection), header compression (HPACK), and server push. HTTP/3 builds upon this using UDP with QUIC, eliminating head-of-line blocking at the TCP level and providing better congestion control and faster connection establishment. QUIC also provides built-in encryption, improving security. HTTP/3 is more resilient to packet loss and network changes.",
+      "front": "Explain HTTP/2 and HTTP/3, highlighting key differences, advantages, and considerations for mobile app development. How do they impact performance compared to HTTP/1.1?",
+      "back": "HTTP/2 and HTTP/3 are improved versions of HTTP, designed to address limitations of HTTP/1.1. HTTP/2 introduces binary framing, header compression (HPACK), and multiplexing (sending multiple requests over a single TCP connection). HTTP/3 uses UDP with QUIC, providing better handling of packet loss and head-of-line blocking.\n\n**Key Differences:**\n*   **Transport Protocol:** HTTP/2 uses TCP. HTTP/3 uses QUIC (UDP-based).\n*   **Head-of-Line Blocking:** HTTP/2 addresses it at TCP level (less effective). HTTP/3 solves it within QUIC.\n*   **Connection Migration:** HTTP/3 allows seamless connection migration (e.g., switching between WiFi and cellular).\n*   **Header Compression:** HTTP/2 uses HPACK. HTTP/3 uses QPACK (better resilience to packet loss).\n\n**Advantages:**\n*   **HTTP/2:** Reduced latency, improved page load times, better resource utilization.\n*   **HTTP/3:** Faster connection establishment, improved performance in lossy networks, seamless connection migration.\n\n**Code Example (URLSession is protocol agnostic):**\n```swift\nlet url = URL(string: \"https://example.com/data\")!\nlet task = URLSession.shared.dataTask(with: url) { data, response, error in\n    if let error = error {\n        print(\"Error: \\(error)\")\n        return\n    }\n    if let data = data {\n        print(\"Data received: \\(data)\")\n    }\n}\ntask.resume()\n```\n*Note: `URLSession` automatically negotiates the best available protocol (HTTP/2 or HTTP/3) if the server supports it.*  You don't typically need to write different code.\n\n**Common Pitfalls/Edge Cases:**\n*   **Server Support:** Ensure the server supports HTTP/2 or HTTP/3.\n*   **Middleboxes:** Some older firewalls or proxies may interfere with HTTP/2 or HTTP/3 connections.  HTTP/3's UDP reliance can be an issue if the network blocks UDP.\n*   **Debugging:** Debugging HTTP/3 can be more complex due to UDP.\n*   **Resource Prioritization:** Misconfigured resource prioritization can negate performance benefits.  Ensure proper server configuration.\n\n**Alternatives:**\n*   **HTTP/1.1:** Still widely used, but suffers from performance limitations compared to HTTP/2 and HTTP/3.\n\n**Impact on Performance:**\nHTTP/2 and HTTP/3 significantly improve performance compared to HTTP/1.1, especially in scenarios with many small resources or high network latency. Multiplexing reduces connection overhead, and header compression minimizes data transfer. HTTP/3 further improves performance in challenging network conditions. HTTP/3 connection migration is valuable for mobile devices that switch networks.\n\n**When to Use:**\nPrefer HTTP/2 or HTTP/3 whenever possible (if server supports it). They provide substantial performance improvements. HTTP/3 is particularly beneficial for mobile apps due to its resilience to network changes and packet loss. HTTP/1.1 is a fallback option if newer protocols are not supported.",
       "code_example": null,
       "tags": [
         "networking",
         "http",
         "http2",
         "http3",
-        "quic"
+        "urlsession"
       ],
       "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
         "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
         "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "networking_dcafb044d110",
-      "front": "Compare and contrast REST and GraphQL.  When would you choose one over the other in an iOS app?",
-      "back": "REST is an architectural style using standard HTTP methods. GraphQL is a query language for your API.\n\nREST:\n- Simpler to implement initially.\n- Can lead to over-fetching or under-fetching data.\n- Multiple round trips to get all needed data.\n- Well-established, mature ecosystem.\n\nGraphQL:\n- Client specifies exact data needed, avoiding over/under fetching.\n- Single endpoint, reducing round trips.\n- Requires more server-side setup.\n- Steeper learning curve.\n\nChoose GraphQL when:\n- Complex data requirements with multiple relationships.\n- Bandwidth optimization is critical.\n- Performance is paramount.\n\nChoose REST when:\n- Simple data requirements.\n- Rapid prototyping is needed.\n- Leveraging existing RESTful infrastructure.",
+      "front": "REST vs GraphQL",
+      "back": "",
       "code_example": null,
       "tags": [
-        "networking",
-        "REST",
-        "GraphQL",
-        "architecture"
+        "REST vs GraphQL"
       ],
       "sources": [
-        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
         "https://www.objc.io/issues/13-architecture/viper/",
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
         "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "networking_3f3e4ac61fbf",
-      "front": "Describe your experience implementing WebSocket communication in an iOS app. What considerations did you make regarding efficiency, error handling, and security?",
-      "back": "I've implemented WebSocket communication using `URLSessionWebSocketTask`. I prioritize efficiency by using binary messages when possible and implementing message compression. Error handling includes reconnect strategies with exponential backoff. For security, I always use WSS (WebSocket Secure), implement proper authentication/authorization, and validate incoming messages to prevent injection attacks.",
+      "front": "How would you implement WebSocket communication in an iOS app? What are some key considerations for maintaining a stable and efficient connection?",
+      "back": "WebSocket offers full-duplex communication over a single TCP connection, ideal for real-time features. In iOS, `URLSessionWebSocketTask` (iOS 13+) provides a robust API.\n\nConcept:  `URLSession` manages the WebSocket connection.  You establish a task, send/receive messages, and handle connection state.\n\nExample:\n```swift\nimport Foundation\n\nclass WebSocketManager {\n    private var webSocketTask: URLSessionWebSocketTask?\n    private let url: URL\n    private let session: URLSession\n\n    init(url: URL, session: URLSession = .shared) {\n        self.url = url\n        self.session = session\n    }\n\n    func connect() {\n        webSocketTask = session.webSocketTask(with: url)\n        webSocketTask?.resume()\n        receiveMessage()\n    }\n\n    func disconnect() {\n        webSocketTask?.cancel(with: .normalClosure, reason: nil)\n    }\n\n    func sendMessage(message: String) {\n        webSocketTask?.send(.string(message)) { error in\n            if let error = error {\n                print(\"WebSocket send error: \\(error)\")\n            }\n        }\n    }\n\n    private func receiveMessage() {\n        webSocketTask?.receive { [weak self] result in\n            switch result {\n            case .failure(let error):\n                print(\"WebSocket receive error: \\(error)\")\n                self?.reconnect()\n            case .success(let message):\n                switch message {\n                case .string(let text):\n                    print(\"Received string: \\(text)\")\n                case .data(let data):\n                    print(\"Received data: \\(data)\")\n                @unknown default:\n                    fatalError()\n                }\n                self?.receiveMessage()\n            }\n        }\n    }\n\n    private func reconnect() {\n       //Implement exponential backoff strategy here\n       DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // Example: wait 2 seconds\n           self.connect()\n       }\n    }\n}\n```\n\nCommon Pitfalls:\n*   **Error Handling:**  Implement robust error handling for connection failures, message sending/receiving, and unexpected disconnections.  Use `ping` and `pong` frames to detect broken connections.\n*   **Reconnection Strategy:**  Implement a reconnection strategy with exponential backoff to avoid overwhelming the server after a disconnection.  Consider using a maximum retry limit.\n*   **Thread Safety:**  WebSocket callbacks occur on background threads. Ensure UI updates are dispatched to the main thread.\n*   **Message Serialization/Deserialization:**  Choose an appropriate serialization format (JSON, Protobuf) and handle serialization/deserialization efficiently.\n*   **Security:** Use WSS (WebSocket Secure) for encrypted communication. Validate server certificates.\n*   **Backgrounding:**  Handle background WebSocket connections carefully.  iOS may terminate connections when the app is backgrounded.  Consider using background tasks or push notifications to maintain connectivity.\n\nAlternatives:\n*   **Socket.IO:** A higher-level library built on top of WebSockets, providing features like automatic reconnection, namespaces, and broadcasting.\n*   **Server-Sent Events (SSE):**  A unidirectional protocol where the server pushes data to the client.  Simpler than WebSockets but not suitable for bidirectional communication.\n\nWhen to Use:\nUse WebSockets when you need real-time, bidirectional communication between your app and a server, such as for chat applications, live updates, or multiplayer games. Consider Socket.IO for added features or SSE for simpler server-push scenarios.",
       "code_example": null,
       "tags": [
         "networking",
         "websockets",
-        "security",
-        "performance"
+        "urlsession",
+        "concurrency"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/common-background-practices/",
@@ -76,30 +70,33 @@
     },
     {
       "id": "networking_6431b3cd68e4",
-      "front": "What is certificate pinning and why is it important for network security in iOS apps?",
-      "back": "Certificate pinning validates the server's certificate against a pre-defined, trusted copy (pinned cert/public key) instead of relying solely on the system's trusted root certificates. Prevents MITM attacks where attackers use rogue certificates.\n\nImproves security, especially against compromised CAs. Implement via `URLSessionDelegate` methods to validate server trust. Can be bypassed if implemented incorrectly, so careful testing is vital.",
+      "front": "Explain certificate pinning in iOS networking. Why and how is it used? What are the potential drawbacks and alternatives?",
+      "back": "Certificate pinning is a security technique where an app, instead of trusting the system's root certificates, validates the server's certificate against a pre-defined (pinned) certificate or its public key. This prevents man-in-the-middle (MITM) attacks, even if the attacker has compromised the system's root certificates.\n\n**Why use it?**\nStandard TLS/SSL relies on a chain of trust. If any certificate authority (CA) in that chain is compromised, attackers can issue rogue certificates for any domain. Pinning bypasses this by directly trusting the server's certificate.\n\n**How to implement:**\n```swift\nimport Foundation\n\nclass CertificatePinningDelegate: NSObject, URLSessionDelegate {\n    let pinnedCertificates: [Data]\n\n    init(certificates: [Data]) {\n        self.pinnedCertificates = certificates\n    }\n\n    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {\n        guard let serverTrust = challenge.protectionSpace.serverTrust else {\n            completionHandler(.cancelAuthenticationChallenge, nil)\n            return\n        }\n\n        // Get the server's certificate\n        if let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0) {\n            let serverCertificateData = SecCertificateCopyData(serverCertificate) as Data\n\n            // Check if the server certificate matches any of the pinned certificates\n            if pinnedCertificates.contains(serverCertificateData) {\n                completionHandler(.useCredential, URLCredential(trust: serverTrust))\n                return\n            }\n        }\n\n        // Pinning failed\n        completionHandler(.cancelAuthenticationChallenge, nil)\n    }\n}\n\n// Example Usage:\nlet certificateURL = Bundle.main.url(forResource: \"my_server\", withExtension: \"cer\")!\nlet certificateData = try! Data(contentsOf: certificateURL)\nlet pinningDelegate = CertificatePinningDelegate(certificates: [certificateData])\n\nlet sessionConfiguration = URLSessionConfiguration.default\nsessionConfiguration.urlSession.delegate = pinningDelegate\n\nlet session = URLSession(configuration: sessionConfiguration)\n```\n\n**Common Pitfalls:**\n*   **Certificate Rotation:** Certificates expire. You must update your app with the new certificate before the old one expires, or the app will stop working. Automate this process if possible.\n*   **Key Pinning vs. Certificate Pinning:**  Pinning the public key is more flexible than pinning the entire certificate.  When the certificate is renewed, as long as the public key remains the same, the app doesn't need an update.\n*   **Backup Pinning:**  Pin multiple certificates, including intermediate certificates, to provide a fallback if the primary certificate needs to be revoked or replaced quickly.\n*   **Handling Pinning Failures:** Provide a graceful fallback. Don't just crash the app.  Consider logging the failure and attempting to connect without pinning (with standard TLS) or displaying an error message to the user.\n\n**Alternatives:**\n*   **TrustKit:** An open-source framework that simplifies certificate pinning in iOS apps. It handles certificate rotation and provides a more robust and easier-to-use API.\n*   **Standard TLS/SSL:** Relying solely on the system's trusted root certificates. This is the default behavior and is sufficient for most apps, but vulnerable to CA compromise.\n\n**When to use:**\nUse certificate pinning when you need the highest level of security and control over the connections your app makes, especially when dealing with sensitive data or critical infrastructure.\n",
       "code_example": null,
       "tags": [
         "networking",
         "security",
         "certificate pinning",
         "URLSession",
-        "MITM"
+        "TLS",
+        "SSL"
       ],
       "sources": [
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.avanderlee.com/swift/core-data/"
       ]
     },
     {
       "id": "networking_431f69c77375",
-      "front": "How are background transfers (URLSessionConfiguration.background) different from simply using URLSession on a background thread?",
-      "back": "Background URLSession configurations allow transfers to continue even when the app is suspended or terminated.  The system manages the transfers, relaunching the app in the background to handle completion. Standard background threads don't have this OS-level persistence.",
+      "front": "Explain background URL sessions in iOS.  What are their benefits and limitations? Provide a practical example of how to use them and discuss potential pitfalls.",
+      "back": "Background URL sessions allow apps to perform networking tasks even when suspended or terminated.  They're managed by the system, ensuring uploads/downloads complete reliably. Benefits: reliable transfers, battery optimization. Limitations: less control, system-managed priority. \n\nConcept: `URLSessionConfiguration.background(withIdentifier:)` creates a background session.  The system launches the app in the background to handle delegate calls.\n\nExample:\n```swift\nfunc startBackgroundDownload(url: URL, identifier: String) {\n    let config = URLSessionConfiguration.background(withIdentifier: identifier)\n    let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)\n    let task = session.downloadTask(with: url)\n    task.resume()\n}\n\n// URLSessionDownloadDelegate methods:\nfunc urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {\n    // Handle downloaded file.  Move it before the system cleans up.\n    let fileManager = FileManager.default\n    let destinationURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(\"downloadedFile.dat\")\n    do {\n        try fileManager.moveItem(at: location, to: destinationURL)\n        print(\"File moved to: \\(destinationURL)\")\n    } catch {\n        print(\"Error moving file: \\(error)\")\n    }\n}\n\nfunc urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {\n    if let error = error {\n        print(\"Task completed with error: \\(error)\")\n    } else {\n        print(\"Task completed successfully\")\n    }\n}\n\nfunc urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {\n    let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)\n    print(\"Download progress: \\(progress)\")\n    // Update UI if necessary.  Dispatch to main queue!\n    DispatchQueue.main.async {\n        // Update progress bar, etc.\n    }\n}\n```\n\nPitfalls:\n*   Delegate methods are *required*.  The system relies on them to inform the app of completion/errors.\n*   Moving the downloaded file out of the temporary location in `didFinishDownloadingTo` is crucial. The system cleans up the temporary directory shortly after the delegate call.\n*   The app might be killed before completing the task if the system is under memory pressure. Handle this gracefully by saving state and resuming later.\n*   Background sessions are not suitable for low-latency or real-time communication.\n*   The `identifier` in `URLSessionConfiguration.background(withIdentifier:)` is used to re-launch the app. Ensure it's unique and persistent.\n*   Avoid long-running tasks in delegate methods; offload processing to background threads.\n\nAlternatives: For foreground tasks, use standard `URLSession` with default configuration.  For simple downloads, consider `DispatchQueue.global().async` + `Data(contentsOf:)` (but handle cancellation carefully and avoid blocking the main thread!). Libraries like Alamofire offer higher-level abstractions but ultimately rely on `URLSession`.",
       "code_example": null,
       "tags": [
         "networking",
+        "URLSession",
         "background",
-        "URLSession"
+        "concurrency",
+        "delegation"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/common-background-practices/",
@@ -108,15 +105,11 @@
     },
     {
       "id": "networking_a38f04f89b89",
-      "front": "Describe a robust network layer architecture for an iOS app. What are the key components and their responsibilities?",
-      "back": "A robust network layer typically includes: 1. **API Client/Manager:** Handles request creation, execution (using `URLSession`), and response parsing (JSON, etc.). 2. **Request Objects:** Encapsulate API endpoint, parameters, headers, and HTTP method. 3. **Response Models:**  Structures to represent the parsed data (using Codable). 4. **Error Handling:** Define a custom error enum to handle network failures, data parsing issues, or API-specific errors. 5. **Authentication:**  Handles token management.  6. **Caching:** Implement caching to reduce network requests and improve performance. E.g., using `URLCache` or a custom caching mechanism with `UserDefaults` or `CoreData`. The API Client is injected into interactors/viewmodels to fetch data. Response models should be immutable.",
+      "front": "Network layer architecture",
+      "back": "",
       "code_example": null,
       "tags": [
-        "networking",
-        "architecture",
-        "URLSession",
-        "error handling",
-        "caching"
+        "Network layer architecture"
       ],
       "sources": [
         "https://www.objc.io/issues/13-architecture/viper/",

@@ -1,88 +1,83 @@
 {
   "topic": "security",
-  "generated_at": "2026-01-08T03:55:15.486210+00:00",
+  "generated_at": "2026-01-08T04:59:58.553516+00:00",
   "cards": [
     {
       "id": "security_33cf632c026b",
-      "front": "Explain how Keychain Services enhances iOS app security.  Describe common vulnerabilities and mitigation strategies.",
-      "back": "Keychain Services provides a secure, encrypted store for sensitive data like passwords, certificates, and keys. It uses hardware encryption when available (Secure Enclave). \n\nVulnerabilities include: data leakage through improper access control (ACLs), weak encryption keys, and side-channel attacks. \n\nMitigation: Always use kSecAttrAccessible... options correctly, store only necessary data, consider additional encryption layers, and be aware of potential side-channel attacks.",
+      "front": "Keychain Services",
+      "back": "",
       "code_example": null,
       "tags": [
-        "security",
-        "keychain",
-        "encryption",
-        "ACLs",
-        "authentication"
+        "Keychain Services"
       ],
       "sources": [
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.avanderlee.com/swift/core-data/"
       ]
     },
     {
       "id": "security_85b38a95715f",
-      "front": "Explain App Transport Security (ATS) and its benefits. How would you disable it selectively?",
-      "back": "ATS enforces secure connections (HTTPS) for network requests, protecting user data by preventing interception and tampering.  Benefits include enhanced privacy and data integrity.  \n\nTo disable ATS selectively (e.g., for specific domains during development or testing), use `NSExceptionDomains` in the `Info.plist`. Be cautious and provide justification; consider using temporary exceptions and re-enabling ATS in production builds.  Since iOS 10 you need to specify `NSAllowsArbitraryLoadsInWebContent` to allow non secure connections on web views.",
+      "front": "Explain App Transport Security (ATS) in iOS. How does it enhance security and what are the implications for network communication?",
+      "back": "ATS is a privacy feature introduced in iOS 9 that enforces secure connections between an app and web services. It mandates HTTPS (TLS 1.2 or higher) and disables insecure HTTP connections.  It prevents accidental disclosure of sensitive user data during network transit by ensuring encryption and integrity.\n\nATS strengthens security by:\n1.  **Encryption:** Requires HTTPS, encrypting data in transit.\n2.  **Certificate Pinning (Optional):** Allows apps to trust only specific certificates, preventing man-in-the-middle attacks.\n3.  **Forward Secrecy:** Preferred cipher suites ensure that session keys are not compromised even if the server's private key is compromised later.\n\nImplications:\n-   **Compatibility:** Older servers not supporting TLS 1.2+ may break app functionality.\n-   **Development:** Requires developers to configure servers to meet ATS requirements.\n-   **User Experience:** Improved security and privacy for users.\n\nExample:\n```swift\n// Info.plist configuration to disable ATS (not recommended for production)\n// This is just for demonstration purposes.\n// In a real app, you should configure your server to support ATS.\n/*\n<key>NSAppTransportSecurity</key>\n<dict>\n    <key>NSAllowsArbitraryLoads</key>\n    <true/>\n</dict>\n*/\n\n// Example of a secure HTTPS request\nimport Foundation\n\nfunc fetchData(from urlString: String) {\n    guard let url = URL(string: urlString) else { return }\n\n    let task = URLSession.shared.dataTask(with: url) { (data, response, error) in\n        if let error = error {\n            print(\"Error: \\(error)\")\n            return\n        }\n\n        if let data = data {\n            // Process the data\n            print(\"Data received: \\(data)\")\n        }\n    }\n    task.resume()\n}\n\n// Example usage (HTTPS)\nfetchData(from: \"https://www.example.com/data\")\n\n//Example of disabling ATS for a specific domain\n/*\n<key>NSAppTransportSecurity</key>\n<dict>\n <key>NSExceptionDomains</key>\n <dict>\n  <key>example.com</key>\n  <dict>\n   <key>NSIncludesSubdomains</key>\n   <true/>\n   <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>\n   <true/>\n   <key>NSTemporaryExceptionMinimumTLSVersion</key>\n   <string>TLSv1.1</string>\n  </dict>\n </dict>\n</dict>\n*/\n```\n\nCommon pitfalls:\n-   Failing to update server configurations to support TLS 1.2+.\n-   Incorrectly configuring `Info.plist` to disable ATS entirely (NSAllowsArbitraryLoads), which should be avoided in production unless absolutely necessary and properly justified to Apple.\n-   Not handling potential errors when ATS blocks insecure connections.\n\nAlternatives:\n-   Disabling ATS entirely is strongly discouraged.  Instead, configure your server to meet ATS standards.\n-   Using exception domains to allow insecure connections for specific domains (use sparingly and with caution).\n\nWhen to Use: Always enable ATS in production apps to protect user data. Only disable or partially disable for specific, well-understood reasons during development or when interacting with legacy servers that cannot be upgraded (and even then, explore upgrading them). Document any exceptions thoroughly and justify their use.",
       "code_example": null,
       "tags": [
         "security",
-        "networking",
         "ATS",
-        "Info.plist"
+        "networking",
+        "https",
+        "tls"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
         "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
+        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.avanderlee.com/swift/core-data/"
       ]
     },
     {
       "id": "security_199ddce13d96",
-      "front": "How does `LocalAuthentication` ensure biometric data isn't directly accessed by your app?",
-      "back": "`LocalAuthentication` framework never exposes biometric data. It securely interacts with the Secure Enclave. Your app only receives a success/failure code, minimizing security risks. Remember to include a descriptive `NSFaceIDUsageDescription` in your `Info.plist`.",
+      "front": "Biometric authentication",
+      "back": "",
       "code_example": null,
       "tags": [
-        "security",
-        "biometrics",
-        "LocalAuthentication",
-        "Secure Enclave"
+        "Biometric authentication"
       ],
       "sources": [
-        "https://developer.apple.com/news/",
         "https://www.objc.io/issues/13-architecture/viper/",
+        "https://developer.apple.com/news/",
         "https://www.objc.io/issues/15-testing/xctest/"
       ]
     },
     {
       "id": "security_b2f1eb5efae8",
-      "front": "Describe common data encryption strategies in iOS and when you might use them.  What are the tradeoffs?",
-      "back": "Strategies include: \n*   **Keychain:** For small, sensitive data (passwords, API keys). Secure, OS-managed.\n*   **Core Data Encryption:** Encrypts the entire Core Data store. Easy to implement, but impacts performance. SQLCipher.\n*   **File Encryption:** Encrypt individual files. Flexible, but requires manual management.\n*   **Property List Encryption**: Encrypt Plist Files using `NSDataWritingOptions`. Easy, but less secure than other methods\n\nTradeoffs: Security vs. Performance, complexity of implementation, and granularity of encryption.",
+      "front": "Discuss data encryption strategies in iOS, focusing on when to use specific techniques like Keychain, Core Data encryption, or file-level encryption. Explain tradeoffs and security best practices.",
+      "back": "Data encryption is crucial for protecting sensitive information on iOS.  Several options exist, each with different strengths. The Keychain is specifically designed for storing small, sensitive data like passwords, certificates, and API keys. It offers strong encryption and secure storage managed by the system.  Use it via `Keychain Services API`. Example: `SecItemAdd/SecItemCopyMatching/SecItemUpdate/SecItemDelete`.  Core Data can be encrypted at rest using SQLCipher or similar libraries. This is useful when storing larger structured datasets. However, managing the encryption key becomes critical. Avoid hardcoding; store it securely in the Keychain. File-level encryption (e.g., using `FileProtectionType`) encrypts entire files.  This is suitable for larger unstructured data like images or documents.  Choose the appropriate `FileProtectionType` based on the required level of security and performance. Common mistakes: Hardcoding keys, using weak encryption algorithms, not salting passwords, and neglecting data sanitization. Avoid storing sensitive data in plain text in UserDefaults or other easily accessible locations. Always use strong encryption algorithms (AES-256 is a good choice). Regularly update encryption keys and algorithms. Consider using hardware-backed encryption (Secure Enclave) for the highest level of security.  Tradeoffs: Keychain is great for small secrets, Core Data encryption is good for structured data at rest, file encryption is good for unstructured data. Always consider the threat model and choose the best solution for your specific needs. Remember to handle key management securely, rotate keys periodically, and sanitize data before encryption. Incorrect usage of file protection levels can lead to data loss or unexpected behavior.",
       "code_example": null,
       "tags": [
         "security",
         "encryption",
         "keychain",
-        "core data",
-        "file encryption"
+        "coredata",
+        "fileprotection"
       ],
       "sources": [
-        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
         "https://www.objc.io/issues/13-architecture/viper/",
-        "https://www.avanderlee.com/swift/core-data/",
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
+        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.avanderlee.com/swift/core-data/"
       ]
     },
     {
       "id": "security_a325baeb20c1",
-      "front": "Explain code signing and provisioning profiles in iOS development. What security benefits do they provide?",
-      "back": "Code signing assures the app's integrity and identity.  Provisioning profiles, tied to specific developer accounts and devices, authorize an app to run.  They link the app ID, developer certificate, and allowed devices.  This prevents unauthorized code from running on devices and ensures code originates from a trusted source. Example: Prevents malware sideloading.",
+      "front": "Explain code signing and provisioning profiles in iOS. Why are they important, and how do they work together to secure and distribute an app?",
+      "back": "Code signing and provisioning are crucial for iOS security and distribution. Code signing assures the user that the app is from a known source and hasn't been tampered with. Provisioning profiles authorize an app to run on specific devices and access certain services.\n\n**Code Signing:**\nUses digital certificates to verify the developer's identity and ensure the app's integrity. When you build your app, Xcode signs it with your private key, creating a signature embedded in the app bundle.  This signature can be verified using your public key, which is included in your developer certificate.\n\n**Provisioning Profiles:**\nAct as gatekeepers, linking your app's App ID, your developer certificate, and a list of authorized devices (for development/ad-hoc).  There are different types:\n   *Development: For running on your development devices.\n   *Ad Hoc: For limited distribution to testers.\n   *App Store: For submitting to the App Store.\n   *Enterprise: For in-house distribution within an organization.\n\n**How they work together:**\nThe provisioning profile is embedded in the app bundle during the build process. When the app is launched on a device, iOS verifies:\n   1. The app's signature against the developer certificate.\n   2. The provisioning profile's validity and its association with the device.\n   3. That the app's bundle identifier matches the App ID in the provisioning profile.\n   4. That the developer certificate in the provisioning profile matches the certificate used to sign the app.\n\nIf all checks pass, the app is allowed to run. If any check fails, the app will not launch.\n\n**Code Example (Illustrative):**\nWhile you don't directly *code* code signing/provisioning, you configure them in Xcode.  Here's how you'd typically set it up:\n\n1.  In Xcode, go to your project settings.\n2.  Select your target.\n3.  Go to \"Signing & Capabilities\".\n4.  Select your team (your developer account).\n5.  Xcode will attempt to automatically manage signing.  If you need more control, disable \"Automatically manage signing\" and manually select your provisioning profile and signing certificate.\n\n**Common Pitfalls:**\n*   Mismatched Bundle Identifier: Ensure your app's Bundle Identifier exactly matches the App ID in your provisioning profile.\n*   Expired Certificates/Profiles: Regularly renew your developer certificates and provisioning profiles.\n*   Incorrect Provisioning Profile Type:  Using a development profile for App Store submission, or vice versa.\n*   Device Not Included: If using a development or ad-hoc profile, make sure the test device is registered in your developer account and included in the profile.\n*   Not understanding Wildcard App IDs: Wildcard App IDs (e.g., `com.example.*`) are useful for development but limit capabilities like push notifications in production.\n\n**Alternatives:**\nThere aren't really *alternatives* to code signing and provisioning for standard iOS app distribution.  It's the foundation of Apple's security model. However, for enterprise distribution, you might use Mobile Device Management (MDM) solutions to manage app deployment and updates, but code signing and provisioning are still fundamentally required.\n\nWithout proper code signing and provisioning, your app will not run on user devices, and you risk exposing users to malicious or tampered software.  It's a cornerstone of iOS security.",
       "code_example": null,
       "tags": [
         "security",
         "code signing",
         "provisioning profiles",
-        "iOS"
+        "certificates",
+        "iOS security"
       ],
       "sources": [
         "https://developer.apple.com/news/"
@@ -90,35 +85,41 @@
     },
     {
       "id": "security_c64c3d914723",
-      "front": "Discuss common secure coding practices in iOS development to prevent vulnerabilities. Provide examples.",
-      "back": "Key practices include: Input validation (sanitize user input, prevent injection attacks), data protection (using Keychain for sensitive data, encrypting data at rest/in transit), secure networking (HTTPS, certificate pinning), proper session management (secure cookies, token validation), and avoiding common pitfalls like hardcoding secrets or insecure random number generation. Example: Use `OSRandomCopyBytes` instead of `arc4random` for cryptographically secure random numbers.",
+      "front": "Discuss secure coding practices in iOS development. Cover common vulnerabilities, mitigation techniques, and tools for ensuring application security.",
+      "back": "Secure coding is crucial for protecting user data and application integrity. Common vulnerabilities include: \n\n*   **Data breaches:** Storing sensitive data insecurely (e.g., plain text passwords). Mitigation: Use Keychain for credentials, encrypt data at rest and in transit (HTTPS), and avoid storing sensitive data locally if possible.\n*   **Injection attacks:** Allowing user input to directly affect code execution (e.g., SQL injection in Core Data). Mitigation: Use parameterized queries or ORM features that automatically escape user input. Validate and sanitize all user inputs on both the client and server sides.\n*   **Cross-Site Scripting (XSS):** While less relevant for native apps, if your app uses web views, ensure proper content security policies (CSP) are implemented to prevent malicious scripts from executing.\n*   **Man-in-the-Middle (MITM) attacks:** Intercepting network traffic. Mitigation: Enforce HTTPS with certificate pinning to prevent attackers from using fake certificates.\n*   **Reverse engineering/Tampering:** Attackers disassembling and modifying your app. Mitigation: Obfuscate code, use runtime integrity checks to detect tampering, and consider using jailbreak detection.\n*   **Insecure data storage:** Storing data in a way that other applications can access it.\n\nExample (Keychain usage):\n```swift\nimport Security\n\nfunc savePassword(password: String, account: String) {\n let passwordData = password.data(using: .utf8)!\n\n let query: [String: Any] = [\n kSecClass as String: kSecClassGenericPassword,\n kSecAttrAccount as String: account, // unique to the user\n kSecValueData as String: passwordData,\n kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly // Adjust accessibility based on security needs\n ]\n\n SecItemDelete(query as CFDictionary) // Delete any existing item\n\n let status = SecItemAdd(query as CFDictionary, nil)\n if status != errSecSuccess {\n print(\"Error saving password: \\(status)\")\n }\n}\n\nfunc retrievePassword(account: String) -> String? {\n let query: [String: Any] = [\n kSecClass as String: kSecClassGenericPassword,\n kSecAttrAccount as String: account,\n kSecReturnData as String: kCFBooleanTrue!,\n kSecMatchLimit as String: kSecMatchLimitOne\n ]\n\n var dataTypeRef: AnyObject?\n let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)\n\n if status == errSecSuccess {\n let retrievedData = dataTypeRef as! Data\n return String(data: retrievedData, encoding: .utf8)\n } else {\n print(\"Error retrieving password: \\(status)\")\n return nil\n }\n}\n```\nCommon pitfalls:\n*   Hardcoding secrets or API keys in the code.\n*   Disabling App Transport Security (ATS) without proper justification.\n*   Not validating server-side data.\n*   Using weak encryption algorithms.\n*   Ignoring security updates.\n\nTools:\n*   Static analysis tools: Detect potential vulnerabilities in your code (e.g., SwiftLint).\n*   Runtime analysis tools: Monitor application behavior at runtime (e.g., debuggers, security frameworks).\n*   Vulnerability scanners: Identify known vulnerabilities in third-party libraries.\n\nAlternatives:\nWhile you can roll your own encryption or security solutions, it's generally recommended to use well-vetted, standard libraries and frameworks provided by Apple (e.g., CryptoKit) or reputable third-party providers. This reduces the risk of introducing vulnerabilities through custom implementations.\n\nAlways stay up-to-date with the latest security best practices and vulnerabilities. Conduct regular security audits and penetration testing to identify and address potential weaknesses in your application.",
       "code_example": null,
       "tags": [
         "security",
+        "ios",
         "coding practices",
-        "input validation",
-        "data protection",
-        "networking"
+        "vulnerabilities",
+        "keychain",
+        "encryption",
+        "https",
+        "mitm",
+        "xss",
+        "injection",
+        "static analysis",
+        "runtime analysis"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/",
-        "https://www.objc.io/issues/16-swift/swift-functions/",
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.objc.io/issues/16-swift/swift-functions/"
       ]
     },
     {
       "id": "security_a98037d94e1a",
-      "front": "Describe the OWASP Mobile Security Project. What are some key risks it identifies for iOS apps, and how would you mitigate them?",
-      "back": "The OWASP Mobile Security Project provides resources for developing and maintaining secure mobile apps. Key risks include: \n\n*   **Insecure Data Storage:** Sensitive data stored unencrypted. Mitigate by using the Keychain, encrypting Core Data, and avoiding storing sensitive data locally.\n*   **Insufficient Cryptography:** Weak or improperly implemented encryption. Use strong, modern crypto libraries like CryptoKit (Swift 5.1+), TLS 1.3, and avoid custom crypto.\n*   **Insecure Authentication/Authorization:** Weak or bypassed authentication. Implement multi-factor authentication, strong password policies, and proper session management.\n*   **Client-Side Injection:** Exploiting vulnerabilities in web views or other client-side components. Sanitize inputs and use secure coding practices.\n*   **Reverse Engineering:** Code can be decompiled. Use code obfuscation techniques, runtime integrity checks, and protect sensitive logic.\n*   **Transport Layer Protection:** Data transmitted insecurely. Enforce TLS for all network communication, use certificate pinning, and validate server certificates.\n*   **Platform API misuse:** Improper use of Apple's APIs. Follow security best practices, and stay up to date with API changes.\n\nRegular security audits, penetration testing, and adhering to secure coding practices are crucial.",
+      "front": "Explain the OWASP Mobile Security Project and list the top 3 mobile security risks. How can you mitigate these risks in an iOS app?",
+      "back": "The OWASP Mobile Security Project aims to provide a standardized approach to securing mobile applications. It identifies common mobile security risks and provides guidance on how to address them. The top 3 (as of OWASP Mobile Top Ten 2023) are:\n\n1.  **Improper Platform Usage (MSTG-PLATFORM):** Misuse of platform features, OS permissions, or available security controls.  Example: Storing sensitive data in UserDefaults without encryption.\n\n    *Mitigation:* Follow platform security best practices.  Use Keychain for secrets. Properly handle permissions. Code example:\n    ```swift\n    // Storing a token securely in Keychain\n    let keychain = KeychainSwift()\n    keychain.set(\"your_token\", forKey: \"authToken\")\n    ```\n    Pitfalls:  Forgetting to encrypt UserDefaults.  Asking for unnecessary permissions.\n\n2.  **Insecure Data Storage (MSTG-DATA):** Sensitive data is stored insecurely on the device.  Example:  Storing API keys in plaintext in the app bundle or UserDefaults.\n\n    *Mitigation:*  Encrypt sensitive data at rest using Keychain, Core Data with encryption, or Realm with encryption.  Avoid storing sensitive data locally if possible. If you must, use the Keychain. Code example:\n    ```swift\n    import KeychainSwift\n\n    func saveApiKey(apiKey: String) {\n        let keychain = KeychainSwift()\n        keychain.set(apiKey, forKey: \"apiKey\")\n    }\n\n    func retrieveApiKey() -> String? {\n        let keychain = KeychainSwift()\n        return keychain.get(\"apiKey\")\n    }\n    ```\n    Pitfalls:  Hardcoding API keys.  Using weak encryption.\n\n3.  **Insufficient Cryptography (MSTG-CRYPTO):** Using weak or broken cryptographic algorithms, or implementing cryptography incorrectly. Example: Using MD5 for hashing passwords.\n\n    *Mitigation:* Use strong, modern cryptographic libraries like CryptoKit (Swift) or CommonCrypto (C).  Properly manage keys. Avoid custom crypto implementations if possible. Code example:\n    ```swift\n    import CryptoKit\n\n    func hashPassword(password: String) -> String? {\n        guard let data = password.data(using: .utf8) else {\n            return nil\n        }\n\n        let salt = generateSalt()\n        let saltedData = salt + data\n\n        let sha256Hashed = SHA256.hash(data: saltedData)\n        let hashedString = Data(sha256Hashed).base64EncodedString()\n\n        return hashedString\n    }\n\n    func generateSalt() -> Data {\n        var keyData = Data(count: 32)\n        let result = keyData.withUnsafeMutableBytes {\n            SecRandomCopyBytes(kSecRandomDefault, 32, $0.baseAddress!)\n        }\n        if result == errSecSuccess {\n            return keyData\n        } else {\n            return Data() // Handle error appropriately\n        }\n    }\n    ```\n    Pitfalls: Using deprecated algorithms.  Improper key management. Not salting passwords.\n\nAlternatives to storing data locally include using secure cloud storage and minimizing the amount of sensitive data handled by the mobile app.\n",
       "code_example": null,
       "tags": [
         "security",
         "OWASP",
         "mobile security",
         "iOS",
-        "risk mitigation",
-        "cryptography",
-        "authentication"
+        "Keychain",
+        "CryptoKit"
       ],
       "sources": [
         "https://www.objc.io/issues/13-architecture/viper/",

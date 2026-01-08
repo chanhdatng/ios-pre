@@ -1,63 +1,35 @@
 {
   "topic": "debugging",
-  "generated_at": "2026-01-08T03:55:15.486214+00:00",
+  "generated_at": "2026-01-08T04:59:58.553522+00:00",
   "cards": [
     {
-      "id": "debugging_0ea0235941aa",
-      "front": "Describe how to use LLDB to inspect variables and step through code.  Give specific commands and examples.",
-      "back": "Common LLDB commands:\n\n*   `po <variable>`: Print object description.\n*   `p <variable>`: Print variable's value.\n*   `bt`: Print backtrace.\n*   `continue` or `c`: Continue execution.\n*   `next` or `n`: Step over the next line.\n*   `step` or `s`: Step into the next function.\n*   `breakpoint set -name <method>`: Set breakpoint at method.\n*   `breakpoint set -file <file> -line <line_number>`: Set breakpoint at file/line.\n*   `breakpoint delete <breakpoint_id>`: Delete a breakpoint.\n*   `expression <variable> = <value>`: Modify variable value.\n*   `frame variable`: Show all variables in current frame.\nExample:\n`po myString` will print the description of `myString`.",
-      "code_example": null,
-      "tags": [
-        "debugging",
-        "lldb",
-        "xcode"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
-      "id": "debugging_aa5b0c0bdfb3",
-      "front": "Describe strategies for debugging memory issues in iOS apps beyond using Instruments. How would you identify retain cycles programmatically?",
-      "back": "Beyond Instruments (Leaks, Allocations), I'd use: 1) **Breakpoints:** Set breakpoints in `deinit` methods to see when objects are released (or not). 2) **Weak/Unowned References:** Verify proper usage in delegates/closures. 3) **Custom Memory Management:**  Inspect custom alloc/dealloc code.  4) **MLeaksFinder/FBMemoryProfiler:** Integrate 3rd party tools to detect memory leaks automatically. 5) **Snapshot debugging:** Capturing memory snapshots on device using MemoryGraph framework programmatically to triage later. To identify retain cycles programmatically, I'd utilize `CFGetRetainCount()` (though use cautiously, mostly for debugging) and analyze object graphs during runtime with debugger scripts or custom logging.",
-      "code_example": null,
-      "tags": [
-        "memory management",
-        "debugging",
-        "retain cycles",
-        "instruments"
-      ],
-      "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.objc.io/issues/15-testing/dependency-injection/",
-        "https://www.objc.io/issues/15-testing/xctest/"
-      ]
-    },
-    {
       "id": "debugging_6a4d1a449a68",
-      "front": "Describe your process for analyzing a crash log. What key pieces of information do you look for and why?",
-      "back": "1. **Crash Type:** Identify the crash type (e.g., EXC_BAD_ACCESS, SIGSEGV, EXC_CRASH). This gives an initial clue.\n2. **Exception Code/Subcode:** Deciphers *why* the crash occurred (e.g., memory access issue).\n3. **Thread Crashed:** Pinpoints the thread where the crash originated. Often the main thread, but crucial for concurrency issues.\n4. **Stack Trace:**  Most important. Examine the functions called leading to the crash.  Start from the top (crashing frame) and go down. Look for familiar function names or framework calls.\n5. **Binary Images:** Helps identify the exact versions of libraries and frameworks in use, crucial for debugging versions, and knowing if a framework is yours or external.\n6. **Device and OS Version:** Essential for replicating the crash.  Crashes can be OS-specific.\n7. **Memory Footprint:** Significant memory usage before the crash? Could indicate a memory leak.\n8. **Reproducibility:** Can you reliably reproduce it? If not, gather more data.\nTools:  Xcode's Organizer, Crashlytics, Bugsnag, Sentry.\nExample: An `EXC_BAD_ACCESS` with code `KERN_INVALID_ADDRESS` likely means you're trying to access memory that hasn't been allocated or has been deallocated. The stack trace will show where this occurred.",
+      "front": "How do you approach analyzing crash logs in iOS, and what key information do you look for to diagnose and fix crashes?",
+      "back": "Crash log analysis is crucial for debugging. I start by examining the \"Exception Type\" and \"Exception Codes\" to understand the crash's nature (e.g., `EXC_BAD_ACCESS` indicates memory access issues). The \"Crashed Thread\" is vital; I inspect its backtrace to pinpoint the code where the crash originated.  Symbolication (replacing memory addresses with function names) is essential; Xcode usually handles this automatically if dSYMs are present.  The binary images section lists loaded libraries and their addresses, helping identify if a crash occurs within a specific framework. I pay close attention to the thread state (register values) for clues about the program's state at the crash.  For example:\n\n```swift\n// Example: potential crash scenario\nclass MyClass {\n    var myString: String?\n\n    func processString() {\n        // Force unwrap without checking for nil\n        let length = myString!.count // Potential crash here if myString is nil\n        print(\"String length: \\(length)\")\n    }\n}\n\nlet myObject = MyClass()\n// myObject.myString = \"Hello\" //Uncommenting this line avoids the crash\nmyObject.processString()\n```\n\nIn this example, if `myString` is nil, the force unwrap `myString!` will cause a crash. The crash log will show `EXC_BAD_INSTRUCTION` or `EXC_BREAKPOINT` depending on optimization levels, and the backtrace will lead directly to the line where the force unwrap happens.\n\nCommon pitfalls include: forgetting to symbolicate, misinterpreting thread backtraces (especially with asynchronous code), and overlooking the context surrounding the crash (e.g., user actions, device state).  For memory-related crashes, tools like Instruments (specifically, the Allocations and Leaks instruments) are invaluable for identifying memory leaks or over-releases that might lead to crashes later on.  Consider using a crash reporting framework like Firebase Crashlytics or Bugsnag to automatically collect and symbolicate crash logs from users' devices. These tools also provide insights into the frequency and distribution of crashes, helping prioritize fixes.  When analyzing crashes in concurrent code, look for race conditions or deadlocks, which can be challenging to reproduce but often leave specific patterns in the thread backtraces.",
       "code_example": null,
       "tags": [
         "debugging",
         "crash logs",
-        "error handling"
+        "symbolication",
+        "exception handling"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.objc.io/issues/15-testing/xctest/"
+        "https://www.objc.io/issues/15-testing/xctest/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
       ]
     },
     {
       "id": "debugging_0c5380e23e69",
-      "front": "What is symbolication and why is it important in debugging iOS applications?  How does it relate to crash reports?",
-      "back": "Symbolication translates memory addresses in stack traces (like in crash reports) into human-readable function names, class names, and line numbers.\n\nWithout symbolication, crash reports are just a series of memory addresses, making debugging nearly impossible.\n\nIt's important because it allows developers to pinpoint the exact location in the code where a crash occurred, facilitating efficient bug fixing.",
+      "front": "Explain symbolication in iOS development. Why is it important, and how does it work? What are common issues encountered during symbolication and how can you resolve them?",
+      "back": "Symbolication translates memory addresses in crash reports into human-readable function names, file names, and line numbers. Without it, crash reports are just hexadecimal addresses, making debugging nearly impossible.  It's crucial for identifying where crashes occur in your code.\n\nHere's how it works: When your app crashes, the OS generates a crash report containing the memory address of the instruction that caused the crash.  Symbolication uses debug symbols (dSYMs) files generated during the build process to map these addresses back to the original code. dSYMs contain the mapping between compiled code and source code.\n\nExample (Illustrative):\nImagine a crash report shows address `0x12345678`. The symbolicator searches the dSYM. If the dSYM contains an entry indicating that address `0x12345678` corresponds to `MyViewController.viewDidLoad() line 42`, the symbolicator replaces the address with this information in the crash report.\n\nCommon issues and solutions:\n1. **Missing dSYMs:** The most frequent problem.  Each build produces a unique dSYM.  If you archive your app, Xcode usually stores the dSYMs.  Ensure you archive before submitting to the App Store (or TestFlight). If missing, try to rebuild the exact version of the app.  Check Xcode's Organizer for archives.\n2. **Incorrect dSYMs:** Using dSYMs from a different build will result in incorrect or failed symbolication. Verify the build UUID in the crash report matches the UUID of the dSYM. Use `dwarfdump --uuid <dSYM_path>` to check the dSYM's UUID and compare it to the crash report.\n3. **Bitcode:** If your app was built with Bitcode enabled (the default for App Store submissions before Xcode 14), Apple recompiles the app. You *must* download the dSYMs from App Store Connect (formerly iTunes Connect) for the symbolication to work correctly.  These are different from the dSYMs generated by your local Xcode build. Navigate to TestFlight in App Store Connect, select the build, and download the dSYMs. \n4. **Stripped Symbols:** Sometimes debug symbols are intentionally stripped to reduce app size. This prevents symbolication. Avoid stripping symbols for production builds unless absolutely necessary. If you do, ensure you keep the stripped dSYMs.\n5. **Third-party Libraries:** If a crash occurs in a third-party library, you'll need the dSYMs for that library to symbolicate the crash report fully. Many SDKs provide dSYMs separately or include them in the framework bundle. Contact the SDK provider if necessary.\n\nWorkflow:\n1. **Obtain the Crash Report:** From users or App Store Connect.\n2. **Locate dSYMs:** From Xcode Archives, App Store Connect, or your build server.\n3. **Symbolicate:** Use Xcode's \"Symbolicate Crash Report...\" command (under \"Developer\" menu) or the `atos` command-line tool (`atos -arch arm64 -o <path_to_dSYM>/Contents/Resources/DWARF/<app_name> -l <load_address> <address_to_symbolicate>`).  The load address is the address where the app was loaded into memory, found in the crash report.\n\nExample `atos` usage:\n`atos -arch arm64 -o MyApp.app.dSYM/Contents/Resources/DWARF/MyApp -l 0x100000000 0x100045678`\n\nBest Practices:\n*   Always archive your app before distributing.\n*   Download dSYMs from App Store Connect for builds submitted with Bitcode.\n*   Store dSYMs securely and systematically.\n*   Automate symbolication as part of your CI/CD pipeline.\n\nAlternatives: Crash reporting SDKs (e.g., Firebase Crashlytics, Bugsnag, Sentry) automate crash report collection and symbolication.  They often provide enhanced features like grouping crashes, user context, and breadcrumbs, making debugging easier. However, understanding manual symbolication is still crucial for troubleshooting issues and for scenarios where SDKs aren't available or sufficient.",
       "code_example": null,
       "tags": [
         "debugging",
         "symbolication",
         "crash reports",
-        "stack trace"
+        "dSYMs",
+        "bitcode",
+        "atos"
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"
@@ -65,20 +37,20 @@
     },
     {
       "id": "debugging_75b31908b8e1",
-      "front": "Describe your experience debugging network issues in iOS apps. What tools & techniques do you use?",
-      "back": "I use a variety of tools like Charles Proxy, Wireshark, and built-in Xcode network debugging tools. Charles allows intercepting and inspecting network traffic (requests/responses, headers, body).  Wireshark is for deeper packet analysis.  Xcode's Network Inspector provides a high-level view of network activity within the app. For techniques, I use logging (URLSession's delegate methods), breakpoints, and custom request/response validation for error handling.  I might even build a 'fake server' for complex scenarios. Also important: understanding HTTP status codes, REST principles, and JSON format.",
+      "front": "Describe your approach to debugging network-related issues in an iOS app. What tools and techniques do you use to identify and resolve problems with network requests and responses?",
+      "back": "Network debugging is crucial. I start with high-level checks: network reachability (using `NWPathMonitor` or Reachability library) to ensure the device has connectivity. Then, I examine the requests & responses.\n\n**Tools & Techniques:**\n*   **Charles Proxy/Proxyman:** My go-to. Allows me to intercept, inspect, and modify HTTP(S) traffic between the app and server. I check request headers, body, response codes, and latency.\n*   **URLSession's `configuration.requestCachePolicy`:** Check for caching issues. If data is stale, ensure cache policy is set correctly or disable caching temporarily for debugging.\n*   **Xcode's Network Inspector:**  A basic tool within Xcode. Useful for viewing network requests initiated by `URLSession`. Less powerful than Charles but convenient for a quick look.\n*   **Logging:**  Use `os_log` or custom logging to track the flow of network calls, request parameters, and response data.  Be mindful of sensitive data.\n*   **Server-side logs:** Correlate client-side issues with server-side logs to pinpoint problems originating from the backend.\n*   **Debugging tools (breakpoints, lldb):** Step through network code to understand data transformations or identify unexpected behavior in request/response handling.\n*   **Simulator limitations:** Remember the simulator shares the Mac's network.  Test on a real device for accurate cellular behavior.\n\n**Code Example (Logging):**\n```swift\nfunc fetchData(from url: URL) {\n    os_log(.info, \"Fetching data from: %{public}@\", url.absoluteString)\n    URLSession.shared.dataTask(with: url) { data, response, error in\n        if let error = error {\n            os_log(.error, \"Network error: %{public}@\", error.localizedDescription)\n            return\n        }\n        guard let httpResponse = response as? HTTPURLResponse else {\n            os_log(.error, \"Invalid HTTP response\")\n            return\n        }\n        os_log(.info, \"Response status code: %d\", httpResponse.statusCode)\n        guard (200...299).contains(httpResponse.statusCode) else {\n            os_log(.error, \"Bad response: %d\", httpResponse.statusCode)\n            return\n        }\n\n        if let data = data {\n            // Process data\n            os_log(.info, \"Data received: %d bytes\", data.count)\n        } else {\n            os_log(.error, \"No data received\")\n        }\n    }.resume()\n}\n```\n\n**Common Pitfalls:**\n*   **HTTPS issues (TLS/SSL):**  Ensure correct certificate pinning (if implemented) and proper server configuration.\n*   **JSON parsing errors:** Validate JSON responses against the expected schema. Use tools like JSONLint.\n*   **Request timeouts:**  Increase timeout intervals if requests consistently time out.  Consider user's network.\n*   **Background tasks:**  Ensure background network requests are properly configured and handled using `URLSessionConfiguration.background(withIdentifier:)`.\n*   **Data Serialization/Deserialization:** Ensure the server and client agree on data formats.\n*   **Race conditions:**  Ensure that UI updates are performed on the main thread after a network request completes.\n*   **Ignoring Error Codes:** Always handle different HTTP status codes appropriately.\n\n**Alternatives:**\n*   **Fakes/Mocks:**  For unit testing, use mock network layers (e.g., `URLProtocol` stubs) to simulate different server responses. This allows for isolated testing of network-dependent components. As described in the documentation, creating a fake TransportSession can be useful. \n*   **Postman/Insomnia:**  Useful for testing API endpoints directly, independent of the app.\n\nMy workflow involves using Charles/Proxyman to capture traffic, logging to track the app's behavior, and server-side logs to correlate issues. Combining these allows for efficient debugging.",
       "code_example": null,
       "tags": [
         "networking",
         "debugging",
-        "tools",
-        "HTTP",
         "URLSession",
         "Charles Proxy",
-        "Wireshark",
-        "Xcode",
-        "testing",
-        "mocking"
+        "Proxyman",
+        "logging",
+        "HTTP",
+        "HTTPS",
+        "reachability",
+        "unit testing"
       ],
       "sources": [
         "https://www.objc.io/issues/2-concurrency/common-background-practices/",
@@ -87,16 +59,16 @@
     },
     {
       "id": "debugging_a0af6467c998",
-      "front": "Describe your experience debugging view-related issues (e.g., layout problems, rendering glitches). What tools/techniques do you use?",
-      "back": "I use Xcode's View Debugger extensively. I inspect the view hierarchy, constraints, and rendering properties (e.g., `clipsToBounds`, `opaque`).  I also use `UIColor.red.setFill()` temporarily on views to visually identify their frames. For complex layouts, I'll often use breakpoints and `po view.recursiveDescription` to understand the hierarchy's state at runtime.  Instruments (Core Animation) helps identify offscreen rendering.  I've also used custom assert macros during unit testing to provide descriptive information when debugging.",
+      "front": "Describe your approach to debugging view-related issues in iOS. What tools and techniques do you use beyond `NSLog`?",
+      "back": "Debugging view issues requires a multi-faceted approach. Beyond basic logging, I leverage several powerful tools.\n\n**Concept:**\nThe core idea is to inspect the view hierarchy, constraints, and rendering properties at runtime to pinpoint the source of visual problems.\n\n**Tools & Techniques:**\n\n1.  **View Debugger (Xcode):**  This is my primary tool. It allows me to pause the app and inspect the entire view hierarchy in 3D. I can examine each view's properties (frame, bounds, alpha, background color, constraints, etc.) and identify layout issues, clipping problems, or incorrect view ordering. I can also select a view and see its constraints highlighted.\n\n2.  **Debug View Hierarchy at Runtime:** Using `po` in LLDB (debugger), I can print the view hierarchy or specific views' properties to the console. For example, `po self.view.recursiveDescription()` will output a detailed description of the view hierarchy.\n\n3.  **UI Testing:** While primarily for testing, UI tests can help isolate view issues.  Writing a UI test that interacts with a specific view can reveal unexpected behavior or state.  Use `recordFailureWithDescription` to add helpful debugging information to test failures.\n\n4.  **Color Blended Layers:** In the Simulator, enable \"Color Blended Layers\" under Debug -> Graphics. This highlights areas where views are overlapping, which can cause performance issues or visual artifacts.\n\n5.  **Core Animation Instrument:** Use Instruments.app (part of Xcode) to profile the app's rendering performance.  Look for excessive layer creation, offscreen rendering, or other performance bottlenecks that could be contributing to visual glitches. Also, check \"Color Offscreen-Rendered Yellow\" to visualize performance issues.\n\n6.  **Constraint Debugging:** Xcode provides constraint debugging tools. You can inspect constraints in the debugger and see if any are broken or ambiguous.  Pay attention to console warnings about unsatisfiable constraints.\n\n7.  **Custom Drawing & Overrides:** If a view involves custom drawing, temporarily override `draw(_ rect:)` to add debugging code.  For example, you can fill the view with a distinct color to confirm it's being drawn at all.\n\n**Code Example (Swift):**\n\n```swift\noverride func draw(_ rect: CGRect) {\n    super.draw(rect)\n    #if DEBUG\n    UIColor.red.setFill()\n    UIRectFill(rect) // Make sure the view is actually drawing\n    #endif\n}\n```\n\n**Common Pitfalls & Edge Cases:**\n*   **Hidden Views:**  Ensure views aren't accidentally hidden (`isHidden = true`) or have an alpha of 0.\n*   **Incorrect Frames:** Double-check the frame calculations, especially when dealing with dynamic content or auto layout.\n*   **Z-Ordering Issues:**  Verify the view hierarchy is correct so views are in the desired order.\n*   **Offscreen Rendering:** If a view is rendering offscreen, it can impact performance. Instruments can help identify this.\n*   **Constraint Conflicts:** Unsatisfiable constraints can lead to unexpected layout. Xcode's constraint debugger is crucial.\n*   **Ambiguous Layout:** Constraints should fully define the view's position and size. Ambiguous layouts can result in unpredictable behavior.\n\n**When to use vs. Alternatives:**\nWhile `NSLog` or `print` statements can be helpful for basic debugging, they are insufficient for complex view debugging. The View Debugger and Instruments are essential for in-depth analysis. Color Blended Layers and similar simulator features are valuable for quickly identifying potential issues. Debug View Hierarchy at Runtime is useful for getting a quick overview of the view hierarchy without pausing the app. Custom Assert Macros are helpful for ensuring values are what you expect in tests.",
       "code_example": null,
       "tags": [
         "debugging",
         "view debugging",
-        "layout",
-        "rendering",
         "xcode",
-        "instruments"
+        "instruments",
+        "auto layout",
+        "constraints"
       ],
       "sources": [
         "https://www.objc.io/issues/13-architecture/viper/",
@@ -105,14 +77,15 @@
     },
     {
       "id": "debugging_3561e6d6eeee",
-      "front": "Describe your approach to performance profiling in iOS. What tools do you use and what metrics are important to monitor?",
-      "back": "I primarily use Instruments for performance profiling. Key metrics include CPU usage, memory allocation (leaks, allocations, resident memory), disk I/O, and network usage. I start with the Time Profiler to identify CPU-intensive areas. Then, I dive deeper with alloc/leaks instruments. For UI performance, I use the Core Animation instrument to look for offscreen rendering, blending, and excessive view hierarchy complexity.  I also use os_signpost for custom instrumentation. I can use MetricKit in production.",
+      "front": "Explain performance profiling in iOS development. Describe tools, techniques, and common performance bottlenecks.",
+      "back": "Performance profiling identifies performance bottlenecks in your app. It's crucial for ensuring a smooth user experience. \n\n**Tools:**\n*   **Instruments:** Apple's powerful performance analysis tool. It offers various instruments (CPU profiler, memory allocator, network monitor, etc.) to collect data.\n*   **Xcode Debugger:** Useful for stepping through code and inspecting variables, but less suited for overall performance analysis.\n*   **os_signpost:** Custom instrumentation for logging specific events to Instruments.\n\n**Techniques:**\n*   **Time Profiler:** Identifies CPU-intensive functions. Look for functions with high \"Self\" time.\n*   **Allocations Instrument:** Tracks memory allocations and leaks. Use it to find objects that are never deallocated.\n*   **Leaks Instrument:** Detects memory leaks.\n*   **Core Animation Instrument:** Monitors frame rates and identifies drawing bottlenecks.\n*   **Network Instrument:** Analyzes network traffic.\n*   **Energy Log:** Monitors battery consumption.\n\n**Common Bottlenecks:**\n*   **CPU-bound operations:** Complex calculations, image processing, large data parsing, excessive looping.\n*   **Memory leaks:** Objects that are allocated but never deallocated, leading to memory pressure and crashes.  Strong reference cycles are a common cause. Use Instruments' Allocations and Leaks tools.\n*   **I/O operations:**  Reading/writing large files, network requests.  Move to background threads and use caching.\n*   **UI rendering:**  Complex view hierarchies, offscreen rendering, excessive auto layout calculations.  Optimize view drawing and layout.\n*   **GCD abuse:** Using the main queue for long-running tasks, creating too many concurrent queues.\n\n**Example (Instruments - Time Profiler):**\n1.  Run your app in Instruments using the Time Profiler.\n2.  Reproduce the slow behavior.\n3.  Analyze the call tree in Instruments.  Functions with high \"Self\" time are good candidates for optimization.\n\n**Example (os_signpost):**\n```swift\nimport os.signpost\n\nlet signpostLog = OSLog(subsystem: \"com.example.app\", category: \"Performance\")\n\nfunc mySlowFunction() {\n    os_signpost(.begin, log: signpostLog, name: \"mySlowFunction\")\n    // ... perform slow operation ...\n    Thread.sleep(forTimeInterval: 1.0) // Simulate a slow operation\n    os_signpost(.end, log: signpostLog, name: \"mySlowFunction\")\n}\n\nmySlowFunction()\n```\n\n**Pitfalls:**\n*   **Profiling in Debug mode:** Debug mode adds overhead, so always profile in Release mode.\n*   **Ignoring real-world scenarios:**  Test with realistic data sets and network conditions.\n*   **Premature optimization:**  Optimize only after identifying actual bottlenecks.\n*   **Not using Instruments:** Relying solely on gut feeling or Xcode debugger.\n\n**Alternatives:**\nWhile Instruments is the primary tool, other options exist:\n*   **Third-party APM tools:** Offer more advanced monitoring and analytics.\n*   **Custom logging:** Useful for tracking specific events, but can be less comprehensive than Instruments.\n\nProfiling is an iterative process. Identify a bottleneck, optimize the code, and then profile again to verify the improvement.",
       "code_example": null,
       "tags": [
         "performance",
+        "profiling",
         "instruments",
         "debugging",
-        "profiling"
+        "optimization"
       ],
       "sources": [
         "https://www.objc.io/issues/15-testing/xctest/"

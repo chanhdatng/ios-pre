@@ -1,32 +1,18 @@
 {
   "topic": "data_persistence",
-  "generated_at": "2026-01-08T03:55:15.486198+00:00",
+  "generated_at": "2026-01-08T04:59:58.553499+00:00",
   "cards": [
     {
-      "id": "data_persistence_0658a152705c",
-      "front": "Explain the Core Data stack, including Managed Object Contexts, and how they interact. When would you use multiple contexts?",
-      "back": "The Core Data stack consists of: Persistent Store Coordinator (PSC), Managed Object Context (MOC), and Persistent Store.\n\nThe PSC acts as a central point, connecting the MOC and Persistent Store.\n\nThe MOC manages object graphs, tracking changes to managed objects. Objects are tied to a specific MOC.\n\nThe Persistent Store handles reading/writing data to disk, often a SQLite database.\n\nUse multiple contexts for concurrency: a main-thread context for UI and background contexts for long-running operations to avoid blocking the UI. Changes can then be merged.",
-      "code_example": null,
-      "tags": [
-        "Core Data",
-        "Persistence",
-        "Concurrency",
-        "Data Management"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/"
-      ]
-    },
-    {
       "id": "data_persistence_4ef0b438bba1",
-      "front": "Explain the Core Data stack components and their responsibilities. How do they interact during a save operation?",
-      "back": "The Core Data stack consists of: `NSManagedObjectContext` (tracks object changes), `NSPersistentStoreCoordinator` (mediates between context and store), and `NSPersistentStore` (interacts with the storage, often SQLite). On save, the context identifies changes, passes them to the coordinator, which then coordinates with the store to persist data. Validation also occurs during the save. Changes happen per context and can be problematic if separate stacks access the same SQLite database file.",
+      "front": "Explain SwiftData's fundamental architecture and how it differs from Core Data. Focus on the roles of the Model Container, Model Context, and persistent storage.",
+      "back": "SwiftData simplifies data persistence compared to Core Data. \n\n**Core Concepts:**\n\n*   **Model Container:** This is the entry point. It manages the schema (your data model) and the persistent storage.  Think of it as the database file and the schema definition combined. Unlike Core Data's managed object model, persistent store coordinator, and managed object context setup, SwiftData bundles these. Initialization involves providing your model classes.  It handles the underlying SQLite database setup.\n\n*   **Model Context:**  This is your scratchpad. You create, read, update, and delete objects within a model context.  Changes are tracked here.  It's analogous to Core Data's `NSManagedObjectContext`.  Saving the context persists the changes to the underlying storage.\n\n*   **Persistent Storage:**  SwiftData uses SQLite by default. The Model Container handles the interaction.  You rarely need to interact with SQLite directly. \n\n**Differences from Core Data:**\n\n*   **Simplified Setup:** Core Data requires setting up a managed object model, persistent store coordinator, and managed object context. SwiftData streamlines this with the Model Container.\n*   **Type Safety:**  SwiftData leverages Swift's type system more effectively, reducing the need for string-based entity names and key paths.\n*   **Integration with SwiftUI:** SwiftData is designed to work seamlessly with SwiftUI, offering property wrappers like `@Query` for easy data fetching.\n*   **Less Boilerplate:**  SwiftData aims to reduce boilerplate code associated with Core Data.\n\n**Code Example:**\n\n```swift\nimport SwiftData\n\n// 1. Define your Model\n@Model\nclass Item {\n    var title: String\n    var timestamp: Date\n\n    init(title: String, timestamp: Date = Date()) {\n        self.title = title\n        self.timestamp = timestamp\n    }\n}\n\n// In your SwiftUI view:\nstruct ContentView: View {\n    @Environment(\\ModelContext) private var modelContext\n    @Query private var items: [Item]\n\n    var body: some View {\n        List {\n            ForEach(items) { item in\n                Text(item.title)\n            }\n        }\n        .toolbar {\n            Button(\"Add Item\") {\n                let newItem = Item(title: \"New Item\")\n                modelContext.insert(newItem)\n                //No need to save context explicitly, done automatically unless disabled\n            }\n        }\n    }\n}\n\n//In your app:\n@main\nstruct SwiftDataApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n        .modelContainer(for: Item.self)\n    }\n}\n```\n\n**Common Pitfalls:**\n\n*   **Forgetting `@Model`:**  SwiftData won't recognize your class as a model without the `@Model` macro.\n*   **Context Management:**  Ensure you're using the correct `ModelContext`. In SwiftUI, use `@Environment(\\ModelContext)`.  For background tasks, create a new context.\n*   **Schema Migrations:**  SwiftData handles basic schema changes, but complex migrations might require manual intervention (not fully fleshed out as of the current release).\n*   **Relationship management:** SwiftData simplifies relationships, but you still need to understand inverse relationships to avoid data inconsistencies. Using `@Relationship` macro.\n\n**Alternatives:**\n\n*   **Core Data:**  Still a powerful option for complex data models and advanced features, but requires more setup.\n*   **Realm:**  Another mobile database solution with a different architecture.\n*   **SQLite (Directly):**  Provides the most control but requires writing SQL queries and managing the database yourself.\n*   **UserDefaults:**  Suitable for simple key-value storage, not for complex data models.",
       "code_example": null,
       "tags": [
-        "core data",
-        "data persistence",
-        "architecture",
-        "interview"
+        "SwiftData",
+        "Data Persistence",
+        "Core Data",
+        "Model Container",
+        "Model Context"
       ],
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/"
@@ -34,45 +20,40 @@
     },
     {
       "id": "data_persistence_8b4d32ff8bcc",
-      "front": "Compare and contrast Core Data and SwiftData.  When might you choose one over the other?",
-      "back": "Core Data: Mature, object graph management, supports complex relationships, requires boilerplate.  SwiftData: Simpler syntax, integrates with SwiftUI, built on top of Core Data (uses SQLite store under the hood).  Choose Core Data for existing projects, complex data models, or features not yet in SwiftData.  Choose SwiftData for new SwiftUI-centric projects or when ease of use is paramount. Core Data's fetch request API is more robust than SwiftData's initial implementation.",
+      "front": "Compare and contrast Core Data and SwiftData. When would you choose one over the other?",
+      "back": "Core Data is a mature, powerful framework for managing an app's data model. It's not just persistence; it's an object graph management system. You define entities, attributes, and relationships in a schema. Core Data handles persistence (often SQLite), change tracking, validation, and even undo/redo. \n\nSwiftData, introduced in iOS 17, is Apple's modern data persistence framework built on top of Core Data. It simplifies the process, leveraging Swift's features like `@Model` macro for declarative data modeling. It integrates seamlessly with SwiftUI.  \n\n**Core Data:**\n*   **Pros:** Mature, flexible, handles complex data models & relationships, supports migrations, background processing.\n*   **Cons:** Steeper learning curve, more boilerplate code, manual management of the Core Data stack (managed object context, persistent store coordinator).\n\n**SwiftData:**\n*   **Pros:** Simpler API, declarative data modeling, SwiftUI integration, automatic schema migration.\n*   **Cons:** Relatively new, fewer features than Core Data, limited customization, may not be suitable for highly complex scenarios.\n\n**Example (Core Data):**\n```swift\nimport CoreData\n\nclass Task: NSManagedObject {\n @NSManaged public var title: String?\n @NSManaged public var isCompleted: Bool\n}\n\n// Creating a new task\nlet task = Task(context: managedObjectContext)\ntask.title = \"Buy groceries\"\ntask.isCompleted = false\n\n// Saving the context\ndo {\n try managedObjectContext.save()\n} catch {\n print(\"Error saving context: \\(error)\")\n}\n```\n\n**Example (SwiftData):**\n```swift\nimport SwiftData\n\n@Model\nclass Task {\n var title: String\n var isCompleted: Bool = false\n\n init(title: String) {\n self.title = title\n }\n}\n\n// Creating a new task\nlet task = Task(title: \"Buy groceries\")\nmodelContext.insert(task)\n\n// Saving is automatic\n```\n\n**When to use which:**\n*   **Core Data:** Use when you need advanced features like versioning, complex relationships, or fine-grained control over persistence. If you have an existing Core Data project, sticking with it might be the best option.\n*   **SwiftData:** Use when you want a simpler, more SwiftUI-friendly approach, especially for new projects.  If you need rapid development and your data model is relatively straightforward, SwiftData is a great choice.\n\n**Pitfalls:**\n*   **Core Data:**  Forgetting to save the context, incorrect thread management, complex migrations.\n*   **SwiftData:** Limited customization, potential issues with very large datasets, lack of some advanced Core Data features.",
       "code_example": null,
       "tags": [
         "data persistence",
-        "core data",
-        "swiftdata"
+        "Core Data",
+        "SwiftData",
+        "iOS 17"
       ],
       "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/",
-        "https://www.avanderlee.com/swift/core-data/"
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/4-core-data/core-data-overview/"
       ]
     },
     {
       "id": "data_persistence_59337dbc4bff",
-      "front": "Describe strategies for migrating Core Data models.  What are the pros/cons of each approach?",
-      "back": "Migration strategies include: \n\n1.  **Lightweight Migration**: Automatic schema changes. Simple, but limited to additive changes. Prone to failure with complex changes.\n2.  **Manual Migration**: Create mapping models in Xcode, offering fine-grained control.  Requires more code but handles complex scenarios.\n3.  **Custom Migration**:  Implement migration logic in code.  Most flexible but also most complex. Needed for significant data transformations or external dependencies.\n\nConsider using `shouldMigrateStoreAutomatically` and `mapTypeAutomatically` options for automation where possible.",
+      "front": "Migration strategies",
+      "back": "",
       "code_example": null,
       "tags": [
-        "coredata",
-        "migration",
-        "datapersistence"
+        "Migration strategies"
       ],
       "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/",
-        "https://www.avanderlee.com/swift/core-data/"
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/4-core-data/core-data-overview/"
       ]
     },
     {
       "id": "data_persistence_2eb6ab885fc3",
-      "front": "How do you handle concurrency with Core Data to prevent data corruption or conflicts, especially in a multi-threaded environment?",
-      "back": "Use `NSPersistentContainer`'s `performBackgroundTask` for background operations.  For inter-context communication, use `NSManagedObjectContextDidSave` notification to merge changes.  Handle conflicts by implementing merge policies in the `NSPersistentStoreCoordinator`, resolving conflicts based on timestamps or custom logic. Validate data before saving. Avoid sharing contexts between threads.",
+      "front": "Concurrency with Core Data",
+      "back": "",
       "code_example": null,
       "tags": [
-        "Core Data",
-        "Concurrency",
-        "Multi-threading",
-        "Data Persistence",
-        "iOS"
+        "Concurrency with Core Data"
       ],
       "sources": [
         "https://www.objc.io/issues/4-core-data/core-data-overview/"
@@ -80,33 +61,28 @@
     },
     {
       "id": "data_persistence_df6a8453f934",
-      "front": "Describe common caching strategies in iOS for data persistence, focusing on Core Data.  What are their pros/cons, and when would you choose one over another?",
-      "back": "Core Data's caching happens at multiple levels:\n\n1.  **Managed Object Context (MOC) Cache:**  Objects are uniqued within a context. Fast access if present.\n\n2.  **Persistent Store Coordinator (PSC) Cache:** Stores recently accessed object values. Faster than disk access.\n\n3.  **SQLite/Disk:** Slowest. Avoid repeated fetches.\n\nStrategies:\n\n*   **Object Faulting:** Core Data fetches objects on demand. Good for large datasets, but can lead to many small queries if not handled carefully. Use `NSFetchRequest` to batch fetch.\n*   **Caching Results:** Cache results of fetch requests. Great for immutable or infrequently changing data. Invalidate cache on updates. Use `NSCache` or similar.\n*   **In-Memory Store:** Load entire database into memory. Fastest for read-heavy operations but consumes significant memory. Good for small, mostly static datasets.\n*   **External Caching:** Using Redis or Memcached for frequently accessed data can offload database operations and improve performance.",
+      "front": "Caching strategies",
+      "back": "",
       "code_example": null,
       "tags": [
-        "coredata",
-        "caching",
-        "datapersistence",
-        "performance"
+        "Caching strategies"
       ],
       "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/",
-        "https://www.avanderlee.com/swift/core-data/"
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/4-core-data/core-data-overview/"
       ]
     },
     {
       "id": "data_persistence_bb47d01824a0",
-      "front": "How do you securely store sensitive data, like API keys or user credentials, in an iOS app using the Keychain?",
-      "back": "Keychain provides a secure way to store small chunks of data. Use `SecItemAdd`, `SecItemUpdate`, `SecItemCopyMatching`, and `SecItemDelete` to manage Keychain items.  Always specify appropriate access control attributes (`kSecAttrAccessible`) to control when the data can be accessed. Use `kSecUseAuthenticationUI` for user presence-based access. Be mindful of Keychain sharing between apps from the same developer by using App Groups.  Consider using a wrapper library for ease of use. Ensure proper error handling.",
+      "front": "Keychain usage",
+      "back": "",
       "code_example": null,
       "tags": [
-        "data_persistence",
-        "security",
-        "keychain"
+        "Keychain usage"
       ],
       "sources": [
-        "https://www.objc.io/issues/4-core-data/core-data-overview/",
-        "https://www.avanderlee.com/swift/core-data/"
+        "https://www.avanderlee.com/swift/core-data/",
+        "https://www.objc.io/issues/4-core-data/core-data-overview/"
       ]
     }
   ]
