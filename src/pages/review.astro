@@ -5,7 +5,7 @@ import Header from '../components/layout/Header.astro';
 import ReviewWithSearch from '../components/interactive/ReviewWithSearch';
 import QuizRunner from '../components/interactive/QuizRunner';
 
-// Load all flashcards
+// Load all flashcards - Core topics
 import swiftFundamentals from '../data/flashcards/swift-fundamentals.json';
 import iosCore from '../data/flashcards/ios-core.json';
 import concurrency from '../data/flashcards/concurrency.json';
@@ -13,16 +13,32 @@ import swiftui from '../data/flashcards/swiftui.json';
 import systemDesign from '../data/flashcards/system-design.json';
 import behavioral from '../data/flashcards/behavioral.json';
 
+// Load all flashcards - Advanced topics (NEW)
+import modularArchitecture from '../data/flashcards/modular-architecture.json';
+import offlineFirst from '../data/flashcards/offline-first.json';
+import appLifecycle from '../data/flashcards/app-lifecycle.json';
+import memoryManagement from '../data/flashcards/memory-management.json';
+import productionReadiness from '../data/flashcards/production-readiness.json';
+import architecturalPatterns from '../data/flashcards/architectural-patterns.json';
+import visionos from '../data/flashcards/visionos.json';
+import onDeviceMl from '../data/flashcards/on-device-ml.json';
+
 // Load quiz data
 import swiftQuiz from '../data/quizzes/swift-fundamentals-quiz.json';
 import iosQuiz from '../data/quizzes/ios-core-quiz.json';
 import concurrencyQuiz from '../data/quizzes/concurrency-quiz.json';
 import swiftuiQuiz from '../data/quizzes/swiftui-quiz.json';
 
-// Define topics
-const topics = ['Swift Fundamentals', 'iOS Core', 'Concurrency', 'SwiftUI', 'System Design', 'Behavioral'];
+// Define topics - Core + Advanced
+const topics = [
+  // Core topics
+  'Swift Fundamentals', 'iOS Core', 'Concurrency', 'SwiftUI', 'System Design', 'Behavioral',
+  // Advanced topics (NEW)
+  'Modular Architecture', 'Offline-First', 'App Lifecycle', 'Memory Management',
+  'Production Readiness', 'Architectural Patterns', 'visionOS', 'On-Device ML'
+];
 
-// Combine all cards
+// Combine all cards - Core topics
 const allCards = [
   ...swiftFundamentals.cards.map(c => ({ ...c, topic: 'Swift Fundamentals' })),
   ...iosCore.cards.map(c => ({ ...c, topic: 'iOS Core' })),
@@ -30,6 +46,15 @@ const allCards = [
   ...swiftui.cards.map(c => ({ ...c, topic: 'SwiftUI' })),
   ...systemDesign.cards.map(c => ({ ...c, topic: 'System Design' })),
   ...behavioral.cards.map(c => ({ ...c, topic: 'Behavioral' })),
+  // Advanced topics (NEW)
+  ...modularArchitecture.cards.map(c => ({ ...c, topic: 'Modular Architecture' })),
+  ...offlineFirst.cards.map(c => ({ ...c, topic: 'Offline-First' })),
+  ...appLifecycle.cards.map(c => ({ ...c, topic: 'App Lifecycle' })),
+  ...memoryManagement.cards.map(c => ({ ...c, topic: 'Memory Management' })),
+  ...productionReadiness.cards.map(c => ({ ...c, topic: 'Production Readiness' })),
+  ...architecturalPatterns.cards.map(c => ({ ...c, topic: 'Architectural Patterns' })),
+  ...visionos.cards.map(c => ({ ...c, topic: 'visionOS' })),
+  ...onDeviceMl.cards.map(c => ({ ...c, topic: 'On-Device ML' })),
 ];
 
 // Combine all quiz questions
