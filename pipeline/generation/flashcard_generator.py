@@ -114,23 +114,50 @@ class FlashcardGenerator:
         except json.JSONDecodeError:
             pass
 
-        # Try extracting from code block
-        if result is None and "```json" in response:
-            match = re.search(r"```json\s*(.*?)\s*```", response, re.DOTALL)
+        # Try extracting from code block (greedy to get full content)
+        if result is None and "```" in response:
+            # Try json code block first
+            match = re.search(r"```json\s*(\{.*\})\s*```", response, re.DOTALL)
+            if not match:
+                # Try generic code block
+                match = re.search(r"```\s*(\{.*\})\s*```", response, re.DOTALL)
             if match:
                 try:
                     result = json.loads(match.group(1))
                 except json.JSONDecodeError:
                     pass
 
-        # Try extracting any JSON object
+        # Try extracting JSON object - find matching braces (handle strings)
         if result is None:
-            match = re.search(r"\{.*\}", response, re.DOTALL)
-            if match:
-                try:
-                    result = json.loads(match.group())
-                except json.JSONDecodeError:
-                    pass
+            start = response.find("{")
+            if start != -1:
+                depth = 0
+                end = start
+                in_string = False
+                escape = False
+                for i, char in enumerate(response[start:], start):
+                    if escape:
+                        escape = False
+                        continue
+                    if char == "\\":
+                        escape = True
+                        continue
+                    if char == '"':
+                        in_string = not in_string
+                        continue
+                    if not in_string:
+                        if char == "{":
+                            depth += 1
+                        elif char == "}":
+                            depth -= 1
+                            if depth == 0:
+                                end = i + 1
+                                break
+                if end > start:
+                    try:
+                        result = json.loads(response[start:end])
+                    except json.JSONDecodeError:
+                        pass
 
         # Handle list response - take first item
         if isinstance(result, list) and result:

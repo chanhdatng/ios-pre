@@ -17,7 +17,7 @@ class GeminiClient:
         self.model = settings.gemini_model
         self.embedding_model = settings.embedding_model
 
-    async def generate(self, prompt: str, max_tokens: int = 2048) -> str:
+    async def generate(self, prompt: str, max_tokens: int = 4096) -> str:
         """Generate text completion from Gemini.
 
         Args:
