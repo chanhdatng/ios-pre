@@ -7,9 +7,12 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   integrations: [react()],
   output: 'static',
-  site: 'https://your-username.github.io',
-  base: '/ios-prep-hub',
+  site: 'https://ios-pre.vercel.app',
+  // base: '/ios-prep-hub', // Only needed for GitHub Pages subfolder deployment
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'zustand', 'framer-motion', 'lucide-react', 'ts-fsrs'],
+    },
   },
 });
