@@ -26,7 +26,7 @@ on:
       limit:
         description: 'Max cards per topic'
         required: false
-        default: '10'
+        default: '1'  # Keep low for free tier quota (50 RPD)
 
 env:
   PYTHON_VERSION: '3.11'
