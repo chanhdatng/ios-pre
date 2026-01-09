@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     # Models
     claude_model: str = "claude-sonnet-4-20250514"
-    gemini_model: str = "gemini-2.5-pro-preview-06-05"
+    gemini_model: str = "gemini-2.5-pro"
     embedding_model: str = "models/text-embedding-004"
 
     # Limits
