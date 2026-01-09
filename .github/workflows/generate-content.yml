@@ -97,6 +97,25 @@ jobs:
           python3 << 'EOF'
           import json
           import os
+          import unicodedata
+
+          # Normalize text: convert smart quotes to straight, normalize unicode
+          def normalize_text(text):
+              if not text:
+                  return ""
+              # Replace smart quotes with straight quotes
+              replacements = {
+                  '\u2018': "'",  # left single quote
+                  '\u2019': "'",  # right single quote (apostrophe)
+                  '\u201c': '"',  # left double quote
+                  '\u201d': '"',  # right double quote
+                  '\u2013': '-',  # en dash
+                  '\u2014': '-',  # em dash
+              }
+              for old, new in replacements.items():
+                  text = text.replace(old, new)
+              # Normalize unicode (NFC form)
+              return unicodedata.normalize('NFC', text).strip().lower()
 
           # Mapping: generated file -> original file
           mapping = {
@@ -131,11 +150,11 @@ jobs:
                   with open(orig_path) as f:
                       orig_data = json.load(f)
 
-                  # Get existing fronts to avoid duplicates
-                  existing_fronts = {c['front'] for c in orig_data.get('cards', [])}
+                  # Get existing fronts (normalized) to avoid duplicates
+                  existing_fronts = {normalize_text(c['front']) for c in orig_data.get('cards', [])}
 
-                  # Add new cards that don't exist
-                  new_cards = [c for c in gen_data.get('cards', []) if c['front'] not in existing_fronts]
+                  # Add new cards that don't exist (compare normalized fronts)
+                  new_cards = [c for c in gen_data.get('cards', []) if normalize_text(c['front']) not in existing_fronts]
                   orig_data['cards'].extend(new_cards)
 
                   print(f"Merged {len(new_cards)} new cards into {orig_file}")
