@@ -4,6 +4,7 @@
 import argparse
 import asyncio
 import json
+import random
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -107,7 +108,10 @@ async def run_generate(topic: str | None = None, limit: int = 10) -> None:
 
     for topic_name, subtopics in topics_to_process.items():
         console.print(f"  Topic: {topic_name}")
-        subtopics_to_process = subtopics[:limit]
+        # Randomize to avoid always generating same subtopics
+        shuffled = subtopics.copy()
+        random.shuffle(shuffled)
+        subtopics_to_process = shuffled[:limit]
 
         for subtopic in subtopics_to_process:
             try:
