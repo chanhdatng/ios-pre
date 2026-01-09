@@ -1,12 +1,13 @@
 ---
 title: "LeetCode Topic Suggestions"
 description: "Suggest relevant LeetCode problems based on iOS interview topics"
-status: pending
+status: completed
 priority: P2
 effort: 6h
 branch: main
 tags: [leetcode, topics, suggestions, curated]
 created: 2026-01-09
+completed: 2026-01-09
 ---
 
 # LeetCode Topic Suggestions Plan
@@ -59,8 +60,24 @@ src/components/tracking/LeetCodeTracker.tsx  # Quick add from suggestions
 - localStorage persistence
 
 ## Success Criteria
-- [ ] Each iOS topic has 3-5 suggested LeetCode problems
-- [ ] User can view suggestions by topic
-- [ ] One-click add to LeetCode tracker
-- [ ] User can add custom suggestions
-- [ ] Suggestions show solved status
+- [x] Each iOS topic has 3-5 suggested LeetCode problems
+- [x] User can view suggestions by topic
+- [x] One-click add to LeetCode tracker
+- [x] User can add custom suggestions
+- [x] Suggestions show solved status
+
+## Implementation Summary
+
+**Files created:**
+- `src/data/leetcode-suggestions.json` - 8 topics, 37 curated problems
+- `src/components/leetcode/TopicSuggestions.tsx` - Main UI component
+- `src/lib/stores/suggestion-store.ts` - Custom suggestions persistence
+
+**Features:**
+- Topic filter dropdown with problem counts
+- Curated + custom suggestions merged display
+- "Add Custom" form with difficulty/pattern selection
+- Solved status indicator (✓)
+- Quick add to tracker button
+- Remove custom suggestions
+- Custom suggestions persist in localStorage
