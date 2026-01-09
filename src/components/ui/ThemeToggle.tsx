@@ -21,15 +21,34 @@ export default function ThemeToggle() {
 
   const toggle = () => {
     const newValue = !isDark;
+    console.log('[ThemeToggle] Toggling to:', newValue ? 'dark' : 'light');
     setIsDark(newValue);
+
+    // Enable smooth transition
+    document.documentElement.classList.add('theme-transition');
 
     if (newValue) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
       localStorage.setItem('ios-prep-theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
       localStorage.setItem('ios-prep-theme', 'light');
     }
+
+    // Update theme-color meta tag for mobile browser UI
+    const meta = document.getElementById('theme-color-meta');
+    if (meta) meta.setAttribute('content', newValue ? '#1C1C1E' : '#F58C3B');
+
+    // Debug: verify class was added
+    console.log('[ThemeToggle] HTML classes:', document.documentElement.className);
+    console.log('[ThemeToggle] Computed bg:', getComputedStyle(document.body).backgroundColor);
+
+    // Remove transition class after animation completes
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 300);
   };
 
   // Prevent hydration mismatch

@@ -8,38 +8,82 @@
  * Philosophy: Clean Minimalist, Content-First, iOS Native, Friendly
  */
 
-@theme {
-  /* ========== COLORS - Light Mode ========== */
+/* ========== CSS CUSTOM PROPERTIES (overridable for dark mode) ========== */
+:root {
+  /* Colors - Light Mode */
   --color-bg-primary: #FDFBF8;
   --color-surface: #FFFFFF;
   --color-surface-secondary: #F0F0F0;
-
-  /* Text Colors */
   --color-text-primary: #1A1A1A;
   --color-text-secondary: #666666;
   --color-text-tertiary: #8E8E93;
-
-  /* Accent Colors */
   --color-accent-orange: #F58C3B;
   --color-accent-green: #42B05C;
   --color-accent-purple: #8E00FF;
   --color-accent-blue: #0A84FF;
   --color-accent-red: #FF453A;
-
-  /* Swift Orange (for branding) */
   --color-swift: #F05138;
-
-  /* Semantic Colors */
   --color-success: #42B05C;
   --color-warning: #FF9F0A;
   --color-error: #FF453A;
   --color-info: #0A84FF;
 
-  /* ========== TYPOGRAPHY ========== */
+  /* Shadows - Light Mode */
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.16);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  color-scheme: light;
+}
+
+/* Dark mode - manual toggle via .dark class */
+:root.dark {
+  --color-bg-primary: #000000;
+  --color-surface: #1C1C1E;
+  --color-surface-secondary: #2C2C2E;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #8E8E93;
+  --color-text-tertiary: #636366;
+  --color-accent-orange: #FF9F0A;
+  --color-accent-green: #30D158;
+  --color-accent-purple: #BF5AF2;
+  --color-accent-blue: #0A84FF;
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}
+
+/* Dark mode - system preference fallback */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-bg-primary: #000000;
+    --color-surface: #1C1C1E;
+    --color-surface-secondary: #2C2C2E;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #8E8E93;
+    --color-text-tertiary: #636366;
+    --color-accent-orange: #FF9F0A;
+    --color-accent-green: #30D158;
+    --color-accent-purple: #BF5AF2;
+    --color-accent-blue: #0A84FF;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+  }
+}
+
+/* ========== TAILWIND THEME TOKENS (non-color) ========== */
+@theme {
+  /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
 
-  /* ========== SPACING (4px base) ========== */
+  /* Spacing (4px base) */
   --spacing-xxs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -48,7 +92,7 @@
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
 
-  /* ========== BORDER RADIUS ========== */
+  /* Border Radius */
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -56,13 +100,7 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* ========== SHADOWS ========== */
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.16);
-  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
-
-  /* ========== ANIMATION ========== */
+  /* Animation */
   --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --duration-instant: 100ms;
@@ -70,7 +108,7 @@
   --duration-normal: 300ms;
   --duration-slow: 500ms;
 
-  /* ========== ICONS ========== */
+  /* Icons */
   --icon-xs: 16px;
   --icon-sm: 20px;
   --icon-md: 24px;
@@ -80,13 +118,17 @@
 
 /* ========== BASE STYLES ========== */
 @layer base {
-  :root {
-    color-scheme: light;
-  }
-
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Smooth transition when switching themes */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
   }
 
   body {
@@ -178,6 +220,12 @@
     -webkit-backdrop-filter: blur(20px);
     border-radius: var(--radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  :root.dark .card-glass,
+  :root:not(.light) .card-glass {
+    background: rgba(28, 28, 30, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   /* Buttons */
@@ -375,61 +423,6 @@
   .animate-pulse {
     animation: pulse 2s var(--ease-default) infinite;
   }
-}
-
-/* ========== DARK MODE ========== */
-/* Support both system preference and manual toggle via .dark class */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --color-bg-primary: #000000;
-    --color-surface: #1C1C1E;
-    --color-surface-secondary: #2C2C2E;
-    --color-text-primary: #FFFFFF;
-    --color-text-secondary: #8E8E93;
-    --color-text-tertiary: #636366;
-
-    --color-accent-orange: #FF9F0A;
-    --color-accent-green: #30D158;
-    --color-accent-purple: #BF5AF2;
-    --color-accent-blue: #0A84FF;
-
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
-    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.5);
-
-    color-scheme: dark;
-  }
-
-  :root:not(.light) .card-glass {
-    background: rgba(28, 28, 30, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* Manual dark mode toggle */
-:root.dark {
-  --color-bg-primary: #000000;
-  --color-surface: #1C1C1E;
-  --color-surface-secondary: #2C2C2E;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #8E8E93;
-  --color-text-tertiary: #636366;
-
-  --color-accent-orange: #FF9F0A;
-  --color-accent-green: #30D158;
-  --color-accent-purple: #BF5AF2;
-  --color-accent-blue: #0A84FF;
-
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
-  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.4);
-  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.5);
-
-  color-scheme: dark;
-}
-
-:root.dark .card-glass {
-  background: rgba(28, 28, 30, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* ========== RESPONSIVE UTILITIES ========== */
