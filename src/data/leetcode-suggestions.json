@@ -1,0 +1,319 @@
+{
+  "topics": [
+    {
+      "id": "swift-fundamentals",
+      "name": "Swift Fundamentals",
+      "description": "Basic syntax, collections, optionals",
+      "problems": [
+        {
+          "id": "1",
+          "title": "Two Sum",
+          "difficulty": "easy",
+          "pattern": "Hash Map",
+          "relevance": "Dictionary usage, basic Swift syntax"
+        },
+        {
+          "id": "20",
+          "title": "Valid Parentheses",
+          "difficulty": "easy",
+          "pattern": "Stack",
+          "relevance": "Stack operations, Character handling"
+        },
+        {
+          "id": "217",
+          "title": "Contains Duplicate",
+          "difficulty": "easy",
+          "pattern": "Hash Map",
+          "relevance": "Set usage, collection operations"
+        },
+        {
+          "id": "242",
+          "title": "Valid Anagram",
+          "difficulty": "easy",
+          "pattern": "Hash Map",
+          "relevance": "String manipulation, Dictionary"
+        },
+        {
+          "id": "49",
+          "title": "Group Anagrams",
+          "difficulty": "medium",
+          "pattern": "Hash Map",
+          "relevance": "Dictionary with array values, sorting"
+        }
+      ]
+    },
+    {
+      "id": "ios-core",
+      "name": "iOS Core",
+      "description": "UIKit, delegation, MVC patterns",
+      "problems": [
+        {
+          "id": "146",
+          "title": "LRU Cache",
+          "difficulty": "medium",
+          "pattern": "Hash Map",
+          "relevance": "Cache design, NSCache-like behavior"
+        },
+        {
+          "id": "355",
+          "title": "Design Twitter",
+          "difficulty": "medium",
+          "pattern": "Heap",
+          "relevance": "Feed design, data modeling"
+        },
+        {
+          "id": "232",
+          "title": "Implement Queue using Stacks",
+          "difficulty": "easy",
+          "pattern": "Stack",
+          "relevance": "Queue patterns, operation queues"
+        },
+        {
+          "id": "225",
+          "title": "Implement Stack using Queues",
+          "difficulty": "easy",
+          "pattern": "Stack",
+          "relevance": "Data structure implementation"
+        },
+        {
+          "id": "380",
+          "title": "Insert Delete GetRandom O(1)",
+          "difficulty": "medium",
+          "pattern": "Hash Map",
+          "relevance": "Collection design, O(1) operations"
+        }
+      ]
+    },
+    {
+      "id": "concurrency",
+      "name": "Concurrency",
+      "description": "async/await, GCD, thread safety",
+      "problems": [
+        {
+          "id": "1188",
+          "title": "Design Bounded Blocking Queue",
+          "difficulty": "medium",
+          "pattern": "Other",
+          "relevance": "Producer-consumer, thread-safe queue"
+        },
+        {
+          "id": "1117",
+          "title": "Building H2O",
+          "difficulty": "medium",
+          "pattern": "Other",
+          "relevance": "Semaphore usage, synchronization"
+        },
+        {
+          "id": "1226",
+          "title": "The Dining Philosophers",
+          "difficulty": "medium",
+          "pattern": "Other",
+          "relevance": "Deadlock prevention, resource locking"
+        },
+        {
+          "id": "1115",
+          "title": "Print FooBar Alternately",
+          "difficulty": "medium",
+          "pattern": "Other",
+          "relevance": "Thread coordination, semaphores"
+        },
+        {
+          "id": "1114",
+          "title": "Print in Order",
+          "difficulty": "easy",
+          "pattern": "Other",
+          "relevance": "Sequential execution, barriers"
+        }
+      ]
+    },
+    {
+      "id": "swiftui",
+      "name": "SwiftUI",
+      "description": "Declarative UI, state management",
+      "problems": [
+        {
+          "id": "208",
+          "title": "Implement Trie (Prefix Tree)",
+          "difficulty": "medium",
+          "pattern": "Tree",
+          "relevance": "Search autocomplete, prefix matching"
+        },
+        {
+          "id": "211",
+          "title": "Design Add and Search Words",
+          "difficulty": "medium",
+          "pattern": "Tree",
+          "relevance": "Search functionality, wildcard"
+        },
+        {
+          "id": "297",
+          "title": "Serialize and Deserialize Binary Tree",
+          "difficulty": "hard",
+          "pattern": "Tree",
+          "relevance": "Data encoding, Codable-like"
+        },
+        {
+          "id": "102",
+          "title": "Binary Tree Level Order Traversal",
+          "difficulty": "medium",
+          "pattern": "BFS",
+          "relevance": "Hierarchy traversal, List rendering"
+        },
+        {
+          "id": "236",
+          "title": "Lowest Common Ancestor",
+          "difficulty": "medium",
+          "pattern": "Tree",
+          "relevance": "View hierarchy, parent finding"
+        }
+      ]
+    },
+    {
+      "id": "system-design",
+      "name": "System Design",
+      "description": "Architecture, scalability, APIs",
+      "problems": [
+        {
+          "id": "146",
+          "title": "LRU Cache",
+          "difficulty": "medium",
+          "pattern": "Hash Map",
+          "relevance": "Caching strategy, memory management"
+        },
+        {
+          "id": "460",
+          "title": "LFU Cache",
+          "difficulty": "hard",
+          "pattern": "Hash Map",
+          "relevance": "Advanced caching, frequency tracking"
+        },
+        {
+          "id": "355",
+          "title": "Design Twitter",
+          "difficulty": "medium",
+          "pattern": "Heap",
+          "relevance": "Social feed, timeline merging"
+        },
+        {
+          "id": "981",
+          "title": "Time Based Key-Value Store",
+          "difficulty": "medium",
+          "pattern": "Binary Search",
+          "relevance": "Versioning, timestamp queries"
+        },
+        {
+          "id": "588",
+          "title": "Design In-Memory File System",
+          "difficulty": "hard",
+          "pattern": "Tree",
+          "relevance": "File system, hierarchical data"
+        }
+      ]
+    },
+    {
+      "id": "behavioral",
+      "name": "Behavioral",
+      "description": "Problem solving, communication",
+      "problems": [
+        {
+          "id": "121",
+          "title": "Best Time to Buy and Sell Stock",
+          "difficulty": "easy",
+          "pattern": "Dynamic Programming",
+          "relevance": "Explain thought process clearly"
+        },
+        {
+          "id": "53",
+          "title": "Maximum Subarray",
+          "difficulty": "medium",
+          "pattern": "Dynamic Programming",
+          "relevance": "Classic Kadane's, good for walkthrough"
+        },
+        {
+          "id": "200",
+          "title": "Number of Islands",
+          "difficulty": "medium",
+          "pattern": "DFS",
+          "relevance": "Grid problems, clear explanation"
+        },
+        {
+          "id": "15",
+          "title": "3Sum",
+          "difficulty": "medium",
+          "pattern": "Two Pointers",
+          "relevance": "Edge cases, optimization discussion"
+        },
+        {
+          "id": "56",
+          "title": "Merge Intervals",
+          "difficulty": "medium",
+          "pattern": "Other",
+          "relevance": "Calendar apps, scheduling logic"
+        }
+      ]
+    },
+    {
+      "id": "memory-management",
+      "name": "Memory Management",
+      "description": "ARC, retain cycles, weak/strong",
+      "problems": [
+        {
+          "id": "141",
+          "title": "Linked List Cycle",
+          "difficulty": "easy",
+          "pattern": "Two Pointers",
+          "relevance": "Cycle detection, reference loops"
+        },
+        {
+          "id": "142",
+          "title": "Linked List Cycle II",
+          "difficulty": "medium",
+          "pattern": "Two Pointers",
+          "relevance": "Find cycle start, memory leak location"
+        },
+        {
+          "id": "206",
+          "title": "Reverse Linked List",
+          "difficulty": "easy",
+          "pattern": "Linked List",
+          "relevance": "Reference manipulation"
+        },
+        {
+          "id": "138",
+          "title": "Copy List with Random Pointer",
+          "difficulty": "medium",
+          "pattern": "Hash Map",
+          "relevance": "Deep copy, reference handling"
+        }
+      ]
+    },
+    {
+      "id": "networking",
+      "name": "Networking",
+      "description": "URLSession, REST APIs, async",
+      "problems": [
+        {
+          "id": "429",
+          "title": "N-ary Tree Level Order Traversal",
+          "difficulty": "medium",
+          "pattern": "BFS",
+          "relevance": "Paginated responses, batch processing"
+        },
+        {
+          "id": "994",
+          "title": "Rotting Oranges",
+          "difficulty": "medium",
+          "pattern": "BFS",
+          "relevance": "Propagation, network requests spread"
+        },
+        {
+          "id": "207",
+          "title": "Course Schedule",
+          "difficulty": "medium",
+          "pattern": "Graph",
+          "relevance": "Dependency resolution, request ordering"
+        }
+      ]
+    }
+  ]
+}

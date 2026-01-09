@@ -4,6 +4,7 @@ import Sidebar from '../components/layout/Sidebar.astro';
 import Header from '../components/layout/Header.astro';
 import LeetCodeTracker from '../components/tracking/LeetCodeTracker';
 import GitHubActivity from '../components/tracking/GitHubActivity';
+import { TopicSuggestions } from '../components/leetcode/TopicSuggestions';
 ---
 
 <BaseLayout title="LeetCode & GitHub">
@@ -25,6 +26,11 @@ import GitHubActivity from '../components/tracking/GitHubActivity';
       <h2 class="text-headline-2 mb-4">GitHub Repos</h2>
       <GitHubActivity client:load />
     </div>
+  </div>
+
+  <!-- Topic-Based Suggestions -->
+  <div class="mt-8 p-6 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+    <TopicSuggestions client:load />
   </div>
 
   <!-- Tips Section -->
