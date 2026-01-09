@@ -1,131 +1,96 @@
 {
   "topic": "swift",
-  "generated_at": "2026-01-08T05:23:57.290818+00:00",
+  "generated_at": "2026-01-09T07:04:34.069236+00:00",
   "cards": [
     {
+      "id": "swift_5b8fc7f45dfe",
+      "front": "Beyond simple reference counting, explain how ARC manages weak references internally. Describe the role of side tables and the performance trade-offs compared to unowned references.",
+      "back": "Automatic Reference Counting (ARC) is more than just compile-time insertion of `retain` and `release` calls. For `weak` references, it employs a sophisticated mechanism called side tables to ensure memory safety.\n\n**Core Concept: Side Tables**\nWhen a `weak` reference is first created for an object, the Swift runtime may allocate a 'side table' associated with that object if one doesn't already exist. This side table stores metadata, including the weak reference count. The object's reference-counted pointer is then updated to indicate the presence of this side table.\n\nHere\u2019s the process:\n1.  **Allocation:** The first time a `weak` reference is taken, a side table is created for the object.\n2.  **Zeroing:** When the object's strong reference count drops to zero and it is deallocated, the runtime accesses the side table and invalidates it, effectively nil-ling out the entry for that object.\n3.  **Access:** Any code trying to access the object through a `weak` pointer first checks the side table. If the entry is valid, it returns the object; otherwise, it returns `nil`.\n\nThis prevents dangling pointers and ensures `weak` references are always safe. In contrast, `unowned` references are essentially non-owning pointers without this safety net. They don't use side tables and assume the object will always exist, leading to a crash if it's deallocated.\n\n```swift\nclass DataFetcher {\n    // This closure might be held by another object and called later,\n    // potentially after the DataFetcher instance is deallocated.\n    var onDataReceived: ((Data) -> Void)?\n\n    func fetch() {\n        // Simulating an async operation\n        DispatchQueue.global().asyncAfter(deadline: .now() + 1) { [weak self] in\n            // [weak self] creates a weak reference. ARC's side table ensures\n            // that if 'self' is deallocated, accessing it here safely returns nil.\n            guard let self = self else {\n                print(\"DataFetcher deallocated before data was received.\")\n                return\n            }\n            self.onDataReceived?(Data())\n        }\n    }\n    deinit { print(\"DataFetcher deallocated\") }\n}\n\n// If we used [unowned self], and the fetcher was deallocated before the\n// closure ran, accessing 'self' would crash the app.\n```\n\n**Common Pitfalls & Trade-offs**\n- **Performance Overhead:** Side tables involve an extra memory allocation and a level of indirection on access. While highly optimized, this makes `weak` slightly slower than `unowned`. Overusing `weak` in performance-critical code where object lifetimes are guaranteed can be a micro-optimization opportunity.\n- **Crashing with `unowned`:** The most common mistake is using `unowned` when an object's lifetime isn't guaranteed. This creates a dangling pointer, leading to an immediate crash when the reference is accessed. Always default to `weak` unless you can prove `unowned` is safe.\n\n**When to Use**\n- **`weak`:** Use for relationships where the other instance has an independent or shorter lifetime (e.g., delegates, closures capturing a view controller). It's the safe default for breaking retain cycles.\n- **`unowned`:** Use only when you are certain the other instance will always exist for the entire lifetime of the reference (e.g., a child object referencing its parent, which owns it). It's a performance optimization that sacrifices safety.",
+      "code_example": null,
+      "tags": [
+        "memory management",
+        "arc",
+        "swift internals",
+        "performance"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/16-swift/power-of-swift/",
+        "https://www.objc.io/issues/16-swift/swift-functions/",
+        "https://www.swift.org/documentation/",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2"
+      ]
+    },
+    {
+      "id": "swift_5efaf49e1e55",
+      "front": "How do Swift's Result Builders transform a sequence of expressions into a single value? Explain the role of static `buildBlock` and `buildEither` methods in supporting control flow, and demonstrate with a custom, non-SwiftUI builder.",
+      "back": "Result Builders are a Swift language feature that enables the creation of Domain-Specific Languages (DSLs) by transforming a sequence of expressions in a closure into a single combined value. This is achieved through a set of compiler-invoked static methods on a type marked with the `@resultBuilder` attribute.\n\n**Core Concept:**\nWhen the compiler encounters a closure that uses a result builder, it desugars the code. Instead of executing the statements directly, it calls static methods on the builder type. The most important methods are:\n- `buildBlock(_ components: ...)`: This is the fundamental method. It takes a variadic list of components (the results of each expression in the block) and combines them into a single value.\n- `buildEither(first:)` and `buildEither(second:)`: These are essential for control flow. An `if` block is wrapped in a call to `buildEither(first:)`, and an `else` or `else if` block is wrapped in `buildEither(second:)`. This allows the builder to handle conditional logic while ensuring the branches produce a value of the same type.\n- `buildOptional(_:)`: Handles `if` statements without an `else`.\n- `buildArray(_:)`: Handles `for...in` loops.\n\n**Practical Code Example:**\nLet's create a builder for `NSAttributedString` to declaratively build complex strings.\n```swift\n@resultBuilder\nstruct AttributedStringBuilder {\n    // Combines multiple attributed strings into one.\n    static func buildBlock(_ components: NSAttributedString...) -> NSAttributedString {\n        let result = NSMutableAttributedString()\n        components.forEach { result.append($0) }\n        return result\n    }\n\n    // Handles 'if' conditions.\n    static func buildEither(first component: NSAttributedString) -> NSAttributedString {\n        return component\n    }\n\n    // Handles 'else' conditions.\n    static func buildEither(second component: NSAttributedString) -> NSAttributedString {\n        return component\n    }\n}\n\n// Helper function that uses the builder\nfunc makeAttributedString(@AttributedStringBuilder _ content: () -> NSAttributedString) -> NSAttributedString {\n    return content()\n}\n\n// Usage\nlet userIsPremium = true\nlet finalString = makeAttributedString {\n    NSAttributedString(string: \"Welcome!\\n\")\n    if userIsPremium {\n        NSAttributedString(string: \"Premium Content\", attributes: [.foregroundColor: UIColor.purple])\n    } else {\n        NSAttributedString(string: \"Please upgrade to view.\", attributes: [.foregroundColor: UIColor.gray])\n    }\n}\n```\n**Common Pitfalls or Edge Cases:**\n- **Type Homogeneity:** All expressions within the builder must result in the same type that `buildBlock` expects. You can use `buildExpression` to convert different input types into a single common type.\n- **No Explicit `return`:** You cannot use the `return` keyword inside a result builder block. The value is constructed implicitly by the builder.\n- **Debugging:** The desugaring process can make debugging less intuitive. Understanding which `build` method is being called for a given language construct is key to resolving issues.\n\n**When to Use vs. Alternatives:**\n- **Use When:** You want to create a clean, declarative, DSL-style API. It's ideal for hierarchical data structures like UI layouts (SwiftUI), attributed strings, or HTML/XML generation.\n- **Alternatives:** For simpler cases, a standard array `[item1, item2]` or a fluent interface (`builder.add(item1).add(item2)`) can be sufficient and more explicit. Result Builders excel when you need to embed control flow logic naturally within the declarative structure.",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "dsl",
+        "result-builders",
+        "compiler",
+        "api-design"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
+        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
+        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
+        "https://www.swift.org/documentation/",
+        "https://www.avanderlee.com/swift/optionals-in-swift-explained/"
+      ]
+    },
+    {
+      "id": "swift_76ae4455ed48",
+      "front": "How do Swift Macros ensure type safety, unlike C-style preprocessor macros, and what are the key architectural trade-offs? Provide a practical example of a macro that leverages compile-time validation.",
+      "back": "Swift Macros provide type-safe, compile-time metaprogramming, a significant evolution from C-style preprocessor macros.\n\n**Core Concept: AST vs. Text Replacement**\nC macros are simple text preprocessors that run before the compiler. They perform raw text substitution, which is unaware of code structure, types, or scope. This can lead to subtle bugs, namespace pollution, and unexpected behavior.\n\nIn contrast, Swift Macros are a first-class feature integrated with the compiler. They operate on a structured representation of your code called the Abstract Syntax Tree (AST) via the SwiftSyntax library. A macro is a separate program that receives a piece of the AST, analyzes it, and generates new, valid Swift code (also as AST nodes). The compiler then type-checks and integrates this generated code. This process is sandboxed, preventing macros from accessing the network or file system, and ensures that any generated code is syntactically correct and type-safe.\n\n**Practical Example: Compile-Time Validated URL**\nA common runtime error is creating a `URL` from an invalid string literal. A macro can move this check to compile time.\n\n```swift\n// Usage in app code. The build will fail if the string is not a valid URL.\nlet appleURL = #URL(\"https://www.apple.com\")\n\n// --- In a separate Macro package ---\n\n// 1. The macro definition, linking the usage to the implementation.\n@freestanding(expression)\npublic macro URL(_ stringLiteral: String) -> URL = \n  #externalMacro(module: \"MyMacrosPlugin\", type: \"URLMacro\")\n\n// 2. The macro implementation.\nimport SwiftSyntax\nimport SwiftSyntaxMacros\nimport Foundation\n\npublic struct URLMacro: ExpressionMacro {\n    public static func expansion(\n        of node: some FreestandingMacroExpansionSyntax,\n        in context: some MacroExpansionContext\n    ) throws -> ExprSyntax {\n        // Get the string argument from the macro call\n        guard let argument = node.argumentList.first?.expression,\n              let stringLiteral = argument.as(StringLiteralExprSyntax.self)?.segments.first?.as(StringSegmentSyntax.self)?.content.text else {\n            throw URLError.invalidArgument\n        }\n\n        // Validate the URL at COMPILE TIME\n        guard URL(string: stringLiteral) != nil else {\n            throw URLError.invalidURL(stringLiteral)\n        }\n\n        // Return the code that replaces the macro call.\n        // Force-unwrapping is safe because we just validated it.\n        return \"URL(string: \\\"\\(raw: stringLiteral)\\\")!\"\n    }\n}\n\nenum URLError: Error, CustomStringConvertible { /* ... */ }\n```\n\n**Common Pitfalls & Trade-offs**\n- **Increased Build Times:** Macros are external programs that run during compilation. Overuse or inefficient macros can slow down builds. They should produce deterministic output for build caching to be effective.\n- **Debugging Complexity:** Debugging the macro's implementation logic is more complex than debugging app code, as it involves attaching to a build process.\n- **API Complexity:** The SwiftSyntax API is powerful but verbose. Generating correct AST nodes requires careful implementation.\n\n**When to Use vs. Alternatives**\n- **Use Macros for:** Eliminating complex boilerplate (e.g., custom `Codable` strategies, `Equatable` conformance), creating DSLs, or enforcing compile-time validation where functions or generics are insufficient.\n- **Alternatives:**\n  - **Functions/Generics:** Always the preferred choice for simple code reuse.\n  - **Property Wrappers:** Ideal for augmenting the behavior of a single property (e.g., `@Published`).\n  - **Sourcery:** A powerful source-generation tool. Macros are now often preferred for their superior compiler integration and type safety, but Sourcery remains useful for complex, file-level transformations.",
+      "code_example": null,
+      "tags": [
+        "swift",
+        "macros",
+        "metaprogramming",
+        "compiler",
+        "architecture"
+      ],
+      "sources": [
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
+      ]
+    },
+    {
       "id": "swift_32865dacda56",
-      "front": "Explain Swift's advanced generics, including variadic generics and type erasure. Provide use cases and potential drawbacks.",
-      "back": "Generics enable writing flexible, reusable code that works with different types. Advanced generics extend this with features like variadic generics and type erasure.\n\nVariadic Generics:\nIntroduced to handle functions requiring a variable number of type parameters. Before, generic functions needed a fixed number of type parameters. With variadic generics, you can create functions that accept different numbers of types.\n\nExample:\n```swift\nfunc combine<each T>(_ values: repeat each T) -> String {\n    var result = \"\"\n    repeat with element in (repeat each T) {\n        result += String(describing: element)\n    }\n    return result\n}\n\nlet combined = combine(1, \"hello\", true) // \"1hellotrue\"\n```\n\nType Erasure:\nAllows hiding the underlying concrete type that conforms to a protocol, providing a type-safe way to work with heterogeneous collections. It's useful when you need to store different concrete types conforming to the same protocol in a single collection without exposing their specific types.\n\nExample:\n```swift\nprotocol Drawable {\n    func draw() -> String\n}\n\nstruct Circle: Drawable {\n    func draw() -> String { return \"Drawing a circle\" }\n}\n\nstruct Square: Drawable {\n    func draw() -> String { return \"Drawing a square\" }\n}\n\n// Type eraser\nstruct AnyDrawable: Drawable {\n    private let _draw: () -> String\n\n    init<D: Drawable>(_ drawable: D) {\n        _draw = { drawable.draw() }\n    }\n\n    func draw() -> String {\n        return _draw()\n    }\n}\n\nlet drawables: [AnyDrawable] = [AnyDrawable(Circle()), AnyDrawable(Square())]\nfor drawable in drawables {\n    print(drawable.draw())\n}\n```\n\nCommon Pitfalls:\n- Overuse of generics can reduce readability.\n- Type erasure introduces a performance overhead due to dynamic dispatch.\n- Complex generic constraints can lead to compile-time errors.\n\nAlternatives:\n- Using `Any` can simplify code but loses type safety.\n- Protocol-oriented programming with associated types can sometimes replace type erasure but may not be suitable for all scenarios.\n\nWhen to Use:\n- Variadic generics improve flexibility in functions needing a varying number of types.\n- Type erasure hides concrete types and handles heterogenous collections.\n\nIn summary, advanced generics like variadic generics and type erasure offer powerful tools for writing flexible and reusable Swift code, but they should be used judiciously, considering the trade-offs between flexibility, performance, and complexity.",
+      "front": "Explain the problem type erasure solves in Swift, particularly with `any Protocol`. How does this differ from using generics or an opaque type `some Protocol`? Discuss the trade-offs in performance, flexibility, and API design.",
+      "back": "Type erasure solves the problem of needing to work with values of different concrete types that all conform to the same protocol, especially in collections. Generics require the compiler to know the specific type at compile time, so you can't have an `Array<T>` that holds both a `String` and an `Int`, even if they conformed to the same protocol.\n\n**Core Concept: Existentials vs. Generics**\nAn existential type, written `any Protocol`, is a container (an 'existential box') that can hold *any* value whose type conforms to `Protocol`. The compiler loses the specific underlying type information, only knowing that the value conforms to the protocol. This forces method calls to be resolved at runtime via dynamic dispatch (v-table lookup), which has a performance cost.\n\n- **Generics (`<T: P>`)**: The function or type works with a specific-but-unspecified type `T`. The compiler generates specialized code for each concrete type used, enabling static dispatch and maximum performance. The type is known at compile time.\n- **Opaque Types (`some P`)**: Used for return values, it promises a single, specific concrete type that conforms to `P`, but hides that type from the caller. The compiler knows the exact type, so it still uses static dispatch. It's about preserving API boundaries, not storing varied types.\n\n**Practical Code Example:**\n```swift\nprotocol Drawable {\n    func draw()\n}\n\nstruct Circle: Drawable {\n    func draw() { print(\"Drawing a Circle \ud83d\udd35\") }\n}\n\nstruct Square: Drawable {\n    func draw() { print(\"Drawing a Square \ud83d\udd33\") }\n}\n\n// Generics: Works on one specific Drawable type at a time.\n// Statically dispatched, high performance.\nfunc drawItem<T: Drawable>(_ item: T) {\n    item.draw()\n}\n\n// Type Erasure with `any`: A collection of different Drawable types.\n// Dynamically dispatched, more flexible, slight performance overhead.\nlet shapes: [any Drawable] = [Circle(), Square()]\n\nfor shape in shapes {\n    shape.draw() // Resolved at runtime\n}\n```\n\n**Common Pitfalls & Edge Cases:**\n- **Performance Overhead**: The heap allocation for the existential box and the v-table lookup for dynamic dispatch make `any` slower than generic or direct calls.\n- **Loss of Type Information**: You can't call methods specific to `Circle` on an `any Drawable` value without casting back to the concrete type (`if let circle = shape as? Circle`).\n- **Protocols with Associated Types (PATs)**: Using `any` with a protocol that has `associatedtype` or `Self` requirements is complex. You lose the ability to work with those associated types unless they are constrained.\n\n**When to Use vs. Alternatives:**\n- **Use `any Protocol` (Type Erasure)**: For heterogeneous collections (e.g., `[any View]`, `[any Shape]`) where you need to store different types that share a common interface. It's a tool for runtime polymorphism.\n- **Use `some Protocol` (Opaque Type)**: Ideal for API design, especially in SwiftUI (`var body: some View`). You hide implementation details from the caller while guaranteeing a single, consistent return type, enabling static dispatch.\n- **Use Generics**: The default and most performant choice. Use them whenever you're writing code that operates on a single conforming type, preserving type safety and performance.",
       "code_example": null,
       "tags": [
         "swift",
         "generics",
         "type erasure",
-        "variadic generics",
-        "advanced"
+        "protocols",
+        "architecture",
+        "performance"
       ],
       "sources": [
         "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
         "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ],
-      "summary": "Variadic generics allow functions to accept a variable number of types. Type erasure hides concrete types, enabling heterogeneous collections."
-    },
-    {
-      "id": "swift_69325e446d81",
-      "front": "Explain Property Wrappers in Swift. Describe their implementation, benefits, and potential drawbacks. Provide a practical example and discuss when to use them versus other approaches.",
-      "back": "Property Wrappers encapsulate code for managing how a property is stored and accessed. They provide a reusable way to add functionality to properties, like validation, thread-safety, or persistence. \n\n**Implementation:**\nProperty wrappers are defined using the `@propertyWrapper` attribute before a `struct`, `class`, or `enum`. They must have a `wrappedValue` property, which defines the property's type and provides the logic for getting and setting its value.\n\n```swift\n@propertyWrapper\nstruct Clamped<T: Comparable> {\n    private var value: T\n    let range: ClosedRange<T>\n\n    init(wrappedValue initialValue: T, _ range: ClosedRange<T>) {\n        self.range = range\n        self.value = min(max(initialValue, range.lowerBound), range.upperBound)\n    }\n\n    var wrappedValue: T {\n        get { value }\n        set {\n            value = min(max(newValue, range.lowerBound), range.upperBound)\n        }\n    }\n}\n\nstruct MyStruct {\n    @Clamped(0...100) var percentage: Int = 50\n}\n\nvar myInstance = MyStruct()\nmyInstance.percentage = 120 // myInstance.percentage will be 100\nmyInstance.percentage = -10  // myInstance.percentage will be 0\nprint(myInstance.percentage) // Prints 100\n```\n**Benefits:**\n*   **Reusability:**  The same wrapper can be applied to multiple properties.\n*   **Code Clarity:**  Reduces boilerplate code in structs/classes by centralizing property behavior.\n*   **Maintainability:** Changes to the property's logic are made in one place.\n\n**Drawbacks:**\n*   **Added Indirection:**  Accessing a wrapped property involves an extra layer of indirection, potentially impacting performance (though usually negligible).\n*   **Complexity:** Can make code harder to understand if overused or if the wrapper logic is too complex.\n*   **Implicit Behavior:** The behavior of the property is not immediately obvious from the property declaration, requiring developers to understand the wrapper's implementation.\n\n**Common Pitfalls:**\n*   Forgetting to initialize the `wrappedValue` in the wrapper's initializer.\n*   Creating overly complex wrappers that obscure the property's core purpose.\n*   Not considering the performance implications of the added indirection, especially in performance-critical sections.\n\n**Alternatives:**\n*   **Computed Properties:** Suitable for simple property transformations or calculations. Computed properties don't store a value directly but provide getter and setter methods to compute it on demand.  Use when the logic is specific to a single property and doesn't need to be reused.\n*   **Property Observers (willSet/didSet):**  Useful for reacting to property changes. Use when you need to perform actions before or after a property is set, such as updating the UI or triggering other events. Not suitable when you need to modify the value being set.\n*   **Functions/Methods:**  For complex property management logic.  Use when the logic involves multiple steps or external dependencies.  Less reusable than property wrappers.\n\n**When to Use:**\nUse property wrappers when you have a common pattern of property behavior that needs to be applied to multiple properties across different types. Examples include data validation, thread safety, persistence, and SwiftUI state management (`@State`, `@ObservedObject`, etc.). Avoid overusing them for simple transformations that can be handled with computed properties or for actions triggered by property changes using property observers.",
-      "code_example": null,
-      "tags": [
-        "swift",
-        "property wrappers",
-        "design patterns",
-        "swiftui"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/16-swift/swift-functions/",
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
-        "https://www.avanderlee.com/swift/optionals-in-swift-explained/",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ],
-      "summary": "Property Wrappers encapsulate and reuse property behavior like validation. They simplify code but add indirection and potential complexity."
-    },
-    {
-      "id": "swift_5efaf49e1e55",
-      "front": "Explain Swift's Result Builders. What problems do they solve, and how do they work under the hood?",
-      "back": "Result builders are a powerful Swift feature (introduced in Swift 5.4) that allow you to create a DSL (Domain Specific Language) for declaratively building up complex data structures, most commonly used for constructing UI in SwiftUI. \n\n**Core Concept:** They provide a way to accumulate partial results of a computation to produce a final value.  This is achieved through a series of `buildBlock` methods (and others for more complex scenarios) that the compiler uses to transform the code within the builder into a sequence of operations that construct the desired output.\n\n**Problem Solved:** Result builders solve the problem of deeply nested and verbose code when programmatically constructing complex structures.  Without them, creating a view hierarchy in SwiftUI would involve many nested closures and conditional statements, making the code difficult to read and maintain.\n\n**Example:** SwiftUI's `ViewBuilder` is a prime example. Consider this:\n\n```swift\nimport SwiftUI\n\nstruct MyView: View {\n    let showDetail: Bool\n\n    var body: some View {\n        VStack {\n            Text(\"Hello, world!\")\n            if showDetail {\n                Text(\"Detailed information here.\")\n            }\n            Button(\"Tap me\") { }\n        }\n    }\n}\n```\n\nBehind the scenes, the `ViewBuilder` transforms this into a series of `buildBlock` calls, effectively concatenating the results of each statement (Text, if statement, Button) into a single `View`.\n\n**How it Works:**\n1.  The `@resultBuilder` attribute is applied to a type (usually a struct or enum).\n2.  This type must implement static `buildBlock` methods, which define how to combine partial results.\n3.  The compiler transforms the code within the result builder's scope into calls to these `buildBlock` methods.\n4.  Other methods like `buildOptional`, `buildEither`, `buildArray` allow for conditional and iterative content.\n\n**Common Pitfalls:**\n*   Forgetting to implement all necessary `buildBlock` variants for different numbers of components.\n*   Incorrectly handling optional or conditional content, leading to unexpected results.\n*   Overusing result builders for simple cases where they add unnecessary complexity.\n\n**Alternatives:**\n*   Without result builders, you would typically use manual construction with nested closures and conditional statements, which can become unwieldy.\n*   Custom DSLs using other techniques are possible but generally more complex to implement and maintain.\n\n**When to Use:** Use Result Builders when constructing complex, hierarchical data structures in a declarative and readable way. Good use cases are SwiftUI views, attributed strings, or any time you need to assemble a complex structure from smaller, composable parts. Avoid for simple cases, where a more direct approach is clearer.",
-      "code_example": null,
-      "tags": [
-        "swift",
-        "result builders",
-        "dsl",
-        "swiftui",
-        "metaprogramming"
-      ],
-      "sources": [
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
-        "https://www.hackingwithswift.com/articles/281/what-to-fix-in-ai-generated-swift-code",
-        "https://www.swift.org/documentation/"
-      ],
-      "summary": "Result builders create DSLs for building complex data structures declaratively. They use `buildBlock` to combine partial results, simplifying verbose code."
-    },
-    {
-      "id": "swift_76ae4455ed48",
-      "front": "Swift Macros",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Swift Macros"
-      ],
-      "sources": [
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ]
-    },
-    {
-      "id": "swift_5b8fc7f45dfe",
-      "front": "Memory Management and ARC internals",
-      "back": "",
-      "code_example": null,
-      "tags": [
-        "Memory Management and ARC internals"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/16-swift/swift-functions/",
-        "https://www.hackingwithswift.com/articles/277/whats-new-in-swift-6-2",
-        "https://www.objc.io/issues/16-swift/power-of-swift/",
-        "https://www.swift.org/documentation/"
       ]
     },
     {
       "id": "swift_112850a42615",
-      "front": "Explain Swift's Copy-on-Write (CoW) optimization, how it affects value types, and when it might *not* be effective. Give a practical code example.",
-      "back": "CoW is a performance optimization where value types (structs, enums, tuples) are copied only when mutated.  Until then, multiple variables can share the same underlying data. This avoids unnecessary copying, improving performance, especially for large data structures. When a mutating method is called on a value type, Swift checks if the instance is uniquely referenced. If not, a copy is made *before* the mutation occurs. This ensures value semantics (each variable has its own independent copy). \n\nExample:\n```swift\nstruct MyData {\n    var items: [Int]\n}\n\nvar data1 = MyData(items: [1, 2, 3])\nvar data2 = data1 // data2 points to the same underlying array as data1\n\n// At this point, no copy has occurred.\n\ndata2.items.append(4) // Mutation triggers a copy for data2\n\nprint(data1.items) // Output: [1, 2, 3]\nprint(data2.items) // Output: [1, 2, 3, 4]\n```\n\n**Ineffective Scenarios:**\n\n1.  **Bridged Types (NSString, NSArray, etc.):**  Swift's CoW relies on its own internal data structures. When bridging to Objective-C types, CoW may not be fully optimized, as modifications might trigger copies more frequently due to the nature of those types.  However, Swift *does* attempt CoW on bridged types where possible.\n2.  **Frequent Modifications:** If a value type is mutated very frequently shortly after being copied, the overhead of checking for uniqueness and potentially copying can outweigh the benefits.  Consider using reference types (classes) if you need to share mutable state and performance is critical.\n3.  **Unsafe Pointers:** Using unsafe pointers to directly manipulate the underlying data of a value type can bypass CoW, leading to unexpected behavior and data corruption.  Avoid this unless absolutely necessary and with extreme caution.\n4.  **Inout parameters:** Passing a value type as an `inout` parameter *always* triggers a copy-in, copy-out behavior. This can negate CoW benefits if the parameter is modified within the function.\n\n**Alternatives:**\n\n*   **Classes:**  Use classes when you need shared mutable state. Be mindful of thread safety when using classes in concurrent environments.\n*   **`ManagedBuffer`:**  For advanced scenarios, `ManagedBuffer` provides a way to implement custom CoW behavior for your own data structures.\n\n**Common Pitfalls:**\n*   Assuming CoW always prevents copies. Be aware of the situations where it might not be effective.\n*   Incorrectly using `inout` parameters when you don't need to modify the original value.\n*   Forgetting that CoW is an *optimization*, not a guarantee.  Value types still maintain value semantics.\n*   Not considering thread safety when using reference types instead of value types.\n* Be very careful adding or removing `Copyable` from existing types, because it dramatically changes how they are used. If you’re shipping code in a library, this will break your ABI.\n\nCoW is a crucial optimization that makes Swift's value types performant. Understanding when it works and when it doesn't is essential for writing efficient Swift code.",
+      "front": "How would you implement Copy-on-Write (CoW) for a custom Swift struct? Describe the key function used and the critical thread-safety implications of this pattern.",
+      "back": "Copy-on-Write (CoW) is a performance optimization that gives value types (structs) the performance benefits of reference types for read operations while preserving value semantics. The core idea is to share the underlying data buffer between multiple instances until one of them is mutated. At that point, a unique, deep copy of the buffer is created for the mutating instance.\n\n**Core Concept & Implementation:**\nTo implement CoW, you encapsulate the actual data within a `private final class` (the storage). The public-facing `struct` holds an instance of this class. When a property of the struct is about to be modified, we check if the storage instance is uniquely referenced using `isKnownUniquelyReferenced(&:)`. If it's not unique (i.e., shared with other instances), we create a new copy of the storage object before applying the mutation. If it is unique, we can mutate it in place safely.\n\n**Practical Code Example:**\n```swift\n// A struct that holds a large dataset, optimized with CoW.\nstruct CoWImage { \n    // The storage is a class (reference type) to enable sharing.\n    // It's private to prevent direct manipulation, preserving value semantics.\n    private final class Storage {\n        var pixelData: [UInt8]\n        init(pixelData: [UInt8]) { self.pixelData = pixelData }\n        // A method to create a deep copy of the storage.\n        func copy() -> Storage { Storage(pixelData: self.pixelData) }\n    }\n\n    private var storage: Storage\n\n    init(data: [UInt8]) {\n        self.storage = Storage(pixelData: data)\n    }\n\n    // The property that triggers the CoW logic upon mutation.\n    var pixelData: [UInt8] {\n        get { storage.pixelData }\n        set {\n            // Check if the storage is uniquely referenced. This is the core of CoW.\n            if !isKnownUniquelyReferenced(&storage) {\n                // If not unique, create a deep copy before mutating.\n                storage = storage.copy()\n            }\n            storage.pixelData = newValue\n        }\n    }\n}\n```\n\n**Common Pitfalls & Edge Cases:**\n1.  **Thread Safety:** `isKnownUniquelyReferenced` is **not inherently thread-safe**. It performs a non-atomic check of the reference count. If two threads access a shared instance, both could see the reference as non-unique, both could attempt to copy, or worse, a race condition could occur where one thread checks, gets suspended, the other thread copies, and the first thread resumes and mutates the original shared buffer. For concurrent environments, the check-and-copy operation must be synchronized using a lock (e.g., `os_unfair_lock`).\n2.  **Breaking Encapsulation:** Making the internal `Storage` class `internal` or `public` would allow consumers to bypass the CoW logic and mutate the shared reference directly, breaking the struct's value semantics.\n\n**When to Use vs. Alternatives:**\n-   **Use CoW** for value types that encapsulate large, expensive-to-copy data structures (like collections, image buffers) that are passed around frequently but mutated infrequently.\n-   **Use a simple `struct`** for small types where the cost of direct copying is negligible and less than the overhead of reference counting and uniqueness checks.\n-   **Use a `class`** when you explicitly need reference semantics and shared mutable state, rather than trying to simulate it with CoW.",
       "code_example": null,
       "tags": [
         "swift",
-        "copy-on-write",
         "performance",
-        "value types",
-        "struct",
-        "optimization"
+        "memory-management",
+        "value-types",
+        "concurrency"
       ],
       "sources": [
-        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6",
         "https://www.objc.io/issues/16-swift/power-of-swift/",
-        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9"
-      ],
-      "summary": "CoW delays copying value types until modification. Variables share data until one is mutated, optimizing performance."
-    },
-    {
-      "id": "swift_3264a6b95015",
-      "front": "Explain the difference between `some Protocol` and `any Protocol` in Swift. When would you use each, and what are the performance implications?",
-      "back": "In Swift, `some Protocol` (opaque type) and `any Protocol` (existential type) offer different ways to abstract concrete types behind a protocol. `some Protocol` creates a *reverse generic*. The function *chooses* the concrete type that conforms to the protocol, but the caller doesn't get to specify it. This allows the compiler to know the underlying type at compile time, enabling static dispatch and better performance. It guarantees that the *same* concrete type is used throughout. `any Protocol` creates an *existential container*. It can hold any type that conforms to the protocol, but the type is not known at compile time. This requires dynamic dispatch, which is slower. It allows you to store different conforming types in the same variable. Example: `func createVehicle() -> some Vehicle { Car() }` vs. `func processVehicle(vehicle: any Vehicle)`.  Common pitfall: using `any` unnecessarily when `some` would provide better performance. `some` is suitable when you need to hide implementation details but want to maintain type identity. `any` is needed when you truly need to work with different concrete types conforming to the same protocol, such as in a heterogeneous collection.  Since Swift 5.7, using `any` is more explicit and often required for existential types, highlighting the performance cost.  Alternatives: Generics (`<T: Protocol>`) offer compile-time type safety and static dispatch, but require the caller to specify the type. Opaque return types (`some Protocol`) hide the concrete type while preserving compile-time information. Existential types (`any Protocol`) provide runtime flexibility but sacrifice performance.",
-      "code_example": null,
-      "tags": [
-        "swift",
-        "opaque types",
-        "existential types",
-        "protocols",
-        "performance",
-        "generics"
-      ],
-      "sources": [
-        "https://www.objc.io/issues/16-swift/swift-functions/",
-        "https://www.hackingwithswift.com/articles/247/whats-new-in-swift-5-6",
-        "https://www.objc.io/issues/16-swift/power-of-swift/"
-      ],
-      "summary": "`some Protocol` uses static dispatch for better performance, hiding the concrete type. `any Protocol` uses dynamic dispatch for runtime flexibility."
+        "https://www.hackingwithswift.com/articles/258/whats-new-in-swift-5-9",
+        "https://www.hackingwithswift.com/articles/269/whats-new-in-swift-6"
+      ]
     }
   ]
 }
