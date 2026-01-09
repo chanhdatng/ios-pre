@@ -1,8 +1,9 @@
 # iOS Prep Hub - Codebase Summary
 
-**Last Updated:** January 8, 2026
+**Last Updated:** January 9, 2026
 **Project:** iOS Interview Preparation Platform
 **Framework:** Astro + React + TypeScript
+**Phase:** 2 (LeetCode Tracker Enhancement - Complete)
 
 ## Overview
 
@@ -63,10 +64,10 @@ ios-prep-hub/
 **Files:**
 - `src/data/flashcards/*.json` - Flashcard data
 
-### 2. LeetCode Tracking (NEW: Phase 1 - Search & Filter)
-Comprehensive problem logging with advanced filtering capabilities.
+### 2. LeetCode Tracking (Phase 1 + Phase 2 Complete)
+Comprehensive problem logging with advanced filtering and analytics.
 
-**New Features (v1):**
+**Phase 1 Features (Search & Filter):**
 - Search input with 300ms debounce (by title/ID)
 - Difficulty filter chips (Easy/Medium/Hard) - multi-select
 - Pattern filter collapsible multi-select
@@ -74,10 +75,27 @@ Comprehensive problem logging with advanced filtering capabilities.
 - Clear filters button
 - Full ARIA accessibility support
 
+**Phase 2 Features (Analytics & Charts):**
+- Progress line chart (last 30 days of solved problems)
+- Difficulty distribution doughnut chart (easy/medium/hard breakdown)
+- Top patterns horizontal bar chart (8 most common patterns)
+- Daily streak counter with flame icon
+- Date picker for problem solve dates
+- Problem log with pagination
+
 **Key Components:**
-- `LeetCodeTracker.tsx` - Main tracker component with search/filter
+- `LeetCodeTracker.tsx` - Main tracker with search, filters, charts section, date picker
+- `LeetCodeCharts.tsx` (NEW) - 4 chart components:
+  - `ProgressLineChart` - Line chart for progress over time (Chart.js)
+  - `DifficultyPieChart` - Doughnut chart for difficulty distribution
+  - `PatternBarChart` - Horizontal bar chart for top 8 patterns
+  - `StreakDisplay` - Streak counter with visual indicator
 - `useDebounce.ts` - Custom hook for debounced search
-- `StatisticsCharts.tsx` - Statistics visualization
+- `leetcode-store.ts` - Enhanced Zustand store
+
+**Store Methods (New in Phase 2):**
+- `getProgressByDate()` - Returns last 30 days grouped by date with counts
+- `getStreak()` - Calculates consecutive days with problems solved
 
 **Supported Patterns:**
 - Two Pointers, Sliding Window, Binary Search, DFS, BFS
@@ -85,8 +103,9 @@ Comprehensive problem logging with advanced filtering capabilities.
 - Graph, Tree, Linked List, Other
 
 **State Management:**
-- `useLeetCodeStore()` - Zustand store for problems
-- Local filter state (search, difficulties, patterns)
+- `useLeetCodeStore()` - Zustand store with persistence
+- Local filter state (search, difficulties, patterns - ephemeral)
+- localStorage integration via Zustand middleware
 
 ### 3. Quiz & Assessment
 - `QuizRunner.tsx` - Interactive quiz interface
@@ -113,7 +132,10 @@ Comprehensive problem logging with advanced filtering capabilities.
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first styling
 - **Zustand** - Lightweight state management
+- **Chart.js 4.5** - Data visualization library
+- **react-chartjs-2 5.3** - React wrapper for Chart.js
 - **Lucide React** - Icon library
+- **date-fns 4.1** - Date manipulation utility
 
 ### Styling System
 - CSS custom properties for theming
@@ -183,27 +205,41 @@ npm run preview         # Preview production build
 - **Verification:** Duplicate detection, link validation, quality filtering
 - **GitHub Actions:** Automated daily content generation
 
-## Recent Changes (Phase 1: LeetCode Tracker)
+## Recent Changes (Phase 2: Analytics & Charts)
+
+### Files Added
+1. **src/components/charts/LeetCodeCharts.tsx** (NEW)
+   - 4 exported chart components using Chart.js
+   - ProgressLineChart: Line chart tracking problems/day over 30 days
+   - DifficultyPieChart: Doughnut chart showing easy/medium/hard split
+   - PatternBarChart: Horizontal bar chart of top 8 patterns by frequency
+   - StreakDisplay: Flame icon counter for consecutive days with submissions
+   - Responsive height containers (h-48) with fallback empty states
 
 ### Files Modified
-1. **src/lib/hooks/useDebounce.ts** (NEW)
-   - Generic debounce hook with configurable delay
-   - Default 300ms debounce
-   - Cleanup on unmount
+1. **src/lib/stores/leetcode-store.ts**
+   - Added `getProgressByDate()` method - groups problems by date, returns last 30 days
+   - Added `getStreak()` method - calculates consecutive days including timezone awareness
+   - Updated `addProblem` signature to accept optional `solvedAt` parameter with ISO string fallback
+   - Added date utilities: `getLocalDateString()` helper, `MS_PER_DAY` constant
 
-2. **src/components/tracking/LeetCodeTracker.tsx** (MODIFIED)
-   - Added search input with debounce
-   - Multi-select difficulty filter (chips)
-   - Collapsible pattern filter with count badge
-   - Filter summary and clear button
-   - Enhanced ARIA labels
+2. **src/components/tracking/LeetCodeTracker.tsx**
+   - Added charts grid section (ProgressLineChart, DifficultyPieChart)
+   - Added pattern/streak grid (PatternBarChart, StreakDisplay)
+   - Added date picker in problem form (solvedAt field with max date validation)
+   - Charts display above problem log for visual-first analytics
+
+3. **package.json**
+   - Added `chart.js@^4.5.1`
+   - Added `react-chartjs-2@^5.3.1`
 
 ### Key Implementation Details
-- Search filters by title or problem ID (case-insensitive)
-- Filters use OR logic within category, AND between categories
-- useMemo optimizes filtered results
-- Local ephemeral state for filters (not persisted)
-- Icons from lucide-react
+- Chart.js used for data visualization (alternative to Recharts for bundle size)
+- Charts register components upfront for proper tree-shaking
+- responsive: true and maintainAspectRatio: false on all charts
+- Empty state messages when insufficient data (<2 days for line chart, 0 total for pie)
+- Streak calculation accounts for timezone issues with local date strings
+- All chart colors use CSS custom properties or hex values for theming consistency
 
 ## Testing Strategy
 
@@ -233,15 +269,17 @@ npm run preview         # Preview production build
 
 ## Future Enhancement Roadmap
 
-**Phase 2 (Planned):**
-- Advanced statistics (submission/solve rates)
-- Problem history and revisions
-- Pattern difficulty analysis
-
 **Phase 3 (Planned):**
 - Backend integration for cloud sync
-- Advanced analytics dashboard
-- Export/import functionality
+- Advanced analytics dashboard (export/import)
+- Pattern difficulty analysis (by difficulty tier)
+- Problem revision history and notes
+
+**Phase 4+ (Planned):**
+- LeetCode API integration for auto-syncing solved problems
+- Custom difficulty scaling (user-defined problem levels)
+- Interview prep templates and study plans
+- Mobile app (React Native)
 
 ## Deployment
 
@@ -272,7 +310,36 @@ npm run preview         # Preview production build
 - [Zustand GitHub](https://github.com/pmndrs/zustand)
 - [Tailwind CSS Docs](https://tailwindcss.com)
 
+## Chart Configuration Details
+
+### ProgressLineChart
+- Displays 30-day rolling window of problems solved
+- Orange color (#f97316) with light fill for visual depth
+- Requires minimum 2 data points to render
+- Labels show MM-DD format for conciseness
+- Responsive: true, maintains aspect ratio: false
+
+### DifficultyPieChart
+- Doughnut chart (donut hole cutout: 60%)
+- Green (easy), Orange (medium), Red (hard) colors
+- Shows percentages in tooltips
+- Legend positioned bottom with point style circles
+
+### PatternBarChart
+- Horizontal bar chart (indexAxis: y)
+- Top 8 patterns by frequency
+- Blue bars (#3b82f6) with rounded borders
+- Sorted descending by count
+
+### StreakDisplay
+- Container-based layout (flex center)
+- Flame icon changes color based on streak status
+  - Orange: streak > 0
+  - Tertiary gray: streak = 0
+- Min height 100px to fill grid space
+
 ---
 
 **Maintained by:** Development Team
-**Last Review:** January 8, 2026
+**Last Review:** January 9, 2026
+**Status:** Phase 2 Complete - Analytics & Charts Implementation
