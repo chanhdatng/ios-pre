@@ -1,7 +1,7 @@
 ---
 title: "LeetCode Tracker Enhancement"
 description: "Add search/filter, charts with Recharts, and UX improvements to LeetCode tracker"
-status: in-progress
+status: completed
 priority: P2
 effort: 12h
 branch: main
@@ -51,11 +51,11 @@ Enhance LeetCode Tracker với 3 phases: search/filter, statistics charts (Recha
 - No external API calls needed
 
 ## Success Criteria
-- [ ] Search filters problems by title/ID in real-time
-- [ ] Difficulty/pattern chips filter correctly
-- [ ] Charts display progress over time, difficulty distribution
-- [ ] Streak tracking shows consecutive days
-- [ ] All features work on mobile
+- [x] Search filters problems by title/ID in real-time
+- [x] Difficulty/pattern chips filter correctly
+- [x] Charts display progress over time, difficulty distribution
+- [x] Streak tracking shows consecutive days
+- [x] All features work on mobile
 
 ## Phase Details
 - [Phase 1: Search & Filter](./phase-01-search-filter.md)

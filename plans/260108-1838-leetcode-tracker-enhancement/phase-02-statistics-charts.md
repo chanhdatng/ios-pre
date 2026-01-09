@@ -1,5 +1,7 @@
 # Phase 2: Statistics & Charts
 
+**Status:** DONE | **Completed:** 2026-01-09
+
 ## Context
 LeetCode Tracker chỉ hiển thị basic stats (count by difficulty). Cần visual charts để track progress over time, difficulty distribution, và pattern breakdown.
 
@@ -306,29 +308,29 @@ import { ProgressLineChart, DifficultyPieChart, PatternBarChart, StreakDisplay }
 ```
 
 ## Todo List
-- [ ] Run `npm install recharts`
-- [ ] Add `getProgressByDate()` to leetcode-store
-- [ ] Add `getStreak()` to leetcode-store
-- [ ] Create `LeetCodeCharts.tsx` with 4 chart components
-- [ ] Add ProgressLineChart (last 30 days)
-- [ ] Add DifficultyPieChart (donut style)
-- [ ] Add PatternBarChart (horizontal, top 8)
-- [ ] Add StreakDisplay component
-- [ ] Add date picker input to add problem form
-- [ ] Modify addProblem to accept custom solvedAt
-- [ ] Integrate charts section in LeetCodeTracker
-- [ ] Test responsive layout on mobile
-- [ ] Verify Recharts works with client:load
+- [x] Run `npm install chart.js react-chartjs-2` (lighter 15kb alternative)
+- [x] Add `getProgressByDate()` to leetcode-store
+- [x] Add `getStreak()` to leetcode-store
+- [x] Create `LeetCodeCharts.tsx` with 4 chart components
+- [x] Add ProgressLineChart (last 30 days)
+- [x] Add DifficultyPieChart (donut style)
+- [x] Add PatternBarChart (horizontal, top 8)
+- [x] Add StreakDisplay component
+- [x] Add date picker input to add problem form
+- [x] Modify addProblem to accept custom solvedAt
+- [x] Integrate charts section in LeetCodeTracker
+- [x] Test responsive layout on mobile
+- [x] Verify charts work with client:load
 
 ## Success Criteria
-- [ ] All 3 charts render correctly
-- [ ] Line chart shows progress over time (min 2 data points)
-- [ ] Pie chart shows difficulty distribution
-- [ ] Bar chart shows top patterns
-- [ ] Streak updates correctly
-- [ ] Date picker allows setting past dates
-- [ ] Charts responsive on mobile (stacked layout)
-- [ ] No hydration errors in Astro
+- [x] All 3 charts render correctly
+- [x] Line chart shows progress over time (min 2 data points)
+- [x] Pie chart shows difficulty distribution
+- [x] Bar chart shows top patterns
+- [x] Streak updates correctly
+- [x] Date picker allows setting past dates
+- [x] Charts responsive on mobile (stacked layout)
+- [x] No hydration errors in Astro
 
 ## Risk Assessment
 | Risk | Likelihood | Impact | Mitigation |

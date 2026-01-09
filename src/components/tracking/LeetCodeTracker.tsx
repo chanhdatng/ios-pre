@@ -2,7 +2,13 @@ import { useState, useMemo } from 'react';
 import { useLeetCodeStore, type LeetCodeProblem } from '../../lib/stores/leetcode-store';
 import { useDebounce } from '../../lib/hooks/useDebounce';
 import { useToast } from '../ui/Toast';
-import { Plus, Trash2, ExternalLink, Search, X, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Search, X, ChevronDown, Calendar } from 'lucide-react';
+import {
+  ProgressLineChart,
+  DifficultyPieChart,
+  PatternBarChart,
+  StreakDisplay,
+} from '../charts/LeetCodeCharts';
 
 const PATTERNS = [
   'Two Pointers',
@@ -50,6 +56,7 @@ export default function LeetCodeTracker() {
     difficulty: 'medium' as LeetCodeProblem['difficulty'],
     pattern: 'Two Pointers',
     notes: '',
+    solvedAt: new Date().toISOString().split('T')[0], // YYYY-MM-DD default today
   });
 
   // Filter state (local, ephemeral)
@@ -125,6 +132,9 @@ export default function LeetCodeTracker() {
       ...newProblem,
       id: trimmedId,
       title: trimmedTitle,
+      solvedAt: newProblem.solvedAt
+        ? new Date(newProblem.solvedAt).toISOString()
+        : new Date().toISOString(),
     });
     toast.success(`Added problem #${trimmedId}`);
     setNewProblem({
@@ -133,6 +143,7 @@ export default function LeetCodeTracker() {
       difficulty: 'medium',
       pattern: 'Two Pointers',
       notes: '',
+      solvedAt: new Date().toISOString().split('T')[0],
     });
     setIsAdding(false);
   };
@@ -170,22 +181,25 @@ export default function LeetCodeTracker() {
         </div>
       </div>
 
-      {/* Pattern breakdown */}
-      {Object.keys(patternStats).length > 0 && (
+      {/* Charts Section */}
+      <div className="grid md:grid-cols-2 gap-4">
         <div className="p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
-          <h3 className="font-semibold mb-3 text-body">By Pattern</h3>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(patternStats).map(([pattern, count]) => (
-              <span
-                key={pattern}
-                className="px-3 py-1 bg-[var(--color-surface-primary)] rounded-full text-body-small"
-              >
-                {pattern}: {count}
-              </span>
-            ))}
-          </div>
+          <h3 className="font-semibold mb-3 text-body">Progress Over Time</h3>
+          <ProgressLineChart />
         </div>
-      )}
+        <div className="p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+          <h3 className="font-semibold mb-3 text-body">Difficulty Distribution</h3>
+          <DifficultyPieChart />
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+          <h3 className="font-semibold mb-3 text-body">Top Patterns</h3>
+          <PatternBarChart />
+        </div>
+        <StreakDisplay />
+      </div>
 
       {/* Problem Log */}
       <div className="p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
@@ -314,7 +328,7 @@ export default function LeetCodeTracker() {
               onChange={(e) => setNewProblem({ ...newProblem, title: e.target.value })}
               className="w-full px-3 py-2 bg-[var(--color-surface-secondary)] border border-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-body"
             />
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <select
                 value={newProblem.difficulty}
                 onChange={(e) =>
@@ -332,7 +346,7 @@ export default function LeetCodeTracker() {
               <select
                 value={newProblem.pattern}
                 onChange={(e) => setNewProblem({ ...newProblem, pattern: e.target.value })}
-                className="flex-1 px-3 py-2 bg-[var(--color-surface-secondary)] border border-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-body"
+                className="flex-1 min-w-[140px] px-3 py-2 bg-[var(--color-surface-secondary)] border border-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-body"
               >
                 {PATTERNS.map((p) => (
                   <option key={p} value={p}>
@@ -340,6 +354,17 @@ export default function LeetCodeTracker() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[var(--color-text-tertiary)]" aria-hidden="true" />
+              <input
+                type="date"
+                value={newProblem.solvedAt}
+                onChange={(e) => setNewProblem({ ...newProblem, solvedAt: e.target.value })}
+                max={new Date().toISOString().split('T')[0]}
+                aria-label="Date solved"
+                className="px-3 py-2 bg-[var(--color-surface-secondary)] border border-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-body"
+              />
             </div>
             <div className="flex gap-2">
               <button
