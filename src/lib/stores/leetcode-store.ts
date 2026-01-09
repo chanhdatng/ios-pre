@@ -17,6 +17,8 @@ export interface LeetCodeProblem {
   pattern: string;
   solvedAt: string;
   notes?: string;
+  tags?: string[];
+  retryCount?: number;
 }
 
 interface LeetCodeState {
@@ -32,6 +34,8 @@ interface LeetCodeState {
   setUsername: (username: string) => void;
   addProblem: (problem: Omit<LeetCodeProblem, 'solvedAt'> & { solvedAt?: string }) => void;
   removeProblem: (id: string) => void;
+  removeBulk: (ids: string[]) => void;
+  updateProblem: (id: string, updates: Partial<LeetCodeProblem>) => void;
   updateApiStats: (stats: LeetCodeState['apiStats']) => void;
   getStatsByDifficulty: () => { easy: number; medium: number; hard: number };
   getStatsByPattern: () => Record<string, number>;
@@ -62,6 +66,18 @@ export const useLeetCodeStore = create<LeetCodeState>()(
       removeProblem: (id) =>
         set((state) => ({
           problems: state.problems.filter((p) => p.id !== id),
+        })),
+
+      removeBulk: (ids) =>
+        set((state) => ({
+          problems: state.problems.filter((p) => !ids.includes(p.id)),
+        })),
+
+      updateProblem: (id, updates) =>
+        set((state) => ({
+          problems: state.problems.map((p) =>
+            p.id === id ? { ...p, ...updates } : p
+          ),
         })),
 
       updateApiStats: (stats) => set({ apiStats: stats }),
