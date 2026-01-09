@@ -3,33 +3,23 @@ import BaseLayout from '../components/layout/BaseLayout.astro';
 import Sidebar from '../components/layout/Sidebar.astro';
 import Header from '../components/layout/Header.astro';
 import LeetCodeTracker from '../components/tracking/LeetCodeTracker';
-import GitHubActivity from '../components/tracking/GitHubActivity';
 import { TopicSuggestions } from '../components/leetcode/TopicSuggestions';
 ---
 
-<BaseLayout title="LeetCode & GitHub">
+<BaseLayout title="LeetCode Tracker">
   <Sidebar slot="sidebar" />
   <Header
-    title="Coding Practice"
-    subtitle="Track your LeetCode progress and GitHub activity"
+    title="LeetCode Practice"
+    subtitle="Track your problem-solving progress"
   />
 
-  <div class="grid lg:grid-cols-2 gap-6">
-    <!-- LeetCode Tracker -->
-    <div>
-      <h2 class="text-headline-2 mb-4">LeetCode Progress</h2>
-      <LeetCodeTracker client:load />
-    </div>
-
-    <!-- GitHub Activity -->
-    <div>
-      <h2 class="text-headline-2 mb-4">GitHub Repos</h2>
-      <GitHubActivity client:load />
-    </div>
+  <!-- LeetCode Tracker (full width) -->
+  <div class="mb-8">
+    <LeetCodeTracker client:load />
   </div>
 
   <!-- Topic-Based Suggestions -->
-  <div class="mt-8 p-6 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+  <div class="p-6 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
     <TopicSuggestions client:load />
   </div>
 

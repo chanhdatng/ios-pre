@@ -3,12 +3,14 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import Sidebar from '../../components/layout/Sidebar.astro';
 import Header from '../../components/layout/Header.astro';
 import FlashcardDeck from '../../components/interactive/FlashcardDeck';
+import { TopicSuggestions } from '../../components/leetcode/TopicSuggestions';
 
 // Load Month 3 content - Behavioral prep
 import behavioral from '../../data/flashcards/behavioral.json';
 
 const behavioralCards = behavioral.cards.map(c => ({ ...c, topic: 'Behavioral' }));
 const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
+const month3Topics = ['behavioral'];
 ---
 
 <BaseLayout title="Month 3">
@@ -50,6 +52,12 @@ const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
     <div>
       <h2 class="text-headline-2 mb-4">Behavioral Questions</h2>
       <FlashcardDeck cards={behavioralCards} client:load />
+    </div>
+
+    <!-- LeetCode Suggestions -->
+    <div class="p-5 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+      <h3 class="text-headline-3 mb-4">LeetCode Practice</h3>
+      <TopicSuggestions filterTopics={month3Topics} client:load />
     </div>
 
     <!-- Tips Section -->

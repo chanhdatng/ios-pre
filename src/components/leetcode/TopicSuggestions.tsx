@@ -32,8 +32,17 @@ const PATTERNS = [
   'Graph', 'Tree', 'Linked List', 'Other'
 ];
 
-export function TopicSuggestions() {
-  const [selectedTopic, setSelectedTopic] = useState<string>('all');
+interface TopicSuggestionsProps {
+  /** Filter to show only specific topics by ID. If not provided, shows all with dropdown. */
+  filterTopics?: string[];
+  /** Hide the header section */
+  compact?: boolean;
+}
+
+export function TopicSuggestions({ filterTopics, compact = false }: TopicSuggestionsProps) {
+  const [selectedTopic, setSelectedTopic] = useState<string>(
+    filterTopics?.length === 1 ? filterTopics[0] : 'all'
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProblem, setNewProblem] = useState({
@@ -51,7 +60,14 @@ export function TopicSuggestions() {
   const addCustomSuggestion = useSuggestionStore((s) => s.addSuggestion);
   const removeCustomSuggestion = useSuggestionStore((s) => s.removeSuggestion);
 
-  const topics = suggestionsData.topics as Topic[];
+  // Filter topics if filterTopics prop is provided
+  const allTopics = suggestionsData.topics as Topic[];
+  const topics = filterTopics
+    ? allTopics.filter((t) => filterTopics.includes(t.id))
+    : allTopics;
+
+  // Show dropdown only when not filtering or filtering multiple topics
+  const showDropdown = !filterTopics || filterTopics.length > 1;
 
   // Check if problem is already solved
   const isSolved = (problemId: string) =>
@@ -158,7 +174,7 @@ export function TopicSuggestions() {
       {/* Header with filter */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <h3 className="text-body font-semibold">Suggested Problems</h3>
+          {!compact && <h3 className="text-body font-semibold">Suggested Problems</h3>}
           <span className="text-caption text-[var(--color-text-secondary)]">
             {solvedCount}/{filteredProblems.length} solved
             {customCount > 0 && ` • ${customCount} custom`}
@@ -182,64 +198,68 @@ export function TopicSuggestions() {
             </button>
           )}
 
-          {/* Topic dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-2 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-body-small hover:bg-[var(--color-surface-tertiary)] transition-colors"
-              aria-expanded={isDropdownOpen}
-              aria-haspopup="listbox"
-            >
-              {selectedTopicName}
-              <ChevronDown
-                className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-              />
-            </button>
-
-            {isDropdownOpen && (
-              <div
-                className="absolute right-0 mt-1 w-56 bg-[var(--color-surface-primary)] border border-[var(--color-surface-tertiary)] rounded-[var(--radius-md)] shadow-lg z-10 max-h-64 overflow-y-auto"
-                role="listbox"
+          {/* Topic dropdown - only show when multiple topics */}
+          {showDropdown && (
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-2 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)] text-body-small hover:bg-[var(--color-surface-tertiary)] transition-colors"
+                aria-expanded={isDropdownOpen}
+                aria-haspopup="listbox"
               >
-                <button
-                  onClick={() => {
-                    setSelectedTopic('all');
-                    setIsDropdownOpen(false);
-                    setShowAddForm(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 text-body-small hover:bg-[var(--color-surface-secondary)] ${
-                    selectedTopic === 'all' ? 'bg-[var(--color-surface-secondary)]' : ''
-                  }`}
-                  role="option"
-                  aria-selected={selectedTopic === 'all'}
+                {selectedTopicName}
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {isDropdownOpen && (
+                <div
+                  className="absolute right-0 mt-1 w-56 bg-[var(--color-surface-primary)] border border-[var(--color-surface-tertiary)] rounded-[var(--radius-md)] shadow-lg z-10 max-h-64 overflow-y-auto"
+                  role="listbox"
                 >
-                  All Topics
-                </button>
-                {topics.map((topic) => {
-                  const customForTopic = customSuggestions.filter((c) => c.topicId === topic.id).length;
-                  return (
+                  {!filterTopics && (
                     <button
-                      key={topic.id}
                       onClick={() => {
-                        setSelectedTopic(topic.id);
+                        setSelectedTopic('all');
                         setIsDropdownOpen(false);
+                        setShowAddForm(false);
                       }}
                       className={`w-full text-left px-3 py-2 text-body-small hover:bg-[var(--color-surface-secondary)] ${
-                        selectedTopic === topic.id ? 'bg-[var(--color-surface-secondary)]' : ''
+                        selectedTopic === 'all' ? 'bg-[var(--color-surface-secondary)]' : ''
                       }`}
                       role="option"
-                      aria-selected={selectedTopic === topic.id}
+                      aria-selected={selectedTopic === 'all'}
                     >
-                      <span>{topic.name}</span>
-                      <span className="text-caption text-[var(--color-text-tertiary)] ml-2">
-                        ({topic.problems.length}{customForTopic > 0 ? `+${customForTopic}` : ''})
-                      </span>
+                      All Topics
                     </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                  )}
+                  {topics.map((topic) => {
+                    const customForTopic = customSuggestions.filter((c) => c.topicId === topic.id).length;
+                    return (
+                      <button
+                        key={topic.id}
+                        onClick={() => {
+                          setSelectedTopic(topic.id);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 text-body-small hover:bg-[var(--color-surface-secondary)] ${
+                          selectedTopic === topic.id ? 'bg-[var(--color-surface-secondary)]' : ''
+                        }`}
+                        role="option"
+                        aria-selected={selectedTopic === topic.id}
+                      >
+                        <span>{topic.name}</span>
+                        <span className="text-caption text-[var(--color-text-tertiary)] ml-2">
+                          ({topic.problems.length}{customForTopic > 0 ? `+${customForTopic}` : ''})
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

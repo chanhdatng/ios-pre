@@ -4,6 +4,7 @@ import Sidebar from '../../components/layout/Sidebar.astro';
 import Header from '../../components/layout/Header.astro';
 import FlashcardDeck from '../../components/interactive/FlashcardDeck';
 import QuizRunner from '../../components/interactive/QuizRunner';
+import { TopicSuggestions } from '../../components/leetcode/TopicSuggestions';
 
 // Load Month 1 content
 import swiftFundamentals from '../../data/flashcards/swift-fundamentals.json';
@@ -15,6 +16,7 @@ const swiftCards = swiftFundamentals.cards.map(c => ({ ...c, topic: 'Swift Funda
 const iosCards = iosCore.cards.map(c => ({ ...c, topic: 'iOS Core' }));
 const allQuestions = [...swiftQuiz.questions, ...iosQuiz.questions];
 const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
+const month1Topics = ['swift-fundamentals', 'ios-core', 'memory-management'];
 ---
 
 <BaseLayout title="Month 1">
@@ -89,6 +91,12 @@ const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
     <!-- Quiz -->
     <div id="quiz-content" class="tab-content hidden">
       <QuizRunner questions={allQuestions} client:load />
+    </div>
+
+    <!-- LeetCode Suggestions -->
+    <div class="mt-8 p-5 bg-[var(--color-surface-secondary)] rounded-[var(--radius-md)]">
+      <h3 class="text-headline-3 mb-4">LeetCode Practice</h3>
+      <TopicSuggestions filterTopics={month1Topics} client:load />
     </div>
 
     <!-- Quick Link -->
