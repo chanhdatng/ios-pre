@@ -69,10 +69,12 @@ class FlashcardGenerator:
         context_text = "\n\n---\n\n".join(context_chunks)
 
         # 3. Generate flashcard with Gemini
-        prompt = f"{FLASHCARD_SYSTEM_PROMPT}\n\n{FLASHCARD_USER_PROMPT.format(
-            topic=f'{topic}: {subtopic}',
+        topic_str = f"{topic}: {subtopic}"
+        user_prompt = FLASHCARD_USER_PROMPT.format(
+            topic=topic_str,
             context=context_text[:8000]
-        )}"
+        )
+        prompt = f"{FLASHCARD_SYSTEM_PROMPT}\n\n{user_prompt}"
 
         response = await self.gemini.generate(prompt)
 
