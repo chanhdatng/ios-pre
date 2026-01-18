@@ -429,6 +429,115 @@
       "sources": [
         "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
       ]
+    },
+    {
+      "id": "concurrency_c4f511d6cdf5",
+      "front": "Explain how the `Sendable` protocol and `@Sendable` closures enforce thread safety. How does conformance differ for value types vs. reference types, and what is the role of `@unchecked Sendable`?",
+      "back": "The `Sendable` protocol is a cornerstone of Swift's structured concurrency, acting as a compile-time guarantee that a type can be safely shared between concurrent contexts (like actors or tasks) without causing data races.\n\n**Core Concept:**\nA type is `Sendable` if it has no shared mutable state. The compiler enforces this contract:\n- **Value Types (Structs, Enums):** These are `Sendable` if all their stored properties are also `Sendable`. Since value types are copied on transfer, each concurrent context gets its own unique copy, preventing shared mutable state by design. This conformance is often implicit.\n- **Reference Types (Classes):** A class can be `Sendable` under two conditions:\n  1. It is a `final` class with only immutable stored properties (`let`) of `Sendable` types. Immutability ensures no concurrent task can modify its state.\n  2. It manages its own internal synchronization (e.g., using a lock or dispatch queue). In this case, you must explicitly mark it `@unchecked Sendable` to tell the compiler you are manually upholding thread safety.\n- **`@Sendable` closures:** A closure marked `@Sendable` can be passed across concurrency boundaries. It can only capture `Sendable` values, and it captures them by value, ensuring it doesn't create shared mutable state.\n\n**Practical Code Example:**\n```swift\n// 1. Implicitly Sendable struct\nstruct UserProfile: Sendable {\n    let id: UUID\n    let username: String\n}\n\n// 2. Sendable final class with immutable state\nfinal class ReportGenerator: Sendable {\n    let apiToken: String // Immutable property ensures thread safety\n    init(apiToken: String) { self.apiToken = apiToken }\n}\n\n// 3. Unsafe class that requires manual synchronization\nclass UnsafeCounter {\n    private var value = 0\n    private let lock = NSLock()\n    func increment() {\n        lock.withLock { value += 1 }\n    }\n}\n// We vouch for its safety with @unchecked Sendable\nextension UnsafeCounter: @unchecked Sendable {}\n\nfunc processUser(profile: UserProfile, using generator: ReportGenerator) async {\n    // Both profile and generator can be safely passed to another thread.\n    await Task.detached {\n        print(\"Processing \\(profile.username) with \\(generator.apiToken)\")\n    }.value\n}\n```\n\n**Common Pitfalls:**\n- **Misusing `@unchecked Sendable`:** This is a powerful but dangerous escape hatch. Applying it to a type that is not actually thread-safe will bypass compiler checks and re-introduce the risk of data races that are extremely difficult to debug.\n- **Non-final Classes:** The compiler prevents non-final classes from conforming to `Sendable` because a subclass could add mutable (`var`) properties, breaking the immutability contract of the superclass.\n- **Generic Types:** For a generic type `MyType<T>` to be `Sendable`, the generic parameter `T` must also be constrained to `Sendable` (e.g., `struct MyType<T: Sendable>`).",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "swift",
+        "actors",
+        "sendable",
+        "thread-safety"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_63f51f17b095",
+      "front": "MainActor and global actors",
+      "back": "",
+      "code_example": null,
+      "tags": [
+        "MainActor and global actors"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_b2a458c2caac",
+      "front": "You need to adapt a callback-based API to Swift Concurrency. Differentiate between `AsyncSequence` and `AsyncStream` and justify which you would use, explaining the core concepts of backpressure and continuation management.",
+      "back": "You should use `AsyncStream` for this task. `AsyncSequence` is a protocol you conform to when building a new, natively asynchronous sequence. `AsyncStream` is a concrete type specifically designed to bridge existing, non-async code into the `async/await` world.\n\n### Core Concepts\n\n*   **`AsyncSequence`** is a protocol, analogous to `Sequence`. It defines a type that produces values over time, which can be consumed with a `for await...in` loop. System APIs like `URLSession.bytes(from:)` vend types that conform to this protocol. You would implement it yourself for a type that is naturally a sequence, like a custom network paginator.\n\n*   **`AsyncStream`** is the tool for adaptation. It creates an `AsyncSequence` from a closure that provides a `continuation`. You use this continuation to *push* values into the stream from your callback-based API. This converts a push-based system (delegates, callbacks) into a pull-based one (`for await`).\n\n### Code Example\n\nHere's how to wrap a delegate-based `LocationManager`:\n\n```swift\n// 1. Legacy-style class with a callback\nclass LocationManager {\n    var onLocationUpdate: ((CLLocation) -> Void)?\n    func startUpdating() { /* ... starts hardware ... */ }\n    func stopUpdating() { /* ... stops hardware ... */ }\n}\n\n// 2. Bridge to AsyncStream\nfunc locations() -> AsyncStream<CLLocation> {\n    return AsyncStream { continuation in\n        let locationManager = LocationManager()\n        locationManager.onLocationUpdate = { location in\n            continuation.yield(location) // Push values into the stream\n        }\n\n        // 3. Handle cancellation and cleanup\n        continuation.onTermination = { @Sendable _ in\n            locationManager.stopUpdating()\n        }\n\n        locationManager.startUpdating()\n    }\n}\n\n// 4. Consume with for-await\nfunc monitorLocations() async {\n    let locationStream = locations()\n    for await location in locationStream {\n        print(\"New location: \\(location)\")\n        // The loop continues indefinitely until the Task is cancelled\n    }\n}\n```\n\n### Pitfalls & Edge Cases\n\n*   **Backpressure:** If the callback produces values faster than the `for await` loop consumes them, `AsyncStream` buffers them. The default policy is `.unbounded`, which can cause memory exhaustion. For a senior role, you must know to configure the `bufferingPolicy` (e.g., `.bufferingNewest(1)`) to manage memory.\n\n*   **Continuation Management:** The continuation is not thread-safe. All calls to it must be synchronized. You must call `continuation.finish()` to terminate the stream gracefully; otherwise, the `for await` loop will hang forever. The continuation must not escape the setup closure.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "swift-concurrency",
+        "asyncsequence",
+        "asyncstream",
+        "structured-concurrency"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/common-background-practices/",
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_dbfc3f91d97e",
+      "front": "Compare mechanisms in Swift for preventing data races on a mutable shared resource. Discuss the trade-offs between `NSLock`, a serial `DispatchQueue`, and an `Actor`, and explain when you would choose each.",
+      "back": "A data race occurs when multiple threads access a shared mutable resource without synchronization, with at least one access being a write, leading to unpredictable behavior. Swift offers several mechanisms to enforce mutual exclusion, each with distinct trade-offs.\n\n**Core Concept: Mutual Exclusion**\nAll these mechanisms ensure that only one thread can execute a critical section of code at a time, preventing simultaneous reads/writes and state corruption.\n\n- **`Actor`**: The modern, Swift-native solution. An actor is a reference type that protects its mutable state from concurrent access. The Swift compiler guarantees that all access to an actor's state is serialized, eliminating data races by construction. Access from outside the actor must be asynchronous via `await`.\n\n```swift\n// A thread-safe cache using an actor\nactor UserCache {\n    private var cache: [UUID: String] = [:]\n\n    func setUser(name: String, for id: UUID) {\n        // This method is part of the actor's isolated context.\n        // Swift ensures only one call runs at a time within this actor.\n        cache[id] = name\n    }\n\n    func user(for id: UUID) -> String? {\n        return cache[id]\n    }\n}\n\n// Usage:\nlet cache = UserCache()\nTask {\n    // 'await' is required to access actor-isolated methods\n    await cache.setUser(name: \"Alice\", for: UUID())\n}\n```\n\n**When to Use vs. Alternatives**\n\n1.  **`Actor` (Preferred)**\n    *   **Use When**: By default for all new code requiring synchronization. The compiler-enforced safety is a massive advantage.\n    *   **Trade-off**: Requires understanding `async/await` and actor re-entrancy. An `await` inside an actor method can suspend it, allowing other methods on the actor to run, which can be a subtle source of bugs if not handled carefully.\n\n2.  **Serial `DispatchQueue`**\n    *   **Use When**: In legacy codebases heavily reliant on GCD, or for simple serialization without adopting Swift Concurrency. It guarantees First-In, First-Out (FIFO) execution order.\n    *   **Trade-off**: Higher overhead than a lock. Prone to misuse (e.g., calling `sync` on the current queue causes a deadlock). It doesn't provide compile-time safety; you must remember to dispatch all access through the queue.\n\n3.  **`NSLock` / `NSRecursiveLock`**\n    *   **Use When**: For performance-critical code where the overhead of GCD or actors is too high, and the critical section is small and well-defined.\n    *   **Trade-off**: Highest risk. It's fully manual. You are responsible for calling `lock()` and `unlock()` correctly. Forgetting to unlock can freeze threads, and incorrect lock ordering can cause deadlocks. It's a C-style primitive that offers no compile-time guarantees.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "swift-concurrency",
+        "actors",
+        "data-race",
+        "gcd",
+        "threads"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_adf2fcd2570c",
+      "front": "Explain how a `withThrowingTaskGroup` manages child task failures and cancellations. How does this 'structured' approach differ from launching multiple `Task { }` instances to achieve concurrency?",
+      "back": "A `withThrowingTaskGroup` provides structured concurrency for a dynamic number of child tasks. Its core principle is that the group's lifetime is strictly scoped: the parent task suspends and only resumes after all child tasks have completed.\n\n**Failure and Cancellation:** If any child task within a `withThrowingTaskGroup` throws an error, the group automatically cancels all other running and pending child tasks. This is a key safety feature. The group then waits for every child task to finish (either by completing, throwing, or acknowledging the cancellation) before the `withThrowingTaskGroup` call rethrows the original error that triggered the cancellation. This prevents orphaned tasks and ensures a clean, predictable failure state.\n\nThis 'structured' approach contrasts sharply with launching multiple detached `Task { }` instances. Detached tasks are unstructured; they are independent, top-level tasks that don't have a parent-child relationship. The failure or cancellation of one detached task has no effect on others. You would be responsible for manually managing cancellation and aggregating results or errors, which is complex and error-prone.\n\n**Code Example:**\n```swift\n// Fetches data for multiple IDs, one of which will fail.\nfunc fetchAllUserData() async throws -> [String] {\n    let userIDs = [1, 2, 99, 4] // ID 99 will fail.\n    \n    return try await withThrowingTaskGroup(of: String.self) { group in\n        var userDatas: [String] = []\n        \n        // Dynamically add a child task for each ID.\n        for id in userIDs {\n            group.addTask {\n                print(\"Fetching for user \\(id)...\")\n                // Each task should check for cancellation to exit early.\n                try Task.checkCancellation()\n                // This simulates a network call that can fail.\n                return try await self.fetch(user: id)\n            }\n        }\n        \n        // Await and collect results as they complete.\n        // If any task throws, this loop is exited and the group cancels.\n        for try await userData in group {\n            userDatas.append(userData)\n        }\n        return userDatas\n    }\n}\n\nfunc fetch(user id: Int) async throws -> String {\n    if id == 99 {\n        print(\"Error: User \\(id) not found. Cancelling group.\")\n        throw URLError(.badURL) // This throw triggers group cancellation.\n    }\n    try await Task.sleep(nanoseconds: UInt64.random(in: 100_000_000...500_000_000))\n    print(\"Success: Fetched user \\(id).\")\n    return \"Data for user \\(id)\"\n}\n```\n\n**Common Pitfalls:**\n*   **Implicit Cancellation:** Not realizing that one failure cancels the entire group. Tasks should frequently check `Task.isCancelled` to terminate gracefully.\n*   **Unstructured Tasks Inside a Group:** Creating a detached `Task { }` inside `group.addTask` breaks the structured relationship. This new task won't be awaited or cancelled by the group.\n\n**When to Use vs. Alternatives:**\n*   **Task Group:** Use for a *dynamic* number of similar, related tasks where you need to aggregate results or handle failures collectively.\n*   **`async let`:** Use for a *fixed*, small number of heterogeneous tasks known at compile time. The syntax is simpler for a definite number of concurrent operations.\n*   **Detached `Task`:** Use rarely, for work that must outlive its originating scope and is completely independent, with no need for parent-based cancellation.",
+      "code_example": null,
+      "tags": [
+        "Concurrency",
+        "Swift Concurrency",
+        "Structured Concurrency",
+        "TaskGroup",
+        "async/await"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_ef63c6d3be70",
+      "front": "An unstructured `Task` can be created within an async function, but `async let` and `TaskGroup` are preferred. Explain the 'structured' vs 'unstructured' distinction and its impact on task lifetime, cancellation, and error propagation.",
+      "back": "Structured Concurrency is a paradigm that scopes concurrent operations within a well-defined lifetime, forming a task hierarchy. This structure provides powerful compile-time safety guarantees that are absent in 'unstructured' or 'fire-and-forget' models like GCD or a detached `Task`.\n\n**Core Concept: Parent-Child Relationship**\nIn Structured Concurrency, a parent task cannot complete until all its child tasks have finished. This has three critical implications:\n1.  **Lifetime:** Child tasks cannot outlive their parent's scope. This prevents 'leaked' tasks that might continue running in the background, consuming resources unnecessarily.\n2.  **Cancellation:** If the parent task is cancelled, cancellation is automatically and immediately propagated down to all its children.\n3.  **Error Propagation:** An error thrown by any child task is automatically propagated up to the parent, which must then handle it or propagate it further.\n\nAn unstructured `Task { ... }` breaks this hierarchy. It creates a new, top-level task with no parent, severing the automatic propagation of context, cancellation, and errors. It becomes the developer's responsibility to manage its lifetime and cancellation manually.\n\n**Practical Code Example**\n```swift\nstruct UserProfile {\n    let info: UserInfo\n    let friends: [Friend]\n}\n\n// Fetches user data using Structured Concurrency\nfunc fetchUserProfile(for id: String) async throws -> UserProfile {\n    print(\"Starting to fetch profile for \\(id)\")\n    // 'async let' creates structured child tasks. \n    // They run in parallel immediately.\n    async let userInfo = fetchUserInfo(id: id) \n    async let friends = fetchFriends(id: id)\n\n    // The 'await' keyword suspends the parent task until the child completes.\n    // This function's scope will not exit until both child tasks finish.\n    // If either throws an error, it's propagated here.\n    let profile = try await UserProfile(info: userInfo, friends: friends)\n    print(\"Finished fetching profile for \\(id)\")\n    return profile\n}\n```\n\n**Common Pitfalls**\n*   **Accidental Unstructured Tasks:** Using `Task { await someWork() }` inside an async function when `async let` is more appropriate. This breaks the parent-child link, and cancellation of the parent function will not cancel this new `Task`.\n*   **Ignoring `TaskGroup` Errors:** In a `TaskGroup`, if one task throws, the group continues to wait for all other tasks to complete before rethrowing the first error. Forgetting to iterate through the group with `try await` can lead to unhandled errors.\n\n**When to Use vs. Alternatives**\n*   **`async let`**: Use for a fixed, small number of parallel tasks with heterogeneous return types.\n*   **`TaskGroup`**: Use for a dynamic number of parallel tasks with a homogeneous return type.\n*   **Unstructured `Task`**: Use as an 'escape hatch'. It's necessary for bridging non-async code (like a button tap) to an async context or for tasks that must outlive the current scope. Use it deliberately, not as a default.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "swift",
+        "structured-concurrency",
+        "async-await"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
+    },
+    {
+      "id": "concurrency_0a59c109c99a",
+      "front": "Explain how Swift's `actor` type prevents data races. What are the core rules of 'actor isolation' the compiler enforces, and how does `await` play a critical role in this model?",
+      "back": "An actor is a reference type that protects its mutable state from concurrent access and data races. It establishes an 'actor isolation domain' where its properties and methods are protected. The Swift compiler and runtime enforce rules to maintain this isolation, primarily by serializing access to the actor's state. Think of it as an object with a built-in serial queue (a 'mailbox') for all its method calls.\n\n**Core Concept & Rules:**\n1.  **Mutual Exclusion:** Only one task can execute code within the actor's isolation domain at any given time, preventing simultaneous modification of its state.\n2.  **Asynchronous Access:** Any code from outside the actor (e.g., another actor, a `Task`) must access its isolated properties or methods asynchronously using `await`. This `await` keyword signals a potential suspension point where the calling task yields the thread, allowing the actor to process the request when it's free. The compiler enforces this, making it a compile-time error to access isolated members synchronously from the outside.\n3.  **Synchronous Internal Access:** Code running inside the actor (i.e., one of its own methods) can access its own properties and methods synchronously without `await` because it's already operating within the protected isolation domain.\n\n```swift\n// Practical Code Example\nactor DataCache {\n    private var cache: [String: Data] = [:]\n\n    // This method is isolated. It can access 'cache' directly.\n    func store(data: Data, forKey key: String) {\n        // No 'await' needed internally\n        cache[key] = data\n    }\n\n    // External callers must 'await' this method.\n    func retrieve(forKey key: String) async -> Data? {\n        // Simulate a slow operation\n        try? await Task.sleep(nanoseconds: 100_000_000)\n        return cache[key]\n    }\n\n    // A non-isolated property can be accessed synchronously.\n    // It CANNOT access isolated state like 'cache'.\n    nonisolated let cacheId: String = \"MainCache\"\n}\n\nfunc useCache() async {\n    let cache = DataCache()\n    // ERROR: Actor-isolated 'store' can only be called 'async'\n    // cache.store(data: Data(), forKey: \"test\")\n\n    // CORRECT: Use 'await' to cross the actor boundary.\n    await cache.store(data: Data(), forKey: \"test\")\n}\n```\n\n**Common Pitfalls:**\n*   **Reentrancy:** When an actor method `await`s another async call, it becomes suspended. During this suspension, other tasks can be scheduled on the actor, potentially modifying its state. Code after an `await` must not assume state is unchanged. This is different from a traditional lock, which blocks the entire critical section.\n*   **Deadlocks:** While actors prevent many race conditions, logical deadlocks are still possible if two actors `await` each other in a cycle.\n\n**When to Use:**\n*   **Actors:** The modern, safe default in Swift for managing shared, mutable state. Use for objects like data managers, repositories, or any component whose internal state must be protected from concurrent access.\n*   **Alternatives:** A `class` with a serial `DispatchQueue` is a viable older pattern but is more verbose and error-prone. Low-level locks (`NSLock`) should only be used for performance-critical sections where the overhead of actors has been measured and proven to be a bottleneck.",
+      "code_example": null,
+      "tags": [
+        "concurrency",
+        "swift-concurrency",
+        "actors",
+        "data-races",
+        "isolation"
+      ],
+      "sources": [
+        "https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/"
+      ]
     }
   ]
 }
